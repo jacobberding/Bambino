@@ -167,6 +167,7 @@
     <Content Include="Content\Scripts\Modules\module.contacts.js" />
     <Content Include="Content\Scripts\Modules\module.global.js" />
     <Content Include="Content\Scripts\Modules\module.js" />
+    <Content Include="Content\Scripts\Modules\module.validation.js" />
     <Content Include="Content\Styles\flex.css" />
     <Content Include="Content\Styles\flexDesktop.css" />
     <Content Include="Content\Styles\reset.css" />

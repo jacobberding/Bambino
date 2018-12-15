@@ -15,6 +15,70 @@ namespace Api.Controllers
     {
 
         [HttpPost]
+        public HttpResponseMessage AddEditDelete([FromBody] ContactAddEditDeleteViewModel data)
+        {
+            //Authentication a = AuthenticationController.GetMemberAuthenticated(data.authentication.apiId, 1, data.authentication.token);
+            //if (a.isAuthenticated)
+            //{
+
+            try
+            {
+
+                UnitOfWork unitOfWork = new UnitOfWork();
+
+                Contact contact = (data.contactId == Guid.Empty) ? new Contact() : unitOfWork.ContactRepository
+                    .GetBy(i => i.contactId == data.contactId
+                        && !i.isDeleted)
+                    .FirstOrDefault();
+
+                if (contact == null)
+                    throw new InvalidOperationException("Layer Not Found");
+                
+                contact.name = data.name;
+                contact.title = data.title;
+                contact.companyName = data.companyName;
+                contact.phone1 = data.phone1;
+                contact.phone2 = data.phone2;
+                contact.skypeId = data.skypeId;
+                contact.email = data.email;
+                contact.companyTemp = data.companyTemp;
+                contact.resume = data.resume;
+                contact.portfolio = data.portfolio;
+                contact.personalWebsite = data.personalWebsite;
+                contact.skills = data.skills;
+                contact.isEdcFamily = data.isEdcFamily;
+                contact.isPotentialStaffing = data.isPotentialStaffing;
+                contact.isDeleted = data.isDeleted;
+
+                if (data.contactId == Guid.Empty)
+                    unitOfWork.ContactRepository.Insert(contact);
+                else
+                    unitOfWork.ContactRepository.Update(contact);
+
+                unitOfWork.Save();
+
+                var activity = (data.contactId == Guid.Empty) ? "Added" : (data.isDeleted) ? "Deleted" : "Edited";
+                //LogController.Add(a.member.memberId, "Template Category " + category.name + " " + activity, "Category", "AddEditDelete", category.categoryId, "Categories");
+
+                var vm = new AddEditDeleteReturnViewModel()
+                {
+                    id = contact.contactId,
+                    state = (data.contactId == Guid.Empty) ? "add" : (data.isDeleted) ? "delete" : "edit"
+                };
+                
+                return Request.CreateResponse(HttpStatusCode.OK, vm);
+
+            }
+            catch (Exception ex)
+            {
+                return Request.CreateResponse(HttpStatusCode.InternalServerError, ex);
+            }
+
+            //}
+            //return Request.CreateResponse(HttpStatusCode.InternalServerError, new { Message = "Invalid Token" });
+        }
+        
+        [HttpPost]
         public HttpResponseMessage Upload([FromBody] ContactUploadViewModel data)
         {
             //Authentication a = AuthenticationController.GetMemberAuthenticated(data.authentication.apiId, 1, data.authentication.token);
@@ -81,24 +145,35 @@ namespace Api.Controllers
                     List<string> arrSearch = data.search.Split(',').ToList();
                     var query = unitOfWork.ContactRepository
                         .GetBy(i => !i.isDeleted);
-                    //i => !i.isDeleted
-                    //&& (i.name.Contains(data.search)
-                    //|| i.companyName.Contains(data.search)
-                    //|| i.companyTemp.Contains(data.search)
-                    //|| i.title.Contains(data.search)
-                    //|| i.skills.Contains(data.search)
-                    //|| i.email.Contains(data.search)));
 
                     if (arrSearch.Count > 1)
                     {
 
-                        string q = "";
+                        List<string> q = new List<string>();
 
                         foreach(var str in arrSearch)
                         {
-                            q += String.Format("skills LIKE %{0}%", str);
+
+                            if (str == "")
+                                continue;
+
+                            q.Add(String.Format("skills.Contains(\"{0}\")", str));
+
                         }
-                        query = query.Where(q);
+
+                        query = query.Where(String.Join(" OR ", q.ToArray()));
+
+                    }
+                    else
+                    {
+
+                        query = query.Where(i => i.name.Contains(data.search)
+                            || i.companyName.Contains(data.search)
+                            || i.personalWebsite.Contains(data.search)
+                            || i.companyTemp.Contains(data.search)
+                            || i.title.Contains(data.search)
+                            || i.skills.Contains(data.search)
+                            || i.email.Contains(data.search));
 
                     }
 

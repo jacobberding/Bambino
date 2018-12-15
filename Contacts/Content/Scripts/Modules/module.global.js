@@ -221,6 +221,12 @@ const Global = (function () {
         return pathBase + `/thumbnails/` + filename;
 
     }
+    const getSort = function (sort, name) {
+        if (sort.includes(name))
+            return `sort${sort.split(` `)[1]}`;
+        else
+            return ``;
+    }
     
     const getHtmlOptions = function (arr, values = [], isFont = false) {
 
@@ -237,6 +243,14 @@ const Global = (function () {
 
         return html;
 
+    }
+    const getHtmlLoading = function () {
+        return `
+                <m-flex data-type="col" class="flxLoading c mT">
+                    <h4 class="mB">We have a very slow server please be patient. This will be upgraded once we are ready.</h4>
+                    <h1 class="loading">Loading</h1>
+                </m-flex>
+            `;
     }
     const getListNameByValue = function (arr, value) {
         return arr.filter(function (obj) { return obj.value == value; })[0].name;
@@ -280,7 +294,9 @@ const Global = (function () {
         getFunctionByName: getFunctionByName,
         getIsValidFile: getIsValidFile,
         getThumbnailPath: getThumbnailPath,
+        getSort: getSort,
         getHtmlOptions: getHtmlOptions,
+        getHtmlLoading: getHtmlLoading,
         getListNameByValue: getListNameByValue,
         getListNameByValues: getListNameByValues,
         getListValueByName: getListValueByName,

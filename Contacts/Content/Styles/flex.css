@@ -27,7 +27,7 @@ p {
 }
 
 a {
-    color: #00AEEF;
+    color: #0a4876;
     text-decoration: none;
 }
     a:hover {
@@ -35,7 +35,7 @@ a {
     }
 m-a {
     font-size: .65em;
-    color: #00AEEF;
+    color: #0a4876;
     margin-top: .5em;
 }
 
@@ -67,7 +67,7 @@ m-accordian {
         /*border: 1px solid #dcdee1;*/
     }
         m-accordian.active m-banner {
-            background: #00AEEF;
+            background: #0a4876;
             color: white;
         }
         m-accordian m-banner h3 {
@@ -287,7 +287,7 @@ m-bar {
         max-width: 400px;
         height: 40px;
         margin-top: .5em;
-        background-color: #00AEEF;
+        background-color: #0a4876;
         background-image: -webkit-linear-gradient(135deg, rgba(255,255,255,0.125) 25%, transparent 25%, transparent 50%, rgba(255,255,255,0.125) 50%, rgba(255,255,255,0.125) 75%, transparent 75%, transparent);
         background-image: linear-gradient(-45deg, rgba(255,255,255,0.125) 25%, transparent 25%, transparent 50%, rgba(255,255,255,0.125) 50%, rgba(255,255,255,0.125) 75%, transparent 75%, transparent);
         background-size: 35px 35px;
@@ -318,7 +318,7 @@ m-bar {
     m-bar span {
         height: 10px;
         border-radius: 2px;
-        background-color: #00AEEF;
+        background-color: #0a4876;
         position: absolute;
         display: block;
     }
@@ -367,7 +367,7 @@ m-button {
     m-card.active[data-label="Settings Body"],
     m-card.primary,
     m-button[data-type="primary"] {
-        background-color: #00AEEF;
+        background-color: #0a4876;
         color: #FFF;
     }
     m-button[data-type="secondary"] {
@@ -425,6 +425,7 @@ m-button {
     .tableRow:first-child h2 {
         font-size: .7em;
         color: #CCC;
+        position: relative;
     }
 
     .tableRow .expand1 {
@@ -440,6 +441,42 @@ m-button {
         flex: 4;
     }
 
+    .tableRow h2:hover {
+        cursor: pointer;
+    }
+
+    .tableRow h2.sortdesc,
+    .tableRow h2.sortasc {
+        font-weight: 800;
+        color: #454545;
+    }
+
+    .tableRow h2.sortasc:after {
+        content: '';
+        position: absolute;
+        left: 80%;
+        top: 5px;
+        width: 0;
+        height: 0;
+        border-left: 5px solid transparent;
+        border-right: 5px solid transparent;
+        border-top: 5px solid #454545;
+        clear: both;
+    }
+
+    .tableRow h2.sortdesc:after {
+        content: '';
+        position: absolute;
+        left: 80%;
+        top: 5px;
+        width: 0;
+        height: 0;
+        border-left: 5px solid transparent;
+        border-right: 5px solid transparent;
+        border-bottom: 5px solid #454545;
+        clear: both;
+    }
+
 /*--M-FOOTER-------------------------------------------------------------------------------*/
 m-footer {
     display: block;
@@ -449,7 +486,7 @@ m-footer {
 }
     m-footer p {
         font-size: .8em;
-        color: #00AEEF;
+        color: #0a4876;
         margin-bottom: .25em;
         margin-right: 4em;
     }
@@ -620,7 +657,7 @@ m-flex {
         height: 50px;
     }
         m-flex.primary {
-            background-color: #00AEEF;
+            background-color: #0a4876;
             color: #FFF;
         }
         m-flex.secondary {
@@ -724,7 +761,7 @@ m-pagenav {
 m-pagenav m-previous,
 m-pagenav m-next,
 m-pagenav m-number {
-    border: 1px solid #00AEEF;
+    border: 1px solid #0a4876;
     padding: .5em;
     font-size: .8em;
     margin: 0 .25em;
@@ -732,30 +769,30 @@ m-pagenav m-number {
 
 m-pagenav m-previous,
 m-pagenav m-next {
-    background-color: #00AEEF;
+    background-color: #0a4876;
     color: #FFF;
     margin-bottom: 1em;
 }
     m-pagenav m-previous:hover,
     m-pagenav m-next:hover {
         background-color: #FFF;
-        color: #00AEEF;
+        color: #0a4876;
         cursor: pointer;
     }
 
 m-pagenav m-number {
     background-color: #FFF;
-    color: #00AEEF;
+    color: #0a4876;
     margin-bottom: 1em;
 }
     m-pagenav m-number.active {
-        background-color: #00AEEF;
+        background-color: #0a4876;
         color: #FFF;
-        border-color: #00AEEF;
+        border-color: #0a4876;
     }
 
     m-pagenav m-number:hover {
-        background-color: #00AEEF;
+        background-color: #0a4876;
         color: #FFF;
         cursor: pointer;
     }
@@ -803,7 +840,7 @@ m-card {
         background-color: #EEE;
     }
     m-card.isPrimary {
-        border: 1px solid #00AEEF;
+        border: 1px solid #0a4876;
         box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
     }
         m-card h2 {
@@ -967,7 +1004,7 @@ m-inputs input {
     height: 65px;
     margin: 0px 5px;
     border-radius: 2px;
-    background-color: #00AEEF;
+    background-color: #0a4876;
     color: #FFF;
     font-size: 1em;
     text-align: center;
@@ -997,7 +1034,7 @@ input {
     padding: 0 1em;
     font-size: .9em;
     border-radius: 2px;
-    font-family: 'Open Sans', sans-serif;
+    font-family: 'Raleway', sans-serif;
 }
     input:disabled {
         opacity: .35;
@@ -1025,14 +1062,14 @@ input {
             width: 15px;
             height: 15px;
             border-radius: 50%; 
-            background: #00AEEF;
+            background: #0a4876;
             cursor: pointer;
         }
         input[type="range"]::-moz-range-thumb {
             width: 15px;
             height: 15px;
             border-radius: 50%;
-            background: #00AEEF;
+            background: #0a4876;
             cursor: pointer;
         }
             input[type="range"]:disabled::-moz-range-thumb,
@@ -1092,7 +1129,7 @@ input {
         content: '\2713';
         width: 30px;
         height: 30px;
-        background-color: #00AEEF;
+        background-color: #0a4876;
         color: #FFF;
     }
         input[type="radio"]:hover,
@@ -1302,7 +1339,7 @@ m-header {
     display: flex;
     align-items: center;
     position: relative;
-    background-color: #00AEEF;
+    background-color: #0a4876;
     z-index: 100;
 }
     m-header .sQ,

@@ -126,6 +126,63 @@ namespace Api.Models
 
     }
 
+    public class ContactAddEditDeleteViewModel
+    {
+
+        public Guid contactId { get; set; }
+
+        public string name { get; set; }
+
+        public string title { get; set; }
+
+        public string companyName { get; set; }
+
+        public string phone1 { get; set; }
+
+        public string phone2 { get; set; }
+
+        public string skypeId { get; set; }
+
+        public string email { get; set; }
+
+        public string companyTemp { get; set; }
+
+        public string resume { get; set; }
+
+        public string portfolio { get; set; }
+
+        public string personalWebsite { get; set; }
+
+        public string skills { get; set; }
+
+        public bool isEdcFamily { get; set; }
+
+        public bool isPotentialStaffing { get; set; }
+        
+        public bool isDeleted { get; set; }
+
+        public ContactAddEditDeleteViewModel()
+        {
+            contactId = new Guid();
+            name = "";
+            title = "";
+            companyName = "";
+            phone1 = "";
+            phone2 = "";
+            skypeId = "";
+            email = "";
+            companyTemp = "";
+            resume = "";
+            portfolio = "";
+            personalWebsite = "";
+            skills = "";
+            isEdcFamily = false;
+            isPotentialStaffing = false;
+            isDeleted = false;
+        }
+
+    }
+
     public class ContactUploadViewModel
     {
 

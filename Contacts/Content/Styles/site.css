@@ -1,2 +1,7 @@
 ﻿body {
 }
+
+.flxLoading h4 {
+    font-size: .8em;
+    font-weight: 100;
+}

@@ -1415,35 +1415,14 @@ namespace EDCCommands
         public class BlockAddManyViewModel
         {
 
-            public string categoryValue { get; set; }
+            public string discipline { get; set; }
 
-            public string color { get; set; }
-
-            public string lineWeight { get; set; }
-
-            public string lineType { get; set; }
-
-            public int transparency { get; set; }
-
-            public string measurement { get; set; }
-
-            public string code { get; set; }
-
-            public string description { get; set; }
-
-            public bool isPlottable { get; set; }
-
+            public string name { get; set; }
+            
             public BlockAddManyViewModel()
             {
-                categoryValue = "";
-                color = "";
-                lineWeight = "";
-                lineType = "";
-                transparency = 0;
-                measurement = "";
-                code = "";
-                description = "";
-                isPlottable = false;
+                discipline = "";
+                name = "";
             }
 
         }
@@ -1452,7 +1431,7 @@ namespace EDCCommands
         public void BlockUpload()
         {
 
-            Active.Database.UsingTransaction((tr) =>
+            Active.Database.UsingModelSpace((tr, ms) =>
             {
 
                 try
@@ -1460,6 +1439,7 @@ namespace EDCCommands
 
                     string m = (Active.Database.Measurement.ToString() == "English") ? "Imperial" : Active.Database.Measurement.ToString();
                     BlockTable bt = (BlockTable)tr.GetObject(Active.Database.BlockTableId, OpenMode.ForRead);
+                    IEnumerable<BlockReference> brs = ms.OfType<BlockReference>(tr).Where(c => c.Name == "EDC-" + m.Substring(0, 1) + "-G-Tag Element");
                     List<BlockAddManyViewModel> bs = new List<BlockAddManyViewModel>();
 
                     PromptKeywordOptions pko = new PromptKeywordOptions("");
@@ -1477,72 +1457,94 @@ namespace EDCCommands
                     if (pr.StringResult != "5455")
                         throw new Exception("\nInvalid Password");
 
-                    foreach (ObjectId id in bt)
+                    foreach (BlockReference br in brs)
                     {
 
-                        BlockTableRecord btr = (BlockTableRecord)tr.GetObject(id, OpenMode.ForWrite);
-                        if (btr.IsDependent || btr.Name.Length <= 3 || btr.Name.Substring(0, 3) != "EDC")
-                            continue;
+                        //BlockTableRecord btr = (BlockTableRecord)tr.GetObject(id, OpenMode.ForWrite);
+                        //if (btr.IsDependent || btr.Name != "EDC-" + m.Substring(0, 1) + "-G-Tag Element")
+                        //    continue;
                         //The error occurs on the line below no clue why
                         //byte[] pi = layer.Transparency.Alpha;
 
-                        //Doesnt work
-                        //BlockReference blockRef = (BlockReference)tr.GetObject(block.ObjectId, OpenMode.ForWrite);
+                        //Active.Editor.WriteMessage("\n" + btr.Name);
+                        //Active.Editor.WriteMessage("\nEDC-" + m.Substring(0, 1) + "-G-Tag Element");
+                        ////Doesnt work
+                        ////BlockReference blockRef = (BlockReference)tr.GetObject(block.ObjectId, OpenMode.ForWrite);
 
-                        // Verify block table record has attribute definitions associated with it
-                        if (btr.HasAttributeDefinitions)
+                        //// Verify block table record has attribute definitions associated with it
+                        ////if (br.HasAttributeDefinitions)
+                        ////{
+
+                        //    string discipline = "";
+                        //    string name = "";
+
+                        //    // Add attributes from the block table record
+                        //    foreach (ObjectId objID in btr)
+                        //    {
+                        //        DBObject dbObj = tr.GetObject(objID, OpenMode.ForWrite) as DBObject;
+
+                        //        if (dbObj is AttributeDefinition)
+                        //        {
+                        //            AttributeDefinition ad = dbObj as AttributeDefinition;
+
+                        //            Active.Editor.WriteMessage(string.Format("\nAttribute Definition {0}", ad.Tag));
+                        //            Active.Editor.WriteMessage(string.Format("\nText String {0}", ad.TextString));
+                        //            //Active.Editor.WriteMessage(string.Format("\nM Text {0}", ad.MTextAttributeDefinition));
+
+                        //            //if (!ad.Constant)
+                        //            //{
+                        //            //    using (AttributeReference ar = new AttributeReference())
+                        //            //    {
+                        //            //        //ar.SetAttributeFromBlock(ad, ar.BlockTransform);
+                        //            //        //ar.Position = ad.Position.TransformBy(ar.BlockTransform);
+
+                        //            //        //ar.TextString = ad.TextString;
+
+                        //            //        //btr.AttributeCollection.AppendAttribute(ar);
+                        //            //        //tr.AddNewlyCreatedDBObject(ar, true);
+                        //            //    }
+                        //            //}
+                        //            if (ad.Tag == "ELEMENT")
+                        //                name = ad.TextString;
+                        //            else if (ad.Tag == "DISCIPLINE")
+                        //                discipline = ad.TextString;
+
+                        //        }
+
+                        //    }
+
+
+                        string discipline = "";
+                        string name = "";
+                        foreach (ObjectId id in br.AttributeCollection)
                         {
-                            // Add attributes from the block table record
-                            foreach (ObjectId objID in btr)
-                            {
-                                DBObject dbObj = tr.GetObject(objID, OpenMode.ForRead) as DBObject;
 
-                                if (dbObj is AttributeDefinition)
-                                {
-                                    AttributeDefinition ad = dbObj as AttributeDefinition;
+                            DBObject dbObj = tr.GetObject(id, OpenMode.ForWrite) as DBObject;
+                            AttributeReference aR = dbObj as AttributeReference;
 
-                                    Active.Editor.WriteMessage(string.Format("\nAttribute Definition {0}", ad.Tag));
-
-                                    if (!ad.Constant)
-                                    {
-                                        using (AttributeReference ar = new AttributeReference())
-                                        {
-                                            //ar.SetAttributeFromBlock(ad, ar.BlockTransform);
-                                            //ar.Position = ad.Position.TransformBy(ar.BlockTransform);
-
-                                            //ar.TextString = ad.TextString;
-
-                                            //btr.AttributeCollection.AppendAttribute(ar);
-                                            //tr.AddNewlyCreatedDBObject(ar, true);
-                                        }
-                                    }
-
-                                    //BlockAddManyViewModel b = new BlockAddManyViewModel()
-                                    //{
-                                    //    categoryValue = b.Name.Split('-')[2],
-                                    //    code = layer.Name.Substring(8).ToUpper(),
-                                    //    description = layer.Description,
-                                    //    color = layer.Color.ColorNameForDisplay,
-                                    //    isPlottable = layer.IsPlottable,
-                                    //    lineWeight = layer.LineWeight.ToString(),
-                                    //    lineType = ltt.Name,
-                                    //    measurement = m,
-                                    //    transparency = 0
-                                    //};
-
-                                    //ls.Add(a);
-
-                                }
-                            }
+                            if (aR.Tag == "ELEMENT")
+                                name = aR.TextString;
+                            else if (aR.Tag == "DISCIPLINE")
+                                discipline = aR.TextString;
 
                         }
-                        
+
+                        BlockAddManyViewModel b = new BlockAddManyViewModel()
+                        {
+                            discipline = discipline,
+                            name = name
+                        };
+
+                        bs.Add(b);
+
+                        //}
+
                     }
 
-                    Active.Editor.WriteMessage("\nFound {0} Layer(s)", bs.Count);
+                    Active.Editor.WriteMessage("\nFound {0} Block(s)", bs.Count);
                     //LayerController._AddMany(ls);
                     foreach (var b in bs)
-                        Active.Editor.WriteMessage("\nCode: {0}", b.code);
+                        Active.Editor.WriteMessage("\nDiscipline: {0} / Name: {1}", b.discipline, b.name);
 
                 }
                 catch (Exception ex)

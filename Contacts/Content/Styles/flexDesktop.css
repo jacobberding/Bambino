@@ -23,7 +23,7 @@
     }
         .selectable m-card.active[data-label="Settings Body"]:not(.nH):hover,
         .selectable m-card.primary:not(.nH):hover {
-            background-color: #00AEEF;
+            background-color: #0a4876;
         }
     .selectable m-flex.hB:hover {
         cursor: pointer;
