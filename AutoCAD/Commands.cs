@@ -17,7 +17,7 @@ namespace EDCCommands
     public class Commands
     {
         //ATTSync - look into this
-        public static List<TagAreaTypeViewModel> tagAreaTypeViewModels = new List<TagAreaTypeViewModel>();
+        public static List<ACAreaCategoryViewModel> acAreaCategoryViewModels = new List<ACAreaCategoryViewModel>();
         public static List<DisciplineViewModel> disciplineViewModels = new List<DisciplineViewModel>();
 
         //Architectural = 4
@@ -123,14 +123,14 @@ namespace EDCCommands
                 PromptResult pr = Active.Editor.GetString(pso);
                 string m = (Active.Database.Measurement.ToString() == "English") ? "Imperial" : Active.Database.Measurement.ToString();
 
-                List<LayerViewModel> layers = LayerController._GetByKeyword(new LayerGetByKeywordViewModel() { keyword = pr.StringResult, measurement = m });
+                List<ACLayerViewModel> acLayers = ACLayerController._GetByKeyword(new ACLayerGetByKeywordViewModel() { keyword = pr.StringResult, measurement = m });
 
-                if (layers == null || layers.Count == 0)
+                if (acLayers == null || acLayers.Count == 0)
                     throw new Exception(string.Format("No layers found matching {0} in measurement {1}", pr.StringResult, m));
 
-                Active.Editor.WriteMessage("\nFound {0} Matching Layer(s)", layers.Count.ToString());
-                foreach (var layer in layers)
-                    Active.Editor.WriteMessage("\nName: {0} / Description: {1}", layer.name, layer.description);
+                Active.Editor.WriteMessage("\nFound {0} Matching Layer(s)", acLayers.Count.ToString());
+                foreach (var acLayer in acLayers)
+                    Active.Editor.WriteMessage("\nName: {0} / Description: {1}", acLayer.name, acLayer.description);
 
             }
             catch (Exception ex)
@@ -152,7 +152,7 @@ namespace EDCCommands
 
                     string m = (Active.Database.Measurement.ToString() == "English") ? "Imperial" : Active.Database.Measurement.ToString();
                     LayerTable lt = (LayerTable)tr.GetObject(Active.Database.LayerTableId, OpenMode.ForRead);
-                    List<LayerAddManyViewModel> ls = new List<LayerAddManyViewModel>();
+                    List<ACLayerAddManyViewModel> ls = new List<ACLayerAddManyViewModel>();
 
                     PromptKeywordOptions pko = new PromptKeywordOptions("");
                     pko.Message = "\nUpload Layers?";
@@ -179,7 +179,7 @@ namespace EDCCommands
                         //byte[] pi = layer.Transparency.Alpha;
 
                         LinetypeTableRecord ltt = (LinetypeTableRecord)tr.GetObject(layer.LinetypeObjectId, OpenMode.ForRead) as LinetypeTableRecord;
-                        LayerAddManyViewModel a = new LayerAddManyViewModel()
+                        ACLayerAddManyViewModel a = new ACLayerAddManyViewModel()
                         {
                             categoryValue = layer.Name.Split('-')[2],
                             code = layer.Name.Substring(8).ToUpper(),
@@ -222,8 +222,8 @@ namespace EDCCommands
                 {
 
                     string m = (Active.Database.Measurement.ToString() == "English") ? "Imperial" : Active.Database.Measurement.ToString();
-                    List<CategoryViewModel> categories = CategoryController._Get();
-                    List<LayerViewModel> layers = new List<LayerViewModel>();
+                    List<ACLayerCategoryViewModel> categories = ACLayerCategoryController._Get();
+                    List<ACLayerViewModel> layers = new List<ACLayerViewModel>();
                     LayerTable lt = (LayerTable)tr.GetObject(Active.Database.LayerTableId, OpenMode.ForRead);
                     LinetypeTable ltt = (LinetypeTable)tr.GetObject(Active.Database.LinetypeTableId, OpenMode.ForRead) as LinetypeTable;
                     
@@ -234,9 +234,9 @@ namespace EDCCommands
                         pko.Keywords.Add(obj.name);
 
                     PromptResult pr = Active.Editor.GetKeywords(pko);
-                    CategoryViewModel category = (pr.StringResult == "All") ? new CategoryViewModel() { name = "All" } : categories.Where(i => i.name.Contains(pr.StringResult)).FirstOrDefault();
+                    ACLayerCategoryViewModel category = (pr.StringResult == "All") ? new ACLayerCategoryViewModel() { name = "All" } : categories.Where(i => i.name.Contains(pr.StringResult)).FirstOrDefault();
 
-                    layers = LayerController._GetByCategory(new LayerGetByCategoryViewModel() { category = category.name, measurement = m });
+                    layers = ACLayerController._GetByCategory(new ACLayerGetByCategoryViewModel() { category = category.name, measurement = m });
 
                     if (layers.Count == 0)
                         throw new Exception(String.Format("\nNo Layers in {0} Category for {1}", category.name, m));
@@ -305,15 +305,15 @@ namespace EDCCommands
                     //List<LayerTable> layersMS = ms.OfType<LayerTable>(tr).Where(i => !i.IsDependent && i.Name.Length > 3 && i.Name.Substring(0, 3) == "EDC").ToList();
                     string m = (Active.Database.Measurement.ToString() == "English") ? "Imperial" : Active.Database.Measurement.ToString();
                     Active.Editor.WriteMessage(String.Format("\nScale: {0}", m));
-                    List<LayerViewModel> layers = new List<LayerViewModel>();
+                    List<ACLayerViewModel> acLayers = new List<ACLayerViewModel>();
 
                     PromptKeywordOptions pko = new PromptKeywordOptions("");
                     pko.Message = "\nMerge Duplicate Layers?";
                     pko.Keywords.Add("Yes");
                     pko.Keywords.Add("No");
                     PromptResult pr = Active.Editor.GetKeywords(pko);
-                    
-                    layers = LayerController._GetByCategory(new LayerGetByCategoryViewModel() { category = "All", measurement = m });
+
+                    acLayers = ACLayerController._GetByCategory(new ACLayerGetByCategoryViewModel() { category = "All", measurement = m });
                     
                     foreach (ObjectId id in lt)
                     {
@@ -326,35 +326,35 @@ namespace EDCCommands
                         if (layerMS.IsLocked)
                             layerMS.IsLocked = false;
 
-                        if (layers.Any(i => i.name.ToUpper() == layerMS.Name.ToUpper()))
+                        if (acLayers.Any(i => i.name.ToUpper() == layerMS.Name.ToUpper()))
                         {
 
                             //Active.Editor.WriteMessage(String.Format("\n1"));
-                            LayerViewModel layer = layers.Where(i => i.name.ToUpper() == layerMS.Name.ToUpper()).FirstOrDefault();
+                            ACLayerViewModel acLayer = acLayers.Where(i => i.name.ToUpper() == layerMS.Name.ToUpper()).FirstOrDefault();
 
-                            layerMS.Name = layer.name;
-                            layerMS.Color = Color.FromColorIndex(ColorMethod.ByAci, GetColor(layer.color));
-                            layerMS.LineWeight = GetLineWeight(layer.lineWeight);
-                            layerMS.Description = layer.description;
-                            layerMS.IsPlottable = layer.isPlottable;
-                            byte alpha = (byte)(255 * (100 - layer.transparency) / 100);
+                            layerMS.Name = acLayer.name;
+                            layerMS.Color = Color.FromColorIndex(ColorMethod.ByAci, GetColor(acLayer.color));
+                            layerMS.LineWeight = GetLineWeight(acLayer.lineWeight);
+                            layerMS.Description = acLayer.description;
+                            layerMS.IsPlottable = acLayer.isPlottable;
+                            byte alpha = (byte)(255 * (100 - acLayer.transparency) / 100);
                             layerMS.Transparency = new Transparency(alpha);
 
-                            if (ltt.Has(layer.lineType))
+                            if (ltt.Has(acLayer.lineType))
                             {
-                                layerMS.LinetypeObjectId = ltt[layer.lineType];
+                                layerMS.LinetypeObjectId = ltt[acLayer.lineType];
                             }
                             else
                             {
-                                Active.Database.LoadLineTypeFile(layer.lineType, "acad.lin");
-                                layerMS.LinetypeObjectId = ltt[layer.lineType];
+                                Active.Database.LoadLineTypeFile(acLayer.lineType, "acad.lin");
+                                layerMS.LinetypeObjectId = ltt[acLayer.lineType];
                             }
 
                         }
                         else if (pr.StringResult == "Yes")
                         {
                             
-                            LayerViewModel layer = layers.Where(i => i.layerId == GetScore(layers, layerMS)).FirstOrDefault();
+                            ACLayerViewModel layer = acLayers.Where(i => i.acLayerId == GetScore(acLayers, layerMS)).FirstOrDefault();
                             string newLayerName = layer.name;
 
                             if (!lt.Has(newLayerName))
@@ -413,7 +413,7 @@ namespace EDCCommands
                         {
 
                             //Active.Editor.WriteMessage(String.Format("\n2"));
-                            LayerViewModel layer = layers.Where(i => i.layerId == GetScore(layers, layerMS)).FirstOrDefault();
+                            ACLayerViewModel layer = acLayers.Where(i => i.acLayerId == GetScore(acLayers, layerMS)).FirstOrDefault();
                             bool w = lt.Has(layer.name);
                             
                             layerMS.Name = (!w) ? layer.name : String.Format(layer.name + " {0}", id); //layersMS.Where(i => i.Name.Contains(layer.name)).Count()
@@ -456,10 +456,10 @@ namespace EDCCommands
 
         }
 
-        public static Guid GetScore(List<LayerViewModel> layers, LayerTableRecord layerMS)
+        public static Guid GetScore(List<ACLayerViewModel> layers, LayerTableRecord layerMS)
         {
 
-            Guid layerId = layers.Select(i => i.layerId).FirstOrDefault();
+            Guid acLayerId = layers.Select(i => i.acLayerId).FirstOrDefault();
             double globalScore = 0;
 
             foreach (var layer in layers)
@@ -481,12 +481,12 @@ namespace EDCCommands
                 if (score > globalScore)
                 {
                     globalScore = score;
-                    layerId = layer.layerId;
+                    acLayerId = layer.acLayerId;
                 }
 
             }
 
-            return layerId;
+            return acLayerId;
 
         }
 
@@ -734,7 +734,7 @@ namespace EDCCommands
 
                     bool isLayers = false;
                     string m = (Active.Database.Measurement.ToString() == "English") ? "Imperial" : Active.Database.Measurement.ToString();
-                    string[] layers = LayerController._GetByArea(m);
+                    string[] layers = ACLayerController._GetByArea(m);
                     string layer = AddPromptKeywordOptions(Active.Document, "Select a type: ", layers, layers.FirstOrDefault());
                     IEnumerable<Polyline> polylines = ms.OfType<Polyline>(tr).Where(c => c.Layer == layer);
 
@@ -788,10 +788,10 @@ namespace EDCCommands
             // A variable for the block's name
             string name = pr.StringResult;
 
-            if (tagAreaTypeViewModels.Count == 0)
-                tagAreaTypeViewModels = TagAreaTypeController._Get();
+            if (acAreaCategoryViewModels.Count == 0)
+                acAreaCategoryViewModels = ACAreaCategoryController._Get();
 
-            string type = AddPromptKeywordOptions(Active.Document, "Select a type: ", tagAreaTypeViewModels.Select(i => i.name).ToArray(), tagAreaTypeViewModels.Select(i => i.name).FirstOrDefault());
+            string type = AddPromptKeywordOptions(Active.Document, "Select a type: ", acAreaCategoryViewModels.Select(i => i.name).ToArray(), acAreaCategoryViewModels.Select(i => i.name).FirstOrDefault());
 
             using (BlockReference blockRef = new BlockReference(center, blockDef.ObjectId))
             {
@@ -969,29 +969,29 @@ namespace EDCCommands
                     tr.AddNewlyCreatedDBObject(btr, true);
 
                     LayerTable lt = (LayerTable)tr.GetObject(Active.Database.LayerTableId, OpenMode.ForRead);
-                    List<LayerViewModel> layers = LayerController._GetAreaTag(m);
+                    List<ACLayerViewModel> acLayers = ACLayerController._GetAreaTag(m);
 
-                    foreach (var layer in layers)
+                    foreach (var acLayer in acLayers)
                     {
-                        if (!lt.Has(layer.name))
+                        if (!lt.Has(acLayer.name))
                         {
 
                             LayerTableRecord ltblRec = new LayerTableRecord();
 
-                            ltblRec.Name = layer.name;
-                            ltblRec.Color = Color.FromColorIndex(ColorMethod.ByAci, GetColor(layer.color));
-                            ltblRec.LineWeight = GetLineWeight(layer.lineWeight);
-                            ltblRec.Description = layer.description;
-                            ltblRec.IsPlottable = layer.isPlottable;
+                            ltblRec.Name = acLayer.name;
+                            ltblRec.Color = Color.FromColorIndex(ColorMethod.ByAci, GetColor(acLayer.color));
+                            ltblRec.LineWeight = GetLineWeight(acLayer.lineWeight);
+                            ltblRec.Description = acLayer.description;
+                            ltblRec.IsPlottable = acLayer.isPlottable;
 
                             lt.UpgradeOpen();
                             lt.Add(ltblRec);
                             tr.AddNewlyCreatedDBObject(ltblRec, true);
 
                             //Has to occur after the AddNewlyCreatedDBObject
-                            if (layer.transparency > 0)
+                            if (acLayer.transparency > 0)
                             {
-                                byte alpha = (byte)(255 * (100 - layer.transparency) / 100);
+                                byte alpha = (byte)(255 * (100 - acLayer.transparency) / 100);
                                 ltblRec.Transparency = new Transparency(alpha);
                             }
 

@@ -8,7 +8,7 @@ using System.Web.Http;
 
 namespace Api.Controllers
 {
-    public class DisciplineController : ApiController
+    public class ACLayerCategoryController : ApiController
     {
 
         [HttpPost]
@@ -31,16 +31,16 @@ namespace Api.Controllers
             return Request.CreateResponse(HttpStatusCode.InternalServerError, new { Message = "Invalid Token" });
         }
 
-        public static List<DisciplineViewModel> _Get()
+        public static List<ACLayerCategoryViewModel> _Get()
         {
 
             UnitOfWork unitOfWork = new UnitOfWork();
-
-            return unitOfWork.DisciplineRepository
+            
+            return unitOfWork.ACLayerCategoryRepository
                 .GetBy(i => !i.isDeleted)
-                .Select(obj => new DisciplineViewModel()
+                .Select(obj => new ACLayerCategoryViewModel()
                 {
-                    disciplineId = obj.disciplineId,
+                    acLayerCategoryId = obj.acLayerCategoryId,
                     name = obj.name,
                     description = obj.description,
                     value = obj.value,

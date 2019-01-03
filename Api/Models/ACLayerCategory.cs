@@ -6,11 +6,11 @@ using System.Web;
 
 namespace Api.Models
 {
-    [Table("Categories")]
-    public class Category
+    [Table("ACLayerCategories")]
+    public class ACLayerCategory
     {
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public Guid categoryId { get; set; }
+        public Guid acLayerCategoryId { get; set; }
 
         public string name { get; set; }
 
@@ -20,23 +20,23 @@ namespace Api.Models
 
         public bool isDeleted { get; set; }
 
-        public virtual ICollection<Layer> layers { get; set; }
+        public virtual ICollection<ACLayer> layers { get; set; }
 
-        public Category()
+        public ACLayerCategory()
         {
             name = "";
             value = "";
             description = "";
             isDeleted = false;
-            layers = new List<Layer>();
+            layers = new List<ACLayer>();
         }
 
     }
 
-    public class CategoryViewModel
+    public class ACLayerCategoryViewModel
     {
 
-        public Guid categoryId { get; set; }
+        public Guid acLayerCategoryId { get; set; }
 
         public string name { get; set; }
 
@@ -46,9 +46,9 @@ namespace Api.Models
 
         public bool isDeleted { get; set; }
         
-        public CategoryViewModel()
+        public ACLayerCategoryViewModel()
         {
-            categoryId = new Guid();
+            acLayerCategoryId = new Guid();
             name = "";
             value = "";
             description = "";

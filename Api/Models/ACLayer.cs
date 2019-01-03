@@ -6,63 +6,15 @@ using System.Web;
 
 namespace Api.Models
 {
-    [Table("Layers")]
-    public class Layer
+    [Table("ACLayers")]
+    public class ACLayer
     {
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public Guid layerId { get; set; }
+        public Guid acLayerId { get; set; }
 
-        [ForeignKey("category")]
-        public Guid categoryId { get; set; }
-        public virtual Category category { get; set; }
-
-        public string name { get; set; }
-
-        public string color { get; set; }
-
-        public string lineWeight { get; set; }
-
-        public string lineType { get; set; }
-
-        public int transparency { get; set; }
-
-        public string measurement { get; set; }
-
-        public string code { get; set; }
-
-        public string keywords { get; set; }
-
-        public string description { get; set; }
-
-        public bool isPlottable { get; set; }
-
-        public bool isDeleted { get; set; }
-
-        public Layer()
-        {
-            categoryId = Guid.Empty;
-            name = "";
-            color = "";
-            lineWeight = "";
-            lineType = "";
-            transparency = 0;
-            measurement = "";
-            code = "";
-            keywords = "";
-            description = "";
-            isPlottable = false;
-            isDeleted = false;
-        }
-
-    }
-
-    public class LayerViewModel
-    {
-
-        public Guid layerId { get; set; }
-        
-        public Guid categoryId { get; set; }
-        public CategoryViewModel category { get; set; }
+        [ForeignKey("acLayerCategory")]
+        public Guid acLayerCategoryId { get; set; }
+        public virtual ACLayerCategory acLayerCategory { get; set; }
 
         public string name { get; set; }
 
@@ -86,11 +38,9 @@ namespace Api.Models
 
         public bool isDeleted { get; set; }
 
-        public LayerViewModel()
+        public ACLayer()
         {
-            layerId = Guid.Empty;
-            categoryId = Guid.Empty;
-            category = new CategoryViewModel();
+            acLayerCategoryId = Guid.Empty;
             name = "";
             color = "";
             lineWeight = "";
@@ -106,12 +56,64 @@ namespace Api.Models
 
     }
 
-    public class LayerAddEditDeleteViewModel
+    public class ACLayerViewModel
     {
 
-        public Guid layerId { get; set; }
+        public Guid acLayerId { get; set; }
+        
+        public Guid acLayerCategoryId { get; set; }
+        public ACLayerCategoryViewModel acLayerCategory { get; set; }
 
-        public Guid categoryId { get; set; }
+        public string name { get; set; }
+
+        public string color { get; set; }
+
+        public string lineWeight { get; set; }
+
+        public string lineType { get; set; }
+
+        public int transparency { get; set; }
+
+        public string measurement { get; set; }
+
+        public string code { get; set; }
+
+        public string keywords { get; set; }
+
+        public string description { get; set; }
+
+        public bool isPlottable { get; set; }
+
+        public bool isDeleted { get; set; }
+
+        public ACLayerViewModel()
+        {
+            acLayerId = Guid.Empty;
+            acLayerCategoryId = Guid.Empty;
+            acLayerCategory = new ACLayerCategoryViewModel();
+            name = "";
+            color = "";
+            lineWeight = "";
+            lineType = "";
+            transparency = 0;
+            measurement = "";
+            code = "";
+            keywords = "";
+            description = "";
+            isPlottable = false;
+            isDeleted = false;
+        }
+
+    }
+
+    public class ACLayerAddEditDeleteViewModel
+    {
+
+        public AuthenticationViewModel authentication { get; set; }
+
+        public Guid acLayerId { get; set; }
+
+        public Guid acLayerCategoryId { get; set; }
         
         public string color { get; set; }
 
@@ -133,10 +135,10 @@ namespace Api.Models
 
         public bool isDeleted { get; set; }
 
-        public LayerAddEditDeleteViewModel()
+        public ACLayerAddEditDeleteViewModel()
         {
-            layerId = Guid.Empty;
-            categoryId = Guid.Empty;
+            acLayerId = Guid.Empty;
+            acLayerCategoryId = Guid.Empty;
             color = "";
             lineWeight = "";
             lineType = "";
@@ -151,9 +153,11 @@ namespace Api.Models
 
     }
 
-    public class LayerAddManyViewModel
+    public class ACLayerAddManyViewModel
     {
-        
+
+        public AuthenticationViewModel authentication { get; set; }
+
         public string categoryValue { get; set; }
 
         public string color { get; set; }
@@ -172,7 +176,7 @@ namespace Api.Models
 
         public bool isPlottable { get; set; }
         
-        public LayerAddManyViewModel()
+        public ACLayerAddManyViewModel()
         {
             categoryValue = "";
             color = "";
@@ -187,14 +191,16 @@ namespace Api.Models
 
     }
 
-    public class LayerGetByKeywordViewModel
+    public class ACLayerGetByKeywordViewModel
     {
+
+        public AuthenticationViewModel authentication { get; set; }
 
         public string keyword { get; set; }
 
         public string measurement { get; set; }
 
-        public LayerGetByKeywordViewModel()
+        public ACLayerGetByKeywordViewModel()
         {
             keyword = "";
             measurement = "";
@@ -202,14 +208,16 @@ namespace Api.Models
 
     }
 
-    public class LayerGetByCategoryViewModel
+    public class ACLayerGetByCategoryViewModel
     {
+
+        public AuthenticationViewModel authentication { get; set; }
 
         public string category { get; set; }
 
         public string measurement { get; set; }
 
-        public LayerGetByCategoryViewModel()
+        public ACLayerGetByCategoryViewModel()
         {
             category = "";
             measurement = "";

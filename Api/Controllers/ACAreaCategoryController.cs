@@ -11,15 +11,15 @@ using System.Web.Http.Cors;
 namespace Api.Controllers
 {
     [EnableCors(origins: "*", headers: "*", methods: "*")]
-    public class TagAreaTypeController : ApiController
+    public class ACAreaCategoryController : ApiController
     {
 
         [HttpPost]
-        public HttpResponseMessage AddEditDelete([FromBody] TagAreaTypeAddEditDeleteViewModel data)
+        public HttpResponseMessage AddEditDelete([FromBody] ACAreaCategoryAddEditDeleteViewModel data)
         {
-            //Authentication a = AuthenticationController.GetMemberAuthenticated(data.authentication.apiId, 1, data.authentication.token);
-            //if (a.isAuthenticated)
-            //{
+            Authentication a = AuthenticationController.GetMemberAuthenticated(data.authentication.apiId, 1, data.authentication.token);
+            if (a.isAuthenticated)
+            {
 
                 try
                 {
@@ -30,50 +30,50 @@ namespace Api.Controllers
                     return Request.CreateResponse(HttpStatusCode.InternalServerError, ex);
                 }
 
-            //}
-            //return Request.CreateResponse(HttpStatusCode.InternalServerError, new { Message = "Invalid Token" });
+            }
+            return Request.CreateResponse(HttpStatusCode.InternalServerError, new { Message = "Invalid Token" });
         }
 
-        public static AddEditDeleteReturnViewModel _AddEditDelete(TagAreaTypeAddEditDeleteViewModel data)
+        public static AddEditDeleteReturnViewModel _AddEditDelete(ACAreaCategoryAddEditDeleteViewModel data)
         {
 
             UnitOfWork unitOfWork = new UnitOfWork();
 
-            TagAreaType tagAreaType = (data.tagAreaTypeId == Guid.Empty) ? new TagAreaType() : unitOfWork.TagAreaTypeRepository
-                .GetBy(i => i.tagAreaTypeId == data.tagAreaTypeId
+            ACAreaCategory acAreaCategory = (data.acAreaCategoryId == Guid.Empty) ? new ACAreaCategory() : unitOfWork.ACAreaCategoryRepository
+                .GetBy(i => i.acAreaCategoryId == data.acAreaCategoryId
                     && !i.isDeleted)
                 .FirstOrDefault();
 
-            if (tagAreaType == null)
+            if (acAreaCategory == null)
                 throw new InvalidOperationException("Not Found");
 
-            tagAreaType.name = data.name;
-            tagAreaType.isDeleted = data.isDeleted;
+            acAreaCategory.name = data.name;
+            acAreaCategory.isDeleted = data.isDeleted;
 
-            if (data.tagAreaTypeId == Guid.Empty)
-                unitOfWork.TagAreaTypeRepository.Insert(tagAreaType);
+            if (data.acAreaCategoryId == Guid.Empty)
+                unitOfWork.ACAreaCategoryRepository.Insert(acAreaCategory);
             else
-                unitOfWork.TagAreaTypeRepository.Update(tagAreaType);
+                unitOfWork.ACAreaCategoryRepository.Update(acAreaCategory);
 
             unitOfWork.Save();
 
-            var activity = (data.tagAreaTypeId == Guid.Empty) ? "Added" : (data.isDeleted) ? "Deleted" : "Edited";
-            //LogController.Add(a.member.memberId, "Template Category " + category.name + " " + activity, "Category", "AddEditDelete", category.categoryId, "Categories");
+            var activity = (data.acAreaCategoryId == Guid.Empty) ? "Added" : (data.isDeleted) ? "Deleted" : "Edited";
+            //LogController.Add(a.member.memberId, "Template Category " + category.name + " " + activity, "Category", "AddEditDelete", category.acLayerCategoryId, "Categories");
 
             return new AddEditDeleteReturnViewModel()
             {
-                id = tagAreaType.tagAreaTypeId,
-                state = (data.tagAreaTypeId == Guid.Empty) ? "add" : (data.isDeleted) ? "delete" : "edit"
+                id = acAreaCategory.acAreaCategoryId,
+                state = (data.acAreaCategoryId == Guid.Empty) ? "add" : (data.isDeleted) ? "delete" : "edit"
             };
             
         }
 
         [HttpPost]
-        public HttpResponseMessage Get([FromBody] Empty data)
+        public HttpResponseMessage Get([FromBody] EmptyAuthenticationViewModel data)
         {
-            //Authentication a = AuthenticationController.GetMemberAuthenticated(data.authentication.apiId, 1, data.authentication.token);
-            //if (a.isAuthenticated)
-            //{
+            Authentication a = AuthenticationController.GetMemberAuthenticated(data.authentication.apiId, 1, data.authentication.token);
+            if (a.isAuthenticated)
+            {
 
                 try
                 {
@@ -84,11 +84,11 @@ namespace Api.Controllers
                     return Request.CreateResponse(HttpStatusCode.InternalServerError, ex);
                 }
 
-            //}
-            //return Request.CreateResponse(HttpStatusCode.InternalServerError, new { Message = "Invalid Token" });
+            }
+            return Request.CreateResponse(HttpStatusCode.InternalServerError, new { Message = "Invalid Token" });
         }
 
-        public static List<TagAreaTypeViewModel> _Get()
+        public static List<ACAreaCategoryViewModel> _Get()
         {
 
             //return new List<TagAreaTypeViewModel>() {
@@ -98,11 +98,11 @@ namespace Api.Controllers
 
             UnitOfWork unitOfWork = new UnitOfWork();
 
-            return unitOfWork.TagAreaTypeRepository
+            return unitOfWork.ACAreaCategoryRepository
                 .GetBy(i => !i.isDeleted)
-                .Select(obj => new TagAreaTypeViewModel
+                .Select(obj => new ACAreaCategoryViewModel
                 {
-                    tagAreaTypeId = obj.tagAreaTypeId,
+                    acAreaCategoryId = obj.acAreaCategoryId,
                     name = obj.name
                 })
                 .OrderBy(i => i.name)
@@ -111,11 +111,11 @@ namespace Api.Controllers
         }
 
         [HttpPost]
-        public HttpResponseMessage GetByPage([FromBody] Search data)
+        public HttpResponseMessage GetByPage([FromBody] SearchViewModel data)
         {
-            //Authentication a = AuthenticationController.GetMemberAuthenticated(data.authentication.apiId, 1, data.authentication.token);
-            //if (a.isAuthenticated)
-            //{
+            Authentication a = AuthenticationController.GetMemberAuthenticated(data.authentication.apiId, 1, data.authentication.token);
+            if (a.isAuthenticated)
+            {
 
                 try
                 {
@@ -126,23 +126,23 @@ namespace Api.Controllers
                     return Request.CreateResponse(HttpStatusCode.InternalServerError, ex);
                 }
 
-            //}
-            //return Request.CreateResponse(HttpStatusCode.InternalServerError, new { Message = "Invalid Token" });
+            }
+            return Request.CreateResponse(HttpStatusCode.InternalServerError, new { Message = "Invalid Token" });
         }
 
         public class GetByPageReturnViewModel
         {
             public int totalRecords { get; set; }
             public double totalPages { get; set; }
-            public List<TagAreaTypeViewModel> tagAreaTypes { get; set; }
+            public List<ACAreaCategoryViewModel> acAreaCategories { get; set; }
         }
 
-        public static GetByPageReturnViewModel _GetByPage(Search data)
+        public static GetByPageReturnViewModel _GetByPage(SearchViewModel data)
         {
 
             UnitOfWork unitOfWork = new UnitOfWork();
 
-            var query = unitOfWork.TagAreaTypeRepository
+            var query = unitOfWork.ACAreaCategoryRepository
                 .GetBy(i => !i.isDeleted
                     && i.name.Contains(data.search));
 
@@ -150,9 +150,9 @@ namespace Api.Controllers
             int skip = currentPage * data.records;
             int totalRecords = query.ToList().Count;
             var arr = query
-                .Select(obj => new TagAreaTypeViewModel
+                .Select(obj => new ACAreaCategoryViewModel
                 {
-                    tagAreaTypeId = obj.tagAreaTypeId,
+                    acAreaCategoryId = obj.acAreaCategoryId,
                     name = obj.name
                 })
                 .OrderBy(data.sort)
@@ -167,17 +167,17 @@ namespace Api.Controllers
             {
                 totalRecords = totalRecords,
                 totalPages = Math.Ceiling((double)totalRecords / data.records),
-                tagAreaTypes = arr
+                acAreaCategories = arr
             };
 
         }
 
         [HttpPost]
-        public HttpResponseMessage GetById([FromBody] Search data)
+        public HttpResponseMessage GetById([FromBody] GetByIdViewModel data)
         {
-            //Authentication a = AuthenticationController.GetMemberAuthenticated(data.authentication.apiId, 1, data.authentication.token);
-            //if (a.isAuthenticated)
-            //{
+            Authentication a = AuthenticationController.GetMemberAuthenticated(data.authentication.apiId, 1, data.authentication.token);
+            if (a.isAuthenticated)
+            {
 
                 try
                 {
@@ -188,21 +188,21 @@ namespace Api.Controllers
                     return Request.CreateResponse(HttpStatusCode.InternalServerError, ex);
                 }
 
-            //}
-            //return Request.CreateResponse(HttpStatusCode.InternalServerError, new { Message = "Invalid Token" });
+            }
+            return Request.CreateResponse(HttpStatusCode.InternalServerError, new { Message = "Invalid Token" });
         }
 
-        public static TagAreaTypeViewModel _GetById(Search data)
+        public static ACAreaCategoryViewModel _GetById(GetByIdViewModel data)
         {
 
             UnitOfWork unitOfWork = new UnitOfWork();
 
-            return unitOfWork.TagAreaTypeRepository
-                .GetBy(i => i.tagAreaTypeId == data.id
+            return unitOfWork.ACAreaCategoryRepository
+                .GetBy(i => i.acAreaCategoryId == data.id
                     && !i.isDeleted)
-                .Select(obj => new TagAreaTypeViewModel
+                .Select(obj => new ACAreaCategoryViewModel
                 {
-                    tagAreaTypeId = obj.tagAreaTypeId,
+                    acAreaCategoryId = obj.acAreaCategoryId,
                     name = obj.name,
                     isDeleted = obj.isDeleted
                 })

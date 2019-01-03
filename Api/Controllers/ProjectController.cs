@@ -14,94 +14,91 @@ namespace Api.Controllers
         [HttpPost]
         public HttpResponseMessage AddEditDelete([FromBody] ProjectAddEditDeleteViewModel data)
         {
-            //Authentication a = AuthenticationController.GetMemberAuthenticated(data.authentication.apiId, 1, data.authentication.token);
-            //if (a.isAuthenticated)
-            //{
-
-            try
+            Authentication a = AuthenticationController.GetMemberAuthenticated(data.authentication.apiId, 1, data.authentication.token);
+            if (a.isAuthenticated)
             {
-                return Request.CreateResponse(HttpStatusCode.OK, _AddEditDelete(data));
-            }
-            catch (Exception ex)
-            {
-                return Request.CreateResponse(HttpStatusCode.InternalServerError, ex);
-            }
 
-            //}
-            //return Request.CreateResponse(HttpStatusCode.InternalServerError, new { Message = "Invalid Token" });
+                try
+                {
+
+                    UnitOfWork unitOfWork = new UnitOfWork();
+
+                    Project project = (data.projectId == Guid.Empty) ? new Project() : unitOfWork.ProjectRepository
+                        .GetBy(i => i.projectId == data.projectId
+                            && !i.isDeleted)
+                        .FirstOrDefault();
+
+                    if (project == null)
+                        throw new InvalidOperationException("Not Found");
+
+                    project.name = data.name;
+                    project.addressLine1 = data.addressLine1;
+                    project.addressLine2 = data.addressLine2;
+                    project.city = data.city;
+                    project.state = data.state;
+                    project.zip = data.zip;
+                    project.country = data.country;
+                    project.isDeleted = data.isDeleted;
+
+                    if (data.projectId == Guid.Empty)
+                    {
+
+                        Report report = unitOfWork.ReportRepository.Get().FirstOrDefault();
+
+                        report.projectCount = report.projectCount + 1;
+
+                        unitOfWork.ReportRepository.Update(report);
+                        unitOfWork.Save();
+
+                        project.code = DateTime.Now.Year.ToString() + report.projectCount.ToString();
+
+                        unitOfWork.ProjectRepository.Insert(project);
+
+                    }
+                    else
+                        unitOfWork.ProjectRepository.Update(project);
+
+                    unitOfWork.Save();
+
+                    var activity = (data.projectId == Guid.Empty) ? "Added" : (data.isDeleted) ? "Deleted" : "Edited";
+                    LogController.Add(a.member.memberId, "Project " + project.name + " " + activity, "Project", "AddEditDelete", project.projectId, "Projects");
+
+                    var vm = new AddEditDeleteReturnViewModel()
+                    {
+                        id = project.projectId,
+                        state = (data.projectId == Guid.Empty) ? "add" : (data.isDeleted) ? "delete" : "edit"
+                    };
+
+                    return Request.CreateResponse(HttpStatusCode.OK, vm);
+
+                }
+                catch (Exception ex)
+                {
+                    return Request.CreateResponse(HttpStatusCode.InternalServerError, ex);
+                }
+
+            }
+            return Request.CreateResponse(HttpStatusCode.InternalServerError, new { Message = "Invalid Token" });
         }
-
-        public static AddEditDeleteReturnViewModel _AddEditDelete(ProjectAddEditDeleteViewModel data)
-        {
-
-            UnitOfWork unitOfWork = new UnitOfWork();
-            
-            Project project = (data.projectId == Guid.Empty) ? new Project() : unitOfWork.ProjectRepository
-                .GetBy(i => i.projectId == data.projectId
-                    && !i.isDeleted)
-                .FirstOrDefault();
-
-            if (project == null)
-                throw new InvalidOperationException("Not Found");
-            
-            project.name = data.name;
-            project.addressLine1 = data.addressLine1;
-            project.addressLine2 = data.addressLine2;
-            project.city = data.city;
-            project.state = data.state;
-            project.zip = data.zip;
-            project.country = data.country;
-            project.isDeleted = data.isDeleted;
-
-            if (data.projectId == Guid.Empty)
-            {
-
-                Report report = unitOfWork.ReportRepository.Get().FirstOrDefault();
-
-                report.projectCount = report.projectCount + 1;
-
-                unitOfWork.ReportRepository.Update(report);
-                unitOfWork.Save();
-
-                project.code = DateTime.Now.Year.ToString() + report.projectCount.ToString();
-
-                unitOfWork.ProjectRepository.Insert(project);
-
-            }
-            else
-                unitOfWork.ProjectRepository.Update(project);
-
-            unitOfWork.Save();
-            
-            var activity = (data.projectId == Guid.Empty) ? "Added" : (data.isDeleted) ? "Deleted" : "Edited";
-            //LogController.Add(a.member.memberId, "Template Category " + category.name + " " + activity, "Category", "AddEditDelete", category.categoryId, "Categories");
-
-            return new AddEditDeleteReturnViewModel()
-            {
-                id = project.projectId,
-                state = (data.projectId == Guid.Empty) ? "add" : (data.isDeleted) ? "delete" : "edit"
-            };
-
-        }
-
+        
         [HttpPost]
         public HttpResponseMessage GetByCode([FromBody] ProjectGetByCodeViewModel data)
         {
-            //Authentication a = AuthenticationController.GetMemberAuthenticated(data.authentication.apiId, 1, data.authentication.token);
-            //if (a.isAuthenticated)
-            //{
-
-            try
+            Authentication a = AuthenticationController.GetMemberAuthenticated(data.authentication.apiId, 1, data.authentication.token);
+            if (a.isAuthenticated)
             {
-                return Request.CreateResponse(HttpStatusCode.OK, _GetByCode(data.code));
-            }
-            catch (Exception ex)
-            {
-                return Request.CreateResponse(HttpStatusCode.InternalServerError, ex);
-            }
 
-            //}
-            //return Request.CreateResponse(HttpStatusCode.InternalServerError, new { Message = "Invalid Token" });
+                try
+                {
+                    return Request.CreateResponse(HttpStatusCode.OK, _GetByCode(data.code));
+                }
+                catch (Exception ex)
+                {
+                    return Request.CreateResponse(HttpStatusCode.InternalServerError, ex);
+                }
+
+            }
+            return Request.CreateResponse(HttpStatusCode.InternalServerError, new { Message = "Invalid Token" });
         }
 
         public static ProjectViewModel _GetByCode(string code)

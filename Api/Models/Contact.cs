@@ -129,6 +129,8 @@ namespace Api.Models
     public class ContactAddEditDeleteViewModel
     {
 
+        public AuthenticationViewModel authentication { get; set; }
+
         public Guid contactId { get; set; }
 
         public string name { get; set; }
@@ -185,6 +187,8 @@ namespace Api.Models
 
     public class ContactUploadViewModel
     {
+
+        public AuthenticationViewModel authentication { get; set; }
 
         public List<ContactViewModel> contactViewModels = new List<ContactViewModel>();
 

@@ -6,32 +6,41 @@ using System.Web;
 
 namespace Api.Models
 {
-
-    public class ViewModels
+    
+    public class EmptyViewModel
     {
-        
+
     }
 
-    public class Empty
+    public class EmptyAuthenticationViewModel
     {
+
+        public AuthenticationViewModel authentication { get; set; }
 
     }
 
     public class AddEditDeleteReturnViewModel
     {
+    
         public Guid id { get; set; }
+
         public string state { get; set; }
+
     }
 
     public class GetByIdViewModel
     {
+
+        public AuthenticationViewModel authentication { get; set; }
+
         public Guid id { get; set; }
+
     }
 
-    public class Search
+    public class SearchViewModel
     {
 
-        //public AuthenticationViewModel authentication { get; set; }
+        public AuthenticationViewModel authentication { get; set; }
 
         public int page { get; set; }
 
@@ -45,7 +54,7 @@ namespace Api.Models
 
         public Guid id { get; set; }
 
-        public Search()
+        public SearchViewModel()
         {
             page = 0;
             records = 0;

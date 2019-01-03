@@ -6,53 +6,55 @@ using System.Web;
 
 namespace Api.Models
 {
-    [Table("TagAreaTypes")]
-    public class TagAreaType
+    [Table("ACAreaCategories")]
+    public class ACAreaCategory
     {
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public Guid tagAreaTypeId { get; set; }
+        public Guid acAreaCategoryId { get; set; }
 
         public string name { get; set; }
 
         public bool isDeleted { get; set; }
 
-        public TagAreaType() {
+        public ACAreaCategory() {
             name = "";
             isDeleted = false;
         }
 
     }
 
-    public class TagAreaTypeViewModel
+    public class ACAreaCategoryViewModel
     {
 
-        public Guid tagAreaTypeId { get; set; }
+        public Guid acAreaCategoryId { get; set; }
 
         public string name { get; set; }
 
         public bool isDeleted { get; set; }
 
-        public TagAreaTypeViewModel()
+        public ACAreaCategoryViewModel()
         {
-            tagAreaTypeId = Guid.Empty;
+            acAreaCategoryId = Guid.Empty;
             name = "";
             isDeleted = false;
         }
 
     }
 
-    public class TagAreaTypeAddEditDeleteViewModel
+    public class ACAreaCategoryAddEditDeleteViewModel
     {
 
-        public Guid tagAreaTypeId { get; set; }
+        public AuthenticationViewModel authentication { get; set; }
+
+        public Guid acAreaCategoryId { get; set; }
 
         public string name { get; set; }
 
         public bool isDeleted { get; set; }
 
-        public TagAreaTypeAddEditDeleteViewModel()
+        public ACAreaCategoryAddEditDeleteViewModel()
         {
-            tagAreaTypeId = Guid.Empty;
+            acAreaCategoryId = Guid.Empty;
             name = "";
             isDeleted = false;
         }

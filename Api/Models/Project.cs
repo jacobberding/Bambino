@@ -87,6 +87,8 @@ namespace Api.Models
     public class ProjectAddEditDeleteViewModel
     {
 
+        public AuthenticationViewModel authentication { get; set; }
+
         public Guid projectId { get; set; }
 
         public string code { get; set; }
@@ -125,7 +127,9 @@ namespace Api.Models
 
     public class ProjectGetByCodeViewModel
     {
-        
+
+        public AuthenticationViewModel authentication { get; set; }
+
         public string code { get; set; }
         
         public ProjectGetByCodeViewModel()

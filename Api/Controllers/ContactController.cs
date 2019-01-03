@@ -17,125 +17,125 @@ namespace Api.Controllers
         [HttpPost]
         public HttpResponseMessage AddEditDelete([FromBody] ContactAddEditDeleteViewModel data)
         {
-            //Authentication a = AuthenticationController.GetMemberAuthenticated(data.authentication.apiId, 1, data.authentication.token);
-            //if (a.isAuthenticated)
-            //{
-
-            try
+            Authentication a = AuthenticationController.GetMemberAuthenticated(data.authentication.apiId, 1, data.authentication.token);
+            if (a.isAuthenticated)
             {
 
-                UnitOfWork unitOfWork = new UnitOfWork();
-
-                Contact contact = (data.contactId == Guid.Empty) ? new Contact() : unitOfWork.ContactRepository
-                    .GetBy(i => i.contactId == data.contactId
-                        && !i.isDeleted)
-                    .FirstOrDefault();
-
-                if (contact == null)
-                    throw new InvalidOperationException("Layer Not Found");
-                
-                contact.name = data.name;
-                contact.title = data.title;
-                contact.companyName = data.companyName;
-                contact.phone1 = data.phone1;
-                contact.phone2 = data.phone2;
-                contact.skypeId = data.skypeId;
-                contact.email = data.email;
-                contact.companyTemp = data.companyTemp;
-                contact.resume = data.resume;
-                contact.portfolio = data.portfolio;
-                contact.personalWebsite = data.personalWebsite;
-                contact.skills = data.skills;
-                contact.isEdcFamily = data.isEdcFamily;
-                contact.isPotentialStaffing = data.isPotentialStaffing;
-                contact.isDeleted = data.isDeleted;
-
-                if (data.contactId == Guid.Empty)
-                    unitOfWork.ContactRepository.Insert(contact);
-                else
-                    unitOfWork.ContactRepository.Update(contact);
-
-                unitOfWork.Save();
-
-                var activity = (data.contactId == Guid.Empty) ? "Added" : (data.isDeleted) ? "Deleted" : "Edited";
-                //LogController.Add(a.member.memberId, "Template Category " + category.name + " " + activity, "Category", "AddEditDelete", category.categoryId, "Categories");
-
-                var vm = new AddEditDeleteReturnViewModel()
+                try
                 {
-                    id = contact.contactId,
-                    state = (data.contactId == Guid.Empty) ? "add" : (data.isDeleted) ? "delete" : "edit"
-                };
+
+                    UnitOfWork unitOfWork = new UnitOfWork();
+
+                    Contact contact = (data.contactId == Guid.Empty) ? new Contact() : unitOfWork.ContactRepository
+                        .GetBy(i => i.contactId == data.contactId
+                            && !i.isDeleted)
+                        .FirstOrDefault();
+
+                    if (contact == null)
+                        throw new InvalidOperationException("Layer Not Found");
                 
-                return Request.CreateResponse(HttpStatusCode.OK, vm);
+                    contact.name = data.name;
+                    contact.title = data.title;
+                    contact.companyName = data.companyName;
+                    contact.phone1 = data.phone1;
+                    contact.phone2 = data.phone2;
+                    contact.skypeId = data.skypeId;
+                    contact.email = data.email;
+                    contact.companyTemp = data.companyTemp;
+                    contact.resume = data.resume;
+                    contact.portfolio = data.portfolio;
+                    contact.personalWebsite = data.personalWebsite;
+                    contact.skills = data.skills;
+                    contact.isEdcFamily = data.isEdcFamily;
+                    contact.isPotentialStaffing = data.isPotentialStaffing;
+                    contact.isDeleted = data.isDeleted;
+
+                    if (data.contactId == Guid.Empty)
+                        unitOfWork.ContactRepository.Insert(contact);
+                    else
+                        unitOfWork.ContactRepository.Update(contact);
+
+                    unitOfWork.Save();
+
+                    var activity = (data.contactId == Guid.Empty) ? "Added" : (data.isDeleted) ? "Deleted" : "Edited";
+                    LogController.Add(a.member.memberId, "Contact " + contact.name + " " + activity, "Contact", "AddEditDelete", contact.contactId, "Contacts");
+
+                    var vm = new AddEditDeleteReturnViewModel()
+                    {
+                        id = contact.contactId,
+                        state = (data.contactId == Guid.Empty) ? "add" : (data.isDeleted) ? "delete" : "edit"
+                    };
+                
+                    return Request.CreateResponse(HttpStatusCode.OK, vm);
+
+                }
+                catch (Exception ex)
+                {
+                    return Request.CreateResponse(HttpStatusCode.InternalServerError, ex);
+                }
 
             }
-            catch (Exception ex)
-            {
-                return Request.CreateResponse(HttpStatusCode.InternalServerError, ex);
-            }
-
-            //}
-            //return Request.CreateResponse(HttpStatusCode.InternalServerError, new { Message = "Invalid Token" });
+            return Request.CreateResponse(HttpStatusCode.InternalServerError, new { Message = "Invalid Token" });
         }
         
         [HttpPost]
         public HttpResponseMessage Upload([FromBody] ContactUploadViewModel data)
         {
-            //Authentication a = AuthenticationController.GetMemberAuthenticated(data.authentication.apiId, 1, data.authentication.token);
-            //if (a.isAuthenticated)
-            //{
-
-            try
+            Authentication a = AuthenticationController.GetMemberAuthenticated(data.authentication.apiId, 1, data.authentication.token);
+            if (a.isAuthenticated)
             {
 
-                UnitOfWork unitOfWork = new UnitOfWork();
-                
-                foreach (var contactViewModel in data.contactViewModels)
+                try
                 {
 
-                    Contact contact = new Contact();
+                    UnitOfWork unitOfWork = new UnitOfWork();
+                
+                    foreach (var contactViewModel in data.contactViewModels)
+                    {
 
-                    contact.name = contactViewModel.name;
-                    contact.title = contactViewModel.title;
-                    contact.companyName = contactViewModel.companyName;
-                    contact.phone1 = contactViewModel.phone1;
-                    contact.phone2 = contactViewModel.phone2;
-                    contact.skypeId = contactViewModel.skypeId;
-                    contact.email = contactViewModel.email;
-                    contact.companyTemp = contactViewModel.companyTemp;
-                    contact.resume = contactViewModel.resume;
-                    contact.portfolio = contactViewModel.portfolio;
-                    contact.personalWebsite = contactViewModel.personalWebsite;
-                    contact.skills = contactViewModel.skills;
-                    contact.isEdcFamily = contactViewModel.isEdcFamily;
-                    contact.isPotentialStaffing = contactViewModel.isPotentialStaffing;
-                    //contact.dateCreated = contactViewModel.dateCreated;
+                        Contact contact = new Contact();
 
-                    unitOfWork.ContactRepository.Insert(contact);
-                    unitOfWork.Save();
+                        contact.name = contactViewModel.name;
+                        contact.title = contactViewModel.title;
+                        contact.companyName = contactViewModel.companyName;
+                        contact.phone1 = contactViewModel.phone1;
+                        contact.phone2 = contactViewModel.phone2;
+                        contact.skypeId = contactViewModel.skypeId;
+                        contact.email = contactViewModel.email;
+                        contact.companyTemp = contactViewModel.companyTemp;
+                        contact.resume = contactViewModel.resume;
+                        contact.portfolio = contactViewModel.portfolio;
+                        contact.personalWebsite = contactViewModel.personalWebsite;
+                        contact.skills = contactViewModel.skills;
+                        contact.isEdcFamily = contactViewModel.isEdcFamily;
+                        contact.isPotentialStaffing = contactViewModel.isPotentialStaffing;
+                        //contact.dateCreated = contactViewModel.dateCreated;
+
+                        unitOfWork.ContactRepository.Insert(contact);
+                        unitOfWork.Save();
+
+                    }
+
+                    var vm = new { };
+
+                    return Request.CreateResponse(HttpStatusCode.OK, vm);
 
                 }
-
-                var vm = new { };
-
-                return Request.CreateResponse(HttpStatusCode.OK, vm);
+                catch (Exception ex)
+                {
+                    return Request.CreateResponse(HttpStatusCode.InternalServerError, ex);
+                }
 
             }
-            catch (Exception ex)
-            {
-                return Request.CreateResponse(HttpStatusCode.InternalServerError, ex);
-            }
-
-            //}
-            //return Request.CreateResponse(HttpStatusCode.InternalServerError, new { Message = "Invalid Token" });
+            return Request.CreateResponse(HttpStatusCode.InternalServerError, new { Message = "Invalid Token" });
         }
 
         [HttpPost]
-        public HttpResponseMessage GetByPage([FromBody] Search data)
+        public HttpResponseMessage GetByPage([FromBody] SearchViewModel data)
         {
-            //Authentication a = AuthenticationController.GetMemberAuthenticated(data.authentication.apiId, 1, data.authentication.token);
-            //if (a.isAuthenticated)
-            //{
+            Authentication a = AuthenticationController.GetMemberAuthenticated(data.authentication.apiId, 1, data.authentication.token);
+            if (a.isAuthenticated)
+            {
 
                 try
                 {
@@ -219,60 +219,60 @@ namespace Api.Controllers
                     return Request.CreateResponse(HttpStatusCode.InternalServerError, ex);
                 }
 
-            //}
-            //return Request.CreateResponse(HttpStatusCode.InternalServerError, new { Message = "Invalid Token" });
+            }
+            return Request.CreateResponse(HttpStatusCode.InternalServerError, new { Message = "Invalid Token" });
         }
 
         [HttpPost]
         public HttpResponseMessage GetById([FromBody] GetByIdViewModel data)
         {
-            //Authentication a = AuthenticationController.GetMemberAuthenticated(data.authentication.apiId, 1, data.authentication.token);
-            //if (a.isAuthenticated)
-            //{
-
-            try
+            Authentication a = AuthenticationController.GetMemberAuthenticated(data.authentication.apiId, 1, data.authentication.token);
+            if (a.isAuthenticated)
             {
 
-                UnitOfWork unitOfWork = new UnitOfWork();
+                try
+                {
 
-                var vm = unitOfWork.ContactRepository
-                    .GetBy(i => i.contactId == data.id
-                        && !i.isDeleted)
-                    .Select(obj => new ContactViewModel
-                    {
-                        contactId = obj.contactId,
-                        name = obj.name,
-                        email = obj.email,
-                        companyName = obj.companyName,
-                        companyTemp = obj.companyTemp,
-                        dateCreated = obj.dateCreated,
-                        isEdcFamily = obj.isEdcFamily,
-                        isDeleted = obj.isDeleted,
-                        isPotentialStaffing = obj.isPotentialStaffing,
-                        personalWebsite = obj.personalWebsite,
-                        phone1 = obj.phone1,
-                        phone2 = obj.phone2,
-                        portfolio = obj.portfolio,
-                        resume = obj.resume,
-                        skills = obj.skills,
-                        skypeId = obj.skypeId,
-                        title = obj.title
-                    })
-                    .FirstOrDefault();
+                    UnitOfWork unitOfWork = new UnitOfWork();
 
-                if (vm == null)
-                    throw new InvalidOperationException("Not Found");
+                    var vm = unitOfWork.ContactRepository
+                        .GetBy(i => i.contactId == data.id
+                            && !i.isDeleted)
+                        .Select(obj => new ContactViewModel
+                        {
+                            contactId = obj.contactId,
+                            name = obj.name,
+                            email = obj.email,
+                            companyName = obj.companyName,
+                            companyTemp = obj.companyTemp,
+                            dateCreated = obj.dateCreated,
+                            isEdcFamily = obj.isEdcFamily,
+                            isDeleted = obj.isDeleted,
+                            isPotentialStaffing = obj.isPotentialStaffing,
+                            personalWebsite = obj.personalWebsite,
+                            phone1 = obj.phone1,
+                            phone2 = obj.phone2,
+                            portfolio = obj.portfolio,
+                            resume = obj.resume,
+                            skills = obj.skills,
+                            skypeId = obj.skypeId,
+                            title = obj.title
+                        })
+                        .FirstOrDefault();
+
+                    if (vm == null)
+                        throw new InvalidOperationException("Not Found");
                 
-                return Request.CreateResponse(HttpStatusCode.OK, vm);
+                    return Request.CreateResponse(HttpStatusCode.OK, vm);
+
+                }
+                catch (Exception ex)
+                {
+                    return Request.CreateResponse(HttpStatusCode.InternalServerError, ex);
+                }
 
             }
-            catch (Exception ex)
-            {
-                return Request.CreateResponse(HttpStatusCode.InternalServerError, ex);
-            }
-
-            //}
-            //return Request.CreateResponse(HttpStatusCode.InternalServerError, new { Message = "Invalid Token" });
+            return Request.CreateResponse(HttpStatusCode.InternalServerError, new { Message = "Invalid Token" });
         }
 
     }
