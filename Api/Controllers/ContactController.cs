@@ -58,7 +58,7 @@ namespace Api.Controllers
                     unitOfWork.Save();
 
                     var activity = (data.contactId == Guid.Empty) ? "Added" : (data.isDeleted) ? "Deleted" : "Edited";
-                    LogController.Add(a.member.memberId, "Contact " + contact.name + " " + activity, "Contact", "AddEditDelete", contact.contactId, "Contacts");
+                    LogController.Add(a.member.memberId, String.Format("Contact {0} was {1}", contact.name, activity), "Contact", "AddEditDelete", contact.contactId, "Contacts");
 
                     var vm = new AddEditDeleteReturnViewModel()
                     {
@@ -184,7 +184,7 @@ namespace Api.Controllers
                         .Select(obj => new ContactViewModel
                         {
                             contactId = obj.contactId,
-                            name = obj.name,
+                            name = (obj.name == "") ? obj.companyName : obj.name,
                             email = obj.email,
                             skills = obj.skills,
                             personalWebsite = obj.personalWebsite
@@ -201,14 +201,7 @@ namespace Api.Controllers
                     {
                         totalRecords = totalRecords,
                         totalPages = Math.Ceiling((double)totalRecords / data.records),
-                        arr = arr.Select(obj => new ContactViewModel
-                        {
-                            contactId = obj.contactId,
-                            name = obj.name,
-                            email = obj.email,
-                            skills = obj.skills,
-                            personalWebsite = obj.personalWebsite
-                        }).ToList()
+                        arr = arr.ToList()
                     };
 
                     return Request.CreateResponse(HttpStatusCode.OK, vm);

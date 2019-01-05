@@ -1,0 +1,50 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+
+    <link href="https://authentication.bambino.software/Content/Images/logo.ico" rel="shortcut icon">
+
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Bambino | Authentication</title>
+
+    <link href="/Content/Styles/reset.css" rel="stylesheet" />
+    <link href="/Content/Styles/flex.css" rel="stylesheet" />
+    <link href="/Content/Styles/flexDesktop.css" rel="stylesheet" />
+    <link href="/Content/Styles/site.css" rel="stylesheet" />
+
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+
+</head>
+<body>
+
+    @RenderBody()
+
+    <m-authentication></m-authentication>
+    <div class="g-recaptcha"
+         data-sitekey="6LdB8IYUAAAAAKr0UhDZpEDuZpGD0zm8dLpzoYSl"
+         data-callback="callBack"
+         data-size="invisible"
+         data-badge="inline">
+    </div>
+
+    <script src='https://www.google.com/recaptcha/api.js?render=6LdB8IYUAAAAAKr0UhDZpEDuZpGD0zm8dLpzoYSl'></script>
+
+    <script src="/Content/Scripts/Jquery/jquery-3.3.1.min.js"></script>
+    <script src="/Content/Scripts/Jquery/jquery.mobile-events.js"></script>
+
+    <script src="/Content/Scripts/Libraries/jszip.js"></script>
+    <script src="/Content/Scripts/Libraries/moment.js"></script>
+    <script src="/Content/Scripts/Libraries/moment-timezone-with-data.min.js"></script>
+    <script src="/Content/Scripts/Libraries/velocity.js"></script>
+    <script src="/Content/Scripts/Libraries/velocity.ui.min.js"></script>
+
+    <script src="/Content/Scripts/Modules/module.validation.js?@(ViewBag.Version)"></script>
+    <script src="/Content/Scripts/Modules/module.global.js?@(ViewBag.Version)"></script>
+    <script src="/Content/Scripts/Modules/module.js?@(ViewBag.Version)"></script>
+
+    <script src="/Content/Scripts/Modules/module.authentication.js?@(ViewBag.Version)"></script>
+
+</body>
+</html>

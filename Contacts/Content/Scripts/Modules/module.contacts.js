@@ -1,36 +1,5 @@
 ﻿'use strict';
 
-const Application = (function () {
-
-    //Private -----------------------------------------------------
-    const _open = function () {
-
-        $(`body`).append(Application.getHtmlBody());
-
-    }
-
-    //Public -----------------------------------------------------
-    const init = function () {
-        _open();
-    }
-
-    const getHtmlBody = function () {
-        return `
-
-            <m-body data-label="Primary">    
-                ${Contacts.getHtmlBody()}
-            </m-body>
-
-            `;
-    }
-
-    return {
-        init: init,
-        getHtmlBody: getHtmlBody
-    }
-
-})();
-
 const Contacts = (function () {
 
     //Private ------------------------------------------------
@@ -91,6 +60,9 @@ const Contacts = (function () {
         try {
 
             Validation.getIsValidForm($('m-module'));
+
+            if (_self.vm.name == `` && _self.vm.companyName == ``)
+                throw `Please fill out either the name or the company name.`;
 
             Global.post(`Contact_AddEditDelete`, _self.vm)
                 .done(function (data) {
@@ -254,18 +226,18 @@ const Contacts = (function () {
         _self.vm = _getEmptyVM();
         return `
 
-            <m-header aria-label="${_self.name} Add Header">
+            <m-header data-label="${_self.name} Add Header">
                 <m-flex data-type="row" class="n">
                     <m-flex data-type="row" class="n c tab h active">
                         <span>Add</span>
                     </m-flex>
                 </m-flex>
                 <m-flex data-type="row" class="n c sQ h btnCloseModule">
-                    <i class="icon-delete-3"><svg><use xlink:href="/Content/Images/Ciclops.min.svg#icon-delete-3"></use></svg></i>
+                    <i class="icon-delete"><svg><use xlink:href="/Content/Images/Bambino.min.svg#icon-delete"></use></svg></i>
                 </m-flex>
             </m-header>
 
-            <m-body aria-label="${_self.name} Add Body">
+            <m-body data-label="${_self.name} Add Body">
 
                 <m-flex data-type="col" class="n pL pR">
 
@@ -296,18 +268,18 @@ const Contacts = (function () {
         _getById(id);
         return `
 
-            <m-header aria-label="${_self.name} Detail Header">
+            <m-header data-label="${_self.name} Detail Header">
                 <m-flex data-type="row" class="n">
                     <m-flex data-type="row" class="n c tab h btnOpenBody" data-label="${_self.name} Detail Body" data-function="${_self.name}.getHtmlBodyDetail">
                         <span>Information</span>
                     </m-flex>
                 </m-flex>
                 <m-flex data-type="row" class="n c sQ h btnCloseModule">
-                    <i class="icon-delete-3"><svg><use xlink:href="/Content/Images/Ciclops.min.svg#icon-delete-3"></use></svg></i>
+                    <i class="icon-delete"><svg><use xlink:href="/Content/Images/Bambino.min.svg#icon-delete"></use></svg></i>
                 </m-flex>
             </m-header>
 
-            <m-body aria-label="${_self.name} Detail Body">
+            <m-body data-label="${_self.name} Detail Body">
 
                 <m-flex data-type="col">
 
@@ -337,7 +309,7 @@ const Contacts = (function () {
                         </m-input>
 
                         <m-flex data-type="row" class="n c sm sQ primary btnOpenModule" data-function="Contacts.getHtmlModuleAdd">
-                            <i class="icon-plus"><svg><use xlink:href="/Content/Images/Ciclops.min.svg#icon-plus"></use></svg></i>
+                            <i class="icon-plus"><svg><use xlink:href="/Content/Images/Bambino.min.svg#icon-plus"></use></svg></i>
                         </m-flex>
 
                         <!--<m-flex data-type="row" class="n pL pR">
@@ -410,7 +382,7 @@ const Contacts = (function () {
                 </m-flex>
 
                 <m-flex data-type="row" class="n c sm sQ secondary btnOpenModule" data-function="Module.getHtmlConfirmation" data-args="contact,btnDelete${_self.name}">
-                    <i class="icon-delete-2"><svg><use xlink:href="/Content/Images/Ciclops.min.svg#icon-delete-2"></use></svg></i>
+                    <i class="icon-trash-can"><svg><use xlink:href="/Content/Images/Bambino.min.svg#icon-trash-can"></use></svg></i>
                 </m-flex>
             
             </m-flex>
@@ -434,75 +406,93 @@ const Contacts = (function () {
 
             <m-flex data-type="col" class="form">
 
-                <m-input>
-                    <label for="txtName${_self.name}">Name</label>
-                    <input type="text" id="txtName${_self.name}" placeholder="Name" value="${_self.vm.name}" required />
-                </m-input>
+                <m-flex data-type="row" class="n">
+                    <m-input class="mR">
+                        <label for="txtName${_self.name}">Name</label>
+                        <input type="text" id="txtName${_self.name}" placeholder="Name" value="${_self.vm.name}" />
+                    </m-input>
 
-                <m-input>
-                    <label for="txtTitle${_self.name}">Title</label>
-                    <input type="text" id="txtTitle${_self.name}" placeholder="Title" value="${_self.vm.title}" />
-                </m-input>
+                    <m-input>
+                        <label for="txtTitle${_self.name}">Title</label>
+                        <input type="text" id="txtTitle${_self.name}" placeholder="Title" value="${_self.vm.title}" />
+                    </m-input>
+                </m-flex>
 
-                <m-input>
-                    <label for="txtCompanyName${_self.name}">Company Name</label>
-                    <input type="text" id="txtCompanyName${_self.name}" placeholder="Company Name" value="${_self.vm.companyName}" />
-                </m-input>
+                <m-flex data-type="row" class="n">
+                    <m-input class="mR">
+                        <label for="txtCompanyName${_self.name}">Company Name</label>
+                        <input type="text" id="txtCompanyName${_self.name}" placeholder="Company Name" value="${_self.vm.companyName}" />
+                    </m-input>
 
-                <m-input>
-                    <label for="txtPhone1${_self.name}">Phone 1</label>
-                    <input type="text" id="txtPhone1${_self.name}" placeholder="Phone 1" value="${_self.vm.phone1}" />
-                </m-input>
+                    <m-input>
+                        <label for="txtPhone1${_self.name}">Phone 1</label>
+                        <input type="text" id="txtPhone1${_self.name}" placeholder="Phone 1" value="${_self.vm.phone1}" />
+                    </m-input>
+                </m-flex>
 
-                <m-input>
-                    <label for="txtPhone2${_self.name}">Phone 2</label>
-                    <input type="text" id="txtPhone2${_self.name}" placeholder="Phone 2" value="${_self.vm.phone2}" />
-                </m-input>
+                <m-flex data-type="row" class="n">
+                    <m-input class="mR">
+                        <label for="txtPhone2${_self.name}">Phone 2</label>
+                        <input type="text" id="txtPhone2${_self.name}" placeholder="Phone 2" value="${_self.vm.phone2}" />
+                    </m-input>
 
-                <m-input>
-                    <label for="txtSkypeId${_self.name}">Skype Id</label>
-                    <input type="text" id="txtSkypeId${_self.name}" placeholder="Skype Id" value="${_self.vm.skypeId}" />
-                </m-input>
+                    <m-input>
+                        <label for="txtSkypeId${_self.name}">Skype Id</label>
+                        <input type="text" id="txtSkypeId${_self.name}" placeholder="Skype Id" value="${_self.vm.skypeId}" />
+                    </m-input>
+                </m-flex>
 
-                <m-input>
-                    <label for="txtEmail${_self.name}">Email</label>
-                    <input type="text" id="txtEmail${_self.name}" placeholder="Email" value="${_self.vm.email}" />
-                </m-input>
+                <m-flex data-type="row" class="n">
+                    <m-input class="mR">
+                        <label for="txtEmail${_self.name}">Email</label>
+                        <input type="text" id="txtEmail${_self.name}" placeholder="Email" value="${_self.vm.email}" />
+                    </m-input>
 
-                <m-input>
-                    <label for="txtCompanyTemp${_self.name}">Company (Temp)</label>
-                    <input type="text" id="txtCompanyTemp${_self.name}" placeholder="Company (Temp)" value="${_self.vm.companyTemp}" />
-                </m-input>
+                    <m-input>
+                        <label for="txtCompanyTemp${_self.name}">Company (Temp)</label>
+                        <input type="text" id="txtCompanyTemp${_self.name}" placeholder="Company (Temp)" value="${_self.vm.companyTemp}" />
+                    </m-input>
+                </m-flex>
 
-                <m-input>
-                    <label for="txtResume${_self.name}">Resume</label>
-                    <input type="text" id="txtResume${_self.name}" placeholder="Resume" value="${_self.vm.resume}" />
-                </m-input>
+                <m-flex data-type="row" class="n">
+                    <m-input class="mR">
+                        <label for="txtResume${_self.name}">Resume</label>
+                        <input type="text" id="txtResume${_self.name}" placeholder="Resume" value="${_self.vm.resume}" />
+                    </m-input>
 
-                <m-input>
-                    <label for="txtPortfolio${_self.name}">Portfolio</label>
-                    <input type="text" id="txtPortfolio${_self.name}" placeholder="Portfolio" value="${_self.vm.portfolio}" />
-                </m-input>
+                    <m-input>
+                        <label for="txtPortfolio${_self.name}">Portfolio</label>
+                        <input type="text" id="txtPortfolio${_self.name}" placeholder="Portfolio" value="${_self.vm.portfolio}" />
+                    </m-input>
+                </m-flex>
 
-                <m-input>
-                    <label for="txtPersonalWebsite${_self.name}">Personal Website</label>
-                    <input type="text" id="txtPersonalWebsite${_self.name}" placeholder="Personal Website" value="${_self.vm.personalWebsite}" />
-                </m-input>
+                <m-flex data-type="row" class="n">
+                    <m-input class="mR">
+                        <label for="txtPersonalWebsite${_self.name}">Personal Website</label>
+                        <input type="text" id="txtPersonalWebsite${_self.name}" placeholder="Personal Website" value="${_self.vm.personalWebsite}" />
+                    </m-input>
 
-                <m-input>
-                    <label for="txtSkills${_self.name}">Skills</label>
-                    <input type="text" id="txtSkills${_self.name}" placeholder="Skills" value="${_self.vm.skills}" />
-                </m-input>
+                    <m-input>
+                        <label for="txtSkills${_self.name}">Skills</label>
+                        <input type="text" id="txtSkills${_self.name}" placeholder="Skills" value="${_self.vm.skills}" />
+                    </m-input>
+                </m-flex>
 
-                <m-input>
-                    <input type="checkbox" class="mR" id="chkIsEDCFamily${_self.name}" ${(_self.vm.isEdcFamily) ? `checked` : ``} />
-                    <label for="chkIsEDCFamily${_self.name}">Is EDC Family</label>
-                </m-input>
+                <m-flex data-type="row" class="n">
+                    <m-input class="mR">
+                        <m-flex data-type="row" class="n">
+                            <input type="checkbox" class="mR" id="chkIsEDCFamily${_self.name}" ${(_self.vm.isEdcFamily) ? `checked` : ``} />
+                            <label for="chkIsEDCFamily${_self.name}">Is EDC Family</label>
+                        </m-flex>
+                    </m-input>
 
-                <m-input>
-                    <input type="checkbox" class="mR" id="chkIsPotentialStaffing${_self.name}" ${(_self.vm.isPotentialStaffing) ? `checked` : ``} />
-                    <label for="chkIsPotentialStaffing${_self.name}">Is Potential Staffing</label>
-                </m-input>
+                    <m-input>
+                        <m-flex data-type="row" class="n">
+                            <input type="checkbox" class="mR" id="chkIsPotentialStaffing${_self.name}" ${(_self.vm.isPotentialStaffing) ? `checked` : ``} />
+                            <label for="chkIsPotentialStaffing${_self.name}">Is Potential Staffing</label>
+                        </m-flex>
+                    </m-input>
+                </m-flex>
 
             </m-flex>
 

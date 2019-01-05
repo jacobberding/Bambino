@@ -16,7 +16,7 @@ namespace Contacts
             routes.MapRoute(
                 "Default" // Route name
                 , "{action}/{id}" // URL with parameters
-                , new { controller = "Contacts.Controllers.HomeController", action = "Index", id = "" } // Parameter defaults
+                , new { controller = "HomeController", action = "Index", id = "" } // Parameter defaults
             );
         }
     }

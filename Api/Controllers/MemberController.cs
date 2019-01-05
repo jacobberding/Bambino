@@ -774,6 +774,7 @@ namespace Api.Controllers
                     Member member = new Member();
                     AESGCM encrypt = new AESGCM(data.password);
                     string email = data.email.ToLower();
+                    int keyCode = new Random().Next(90000) + 10000;
                     Member memberExist = unitOfWork.MemberRepository
                         .GetBy(i => i.email == email
                             && !i.isDeleted)
@@ -789,54 +790,52 @@ namespace Api.Controllers
                     if (memberRole == null)
                         throw new InvalidOperationException("Role does not exist.");
                     
-                    Company company = new Company();
+                    Company company = unitOfWork.CompanyRepository
+                        .GetBy(i => i.companyId == data.companyId)
+                        .FirstOrDefault();
 
-                    if (data.companyId == Guid.Empty)
-                    {
-                        
-                        company.name = data.companyName;
-                        company.email = data.email;
-                        //company.billingAddressLine1 = data.addressLine1;
-                        //company.billingAddressLine2 = data.addressLine2;
-                        //company.billingCity = data.city;
-                        //company.billingState = data.state;
-                        //company.billingZip = data.zip;
-                        //company.shippingAddressLine1 = data.addressLine1;
-                        //company.shippingAddressLine2 = data.addressLine2;
-                        //company.shippingCity = data.city;
-                        //company.shippingState = data.state;
-                        //company.shippingZip = data.zip;
-
-                        unitOfWork.CompanyRepository.Insert(company);
-                        unitOfWork.Save();
-                        
-                        member.companyId = company.companyId;
+                    if (company == null)
+                        throw new InvalidOperationException("Company does not exist.");
                     
-                    } else {
-                        member.companyId = data.companyId;
-                    }
+                    if (company.pin != data.pin)
+                        throw new InvalidOperationException("Company pin does not match.");
 
+                    member.companyId = data.companyId;
                     member.email = email;
                     member.originalEmail = email;
-                    member.phone = data.phone;
                     member.password = encrypt.password;
                     member.keyValue = encrypt.keyBytes;
                     member.iVValue = encrypt.ivBytes;
                     member.token = Guid.NewGuid();
                     member.tokenApi = Guid.NewGuid();
+                    member.keyCode = keyCode;
+                    member.keyCodeDateTime = DateTimeOffset.UtcNow;
                     member.roles.Add(memberRole);
                     
                     unitOfWork.MemberRepository.Insert(member);
                     unitOfWork.Save();
-                    
+
+                    LogController.Add(member.memberId, "Member " + member.email + " has signed up", "Member", "SignUp", member.memberId, "Members");
+
+                    new Thread(() =>
+                    {
+                        EmailViewModel e = EmailController.GetEmail(new Guid("c1acbd9b-cb51-4a4f-8f76-a71789ac4863"));
+                        EmailController.Send(new MailAddress(EmailController.email),
+                            member.email,
+                            EmailController.email,
+                            EmailController.email,
+                            e.subject,
+                            EmailController.GetSignUpEmailText(e, member, keyCode));
+                    }).Start();
+
                     new Thread(() =>
                     {
                         EmailController.Send(new MailAddress(EmailController.email),
                             EmailController.email,
                             EmailController.email,
                             EmailController.email,
-                            "Ciclops: Member Sign Up",
-                            String.Format("Email: {0} / Company: {1} / Phone: {2}", data.email, data.companyName, data.phone));
+                            "Bambino: Member Sign Up",
+                            String.Format("Email: {0} / Company: {1}", data.email, company.name));
                     }).Start();
 
                     var vm = new {
@@ -939,7 +938,7 @@ namespace Api.Controllers
 
                     new Thread(() =>
                     {
-                        EmailViewModel e = EmailController.GetEmail(new Guid("c7b08448-9abe-4e3e-b68a-755b968761fe"));
+                        EmailViewModel e = EmailController.GetEmail(new Guid("c1acbd9b-cb51-4a4f-8f76-a71789ac4863"));
                         EmailController.Send(new MailAddress(EmailController.email),
                             member.email,
                             EmailController.email,

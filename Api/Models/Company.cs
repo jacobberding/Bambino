@@ -16,7 +16,9 @@ namespace Api.Models
         public int terms { get; set; }
         
         public string name { get; set; }
-        
+
+        public int pin { get; set; }
+
         public string email { get; set; }
         
         public string phone { get; set; }
@@ -54,6 +56,7 @@ namespace Api.Models
             type                    = 0;
             terms                   = 0;
             name                    = "";
+            pin                     = 0;
             email                   = "";
             phone                   = "";
             website                 = "";
@@ -84,7 +87,9 @@ namespace Api.Models
         public int terms { get; set; }
         
         public string name { get; set; }
-        
+
+        public int pin { get; set; }
+
         public string email { get; set; }
         
         public string phone { get; set; }
@@ -123,6 +128,7 @@ namespace Api.Models
             type                        = 0;
             terms                       = 0;
             name                        = "";
+            pin                         = 0;
             email                       = "";
             phone                       = "";
             website                     = "";
@@ -170,7 +176,9 @@ namespace Api.Models
         public int terms { get; set; }
         
         public string name { get; set; }
-        
+
+        public int pin { get; set; }
+
         public string email { get; set; }
         
         public string phone { get; set; }
@@ -207,6 +215,7 @@ namespace Api.Models
             type                    = 0;
             terms                   = 0;
             name                    = "";
+            pin                     = 0;
             email                   = "";
             phone                   = "";
             website                 = "";
@@ -275,11 +284,14 @@ namespace Api.Models
         public Guid companyId { get; set; }
         
         public int terms { get; set; }
-        
+
+        public int pin { get; set; }
+
         public CompanyEditSettingsViewModel()
         {
             companyId       = Guid.Empty;
             terms           = 0;
+            pin             = 0;
         }
 
     }

@@ -96,8 +96,8 @@ namespace Api.Controllers
             
             //logo companyName keyCode
 			email.body = email.body
-                //.Replace("<<logo>>", "https://authentication.ciclops.software/Content/Images/logo_icon.png")
-                //.Replace("<<companyName>>", "Ciclops")
+                //.Replace("<<logo>>", "https://authentication.bambino.software/Content/Images/logo_icon.png")
+                //.Replace("<<companyName>>", "Bambino")
                 .Replace("<<email>>", member.email)
                 .Replace("<<keyCode>>", keyCode.ToString());
             
@@ -109,8 +109,8 @@ namespace Api.Controllers
         {
             
 			email.body = email.body
-                .Replace("<<path>>", "https://authentication.ciclops.software/ResetPassword")
-                //.Replace("<<companyName>>", "Ciclops")
+                .Replace("<<path>>", "https://authentication.bambino.software/ResetPassword")
+                //.Replace("<<companyName>>", "Bambino")
                 .Replace("<<forgotPasswordToken>>", member.forgotPasswordToken.ToString())
                 .Replace("<<email>>", member.email);
             

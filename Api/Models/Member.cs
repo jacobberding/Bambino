@@ -264,22 +264,16 @@ namespace Api.Models
         
         public AuthenticationViewModel authentication { get; set; }
 
+        public string email { get; set; }
+
+        public string password { get; set; }
+
         public Guid companyId { get; set; }
 
-        public string companyName { get; set; }
+        public int pin { get; set; }
 
-        public string firstName { get; set; }
-
-        public string lastName { get; set; }
-
-        public string email { get; set; }
-        
-        public string phone { get; set; }
-        
-        public string password { get; set; }
-        
     }
-    
+
     public class MemberForgotPasswordViewModel
     {
         

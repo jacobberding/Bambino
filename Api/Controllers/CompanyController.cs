@@ -37,6 +37,7 @@ namespace Api.Controllers
                     company.type                    = data.type;
                     company.terms                   = data.terms;
                     company.name                    = data.name;
+                    company.pin                     = data.pin;
                     company.email                   = data.email;
                     company.phone                   = data.phone;
                     company.website                 = data.website;
@@ -101,6 +102,7 @@ namespace Api.Controllers
                         throw new InvalidOperationException("Not Found");
                     
                     company.terms = data.terms;
+                    company.pin = data.pin;
 
                     unitOfWork.CompanyRepository.Update(company);
                     unitOfWork.Save();
@@ -253,6 +255,7 @@ namespace Api.Controllers
                             type                    = obj.type,
                             terms                   = obj.terms,
                             name                    = obj.name,
+                            pin                     = obj.pin,
                             email                   = obj.email,
                             phone                   = obj.phone,
                             website                 = obj.website,

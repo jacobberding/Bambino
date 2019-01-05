@@ -210,6 +210,7 @@
     <Compile Include="UnitOfWork.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Content\Jquery\jquery-3.3.1.min.js" />
     <Content Include="Content\Styles\site.css" />
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />

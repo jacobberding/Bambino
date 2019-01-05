@@ -36,10 +36,6 @@ namespace Api.Controllers
                 {
                     memberId    = obj.memberId,
                     companyId   = obj.companyId,
-                    company     = new CompanyViewModel()
-                    {
-                        printerId       = obj.company.printerId
-                    },
                     roles       = obj.roles.Select(role => new RoleViewModel()
                     {
                         isContractor    = role.isContractor,

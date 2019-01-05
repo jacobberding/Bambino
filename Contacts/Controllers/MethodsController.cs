@@ -8,6 +8,7 @@ using System.Text;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Security;
+using Contacts.Models;
 
 namespace Contacts.Controllers
 {
@@ -22,8 +23,11 @@ namespace Contacts.Controllers
 
             try
             {
-                
-                //vm = vm.Insert(1, "\"authentication\":{\"apiId\":\"5aa5c39e-efd3-4e69-8fa2-c7c587ea69f6\",\"token\":\"" + _c.mT.ToString() + "\"}" + ((vm == "{}") ? "" : ","));
+
+                string e = (System.Web.HttpContext.Current.Request.Cookies["_e"] == null) ? "" : System.Web.HttpContext.Current.Request.Cookies["_e"].Value.ToString();
+                e _e = (e == "") ? new e() : JsonConvert.DeserializeObject<e>(Encoding.UTF8.GetString(MachineKey.Unprotect(Convert.FromBase64String(e), MethodsController.Purpose)));
+
+                vm = vm.Insert(1, "\"authentication\":{\"apiId\":\"FF9F2822-5F5D-4753-BB8D-2DECCF04A91A\",\"token\":\"" + _e.mT.ToString() + "\"}" + ((vm == "{}") ? "" : ","));
 
                 var request = WebRequest.Create(url) as HttpWebRequest;
 		        request.KeepAlive = true;
@@ -73,7 +77,7 @@ namespace Contacts.Controllers
                 string[] mm = m.Split('_');
                 
                 Response.StatusCode = 200;
-                Response.Write(HTTPRequest(vm, "http://api.entdesign.com/Api/" + mm[0] + "/" + mm[1]));
+                Response.Write(HTTPRequest(vm, "http://api.bambino.software/Api/" + mm[0] + "/" + mm[1]));
 
             }
             catch (Exception ex) {

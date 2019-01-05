@@ -9,9 +9,9 @@ namespace Contacts
         {
             filters.Add(new HandleErrorAttribute());
             //________________PRODUCTION CODE______________________________
-            //filters.Add(new RequreSecureConnectionFilter());
-            //if (!HttpContext.Current.IsDebuggingEnabled)
-            //    filters.Add(new RequireHttpsAttribute());
+            filters.Add(new RequreSecureConnectionFilter());
+            if (!HttpContext.Current.IsDebuggingEnabled)
+                filters.Add(new RequireHttpsAttribute());
         }
     }
 }

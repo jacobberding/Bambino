@@ -35,3 +35,5 @@ C:\Users\jpber\Documents\Work\EDC\Bambino\Development\Bambino\AutoCAD\obj\Debug\
 C:\Users\jpber\Documents\Work\EDC\Bambino\Development\Bambino\AutoCAD\obj\Debug\AutoCAD.csproj.CopyComplete
 C:\Users\jpber\Documents\Work\EDC\Bambino\Development\Bambino\AutoCAD\obj\Debug\AutoCAD.dll
 C:\Users\jpber\Documents\Work\EDC\Bambino\Development\Bambino\AutoCAD\obj\Debug\AutoCAD.pdb
+C:\Users\jpber\Documents\Work\EDC\Bambino\Development\Bambino\AutoCAD\bin\Debug\EntityFramework.SqlServer.dll
+C:\Users\jpber\Documents\Work\EDC\Bambino\Development\Bambino\AutoCAD\bin\Debug\EntityFramework.SqlServer.xml
