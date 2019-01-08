@@ -3,7 +3,7 @@
 const Application = (function () {
 
     //Private ------------------------------------------------
-    const _self = {
+    let _self = {
         name: `Application`
     };
 
@@ -63,11 +63,20 @@ const Application = (function () {
                     <label class="btnOpenSub" id="initOpenSub">Management</label>
 
                     <m-sub data-label="Management" style="display: none">
-                        <m-flex data-type="row" class="n sC h btnOpenBody" data-label="Primary" data-function="Contacts.getHtmlBody" tabindex="0" role="tab" data-label="Orders">
+                        <m-flex data-type="row" class="n sC h btnOpenBody" data-label="Primary" data-function="Contacts.getHtmlBody" tabindex="0" role="tab" data-label="Contacts">
                             <m-flex data-type="row" class="n c sm sQ">
                                 <i class="icon-male-user"><svg><use xlink:href="/Content/Images/Bambino.min.svg#icon-male-user"></use></svg></i>
                             </m-flex>
                             <span>Contacts<span>
+                        </m-flex>
+                    </m-sub>
+
+                    <m-sub data-label="Management" style="display: none">
+                        <m-flex data-type="row" class="n sC h btnOpenBody" data-label="Primary" data-function="Materials.getHtmlBody" tabindex="0" role="tab" data-label="Materials">
+                            <m-flex data-type="row" class="n c sm sQ">
+                                <i class="icon-news"><svg><use xlink:href="/Content/Images/Bambino.min.svg#icon-news"></use></svg></i>
+                            </m-flex>
+                            <span>Materials<span>
                         </m-flex>
                     </m-sub>
 
@@ -122,7 +131,7 @@ const Application = (function () {
 const Settings = (function () {
 
     //Private -------------------------------------------
-    const _self = {
+    let _self = {
         name: `Settings`
     };
 

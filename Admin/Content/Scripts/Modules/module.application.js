@@ -3,7 +3,7 @@
 const Application = (function () {
 
     //Private ------------------------------------------------
-    const _self = {
+    let _self = {
         name: `Application`
     };
 
@@ -122,7 +122,7 @@ const Application = (function () {
 const Settings = (function () {
 
     //Private -------------------------------------------
-    const _self = {
+    let _self = {
         name: `Settings`
     };
 

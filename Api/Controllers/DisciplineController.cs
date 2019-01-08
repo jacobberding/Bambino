@@ -5,9 +5,11 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Web.Http;
+using System.Web.Http.Cors;
 
 namespace Api.Controllers
 {
+    [EnableCors(origins: "*", headers: "*", methods: "*")]
     public class DisciplineController : ApiController
     {
 
@@ -31,20 +33,17 @@ namespace Api.Controllers
             return Request.CreateResponse(HttpStatusCode.InternalServerError, new { Message = "Invalid Token" });
         }
 
-        public static List<DisciplineViewModel> _Get()
+        public static List<ListViewModel> _Get()
         {
 
             UnitOfWork unitOfWork = new UnitOfWork();
 
             return unitOfWork.DisciplineRepository
                 .GetBy(i => !i.isDeleted)
-                .Select(obj => new DisciplineViewModel()
+                .Select(obj => new ListViewModel()
                 {
-                    disciplineId = obj.disciplineId,
-                    name = obj.name,
-                    description = obj.description,
-                    value = obj.value,
-                    isDeleted = obj.isDeleted
+                    value = obj.disciplineId.ToString(),
+                    name = obj.value
                 })
                 .OrderBy(i => i.name)
                 .ToList();

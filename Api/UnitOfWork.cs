@@ -41,6 +41,9 @@ namespace Api
         private GenericRepository<Material> materialRepository;
         public GenericRepository<Material> MaterialRepository { get { if (this.materialRepository == null) this.materialRepository = new GenericRepository<Material>(context); return materialRepository; } }
 
+        private GenericRepository<MaterialPriceOption> materialPriceOptionRepository;
+        public GenericRepository<MaterialPriceOption> MaterialPriceOptionRepository { get { if (this.materialPriceOptionRepository == null) this.materialPriceOptionRepository = new GenericRepository<MaterialPriceOption>(context); return materialPriceOptionRepository; } }
+
         private GenericRepository<Member> memberRepository;
         public GenericRepository<Member> MemberRepository { get { if (this.memberRepository == null) this.memberRepository = new GenericRepository<Member>(context); return memberRepository; } }
 

@@ -18,7 +18,7 @@ namespace EDCCommands
     {
         //ATTSync - look into this
         public static List<ACAreaCategoryViewModel> acAreaCategoryViewModels = new List<ACAreaCategoryViewModel>();
-        public static List<DisciplineViewModel> disciplineViewModels = new List<DisciplineViewModel>();
+        public static List<ListViewModel> disciplineViewModels = new List<ListViewModel>();
 
         //Architectural = 4
         //Decimal = 2
@@ -1375,7 +1375,7 @@ namespace EDCCommands
                     if (disciplineViewModels.Count == 0)
                         disciplineViewModels = DisciplineController._Get();
 
-                    string discipline = AddPromptKeywordOptions(Active.Document, "Select a discipline: ", disciplineViewModels.Select(i => i.value).ToArray(), disciplineViewModels.Select(i => i.value).FirstOrDefault());
+                    string discipline = AddPromptKeywordOptions(Active.Document, "Select a discipline: ", disciplineViewModels.Select(i => i.name).ToArray(), disciplineViewModels.Select(i => i.name).FirstOrDefault());
                     
                     //Find the block
                     BlockReference br = (BlockReference)tr.GetObject(per.ObjectId, OpenMode.ForRead);

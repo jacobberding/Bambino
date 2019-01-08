@@ -3,7 +3,7 @@
 const Contacts = (function () {
 
     //Private ------------------------------------------------
-    const _self = {
+    let _self = {
         timeout: undefined,
         records: 100,
         page: 1,

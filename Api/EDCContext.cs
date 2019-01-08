@@ -17,6 +17,7 @@ namespace Api
         public DbSet<Email> Emails { get; set; }
         public DbSet<Log> Logs { get; set; }
         public DbSet<Material> Materials { get; set; }
+        public DbSet<MaterialPriceOption> MaterialPriceOptions { get; set; }
         public DbSet<Member> Members { get; set; }
         public DbSet<MemberIpAddress> MemberIpAddresses { get; set; }
         public DbSet<Project> Projects { get; set; }
@@ -27,7 +28,8 @@ namespace Api
         {
             //base.OnModelCreating(modelBuilder);
 
-            //modelBuilder.Entity<ShippingRate>().Property(x => x.price).HasPrecision(18, 4);
+            modelBuilder.Entity<Material>().Property(x => x.priceMin).HasPrecision(18, 4);
+            modelBuilder.Entity<Material>().Property(x => x.priceMax).HasPrecision(18, 4);
 
             //Database.SetInitializer<MESHContext>(null);
 
