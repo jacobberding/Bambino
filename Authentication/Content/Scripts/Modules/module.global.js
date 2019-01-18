@@ -166,6 +166,10 @@ const Global = (function () {
             }
         });
     }
+    const editIcon = function ($this, icon) {
+        $this.find(`i`).attr(`class`, icon);
+        $this.find(`use`).attr(`xlink:href`, `/Content/Images/Bambino.min.svg#${icon}`);
+    };
 
     const deleteCookie = function (name) {
         Global.addCookie(name, "", -1);
@@ -291,6 +295,7 @@ const Global = (function () {
         isMobile: isMobile,
         addCookie: addCookie,
         editJackSparrow: editJackSparrow,
+        editIcon: editIcon,
         deleteCookie: deleteCookie,
         getNewGuid: getNewGuid,
         getFunctionByName: getFunctionByName,

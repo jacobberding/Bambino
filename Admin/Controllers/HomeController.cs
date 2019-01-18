@@ -31,7 +31,7 @@ namespace Admin.Controllers
                 ViewBag.Version = System.Configuration.ConfigurationManager.AppSettings["version"];
 
                 string url = "https://api.bambino.software/Api/Member/GetByAuthTokenValidation";
-                string data = @"{'apiId':'FF9F2822-5F5D-4753-BB8D-2DECCF04A91A','token':'" + _e.mT.ToString() + "','email':'" + _e.mE + "','isAdmin':'false'}";
+                string data = @"{'apiId':'FF9F2822-5F5D-4753-BB8D-2DECCF04A91A','token':'" + _e.mT.ToString() + "','email':'" + _e.mE + "','isAdmin':'true'}";
 
                 var request = WebRequest.Create(url) as HttpWebRequest;
                 request.KeepAlive = true;

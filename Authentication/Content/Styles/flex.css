@@ -52,6 +52,104 @@ m-a {
         text-decoration: underline;
     }
 
+/*--M-NAVIGATION---------------------------------------------------------------*/
+m-navigation {
+    width: 175px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    z-index: 1000;
+    position: absolute;
+    transform: translateY(0);
+    top: 0;
+    left: 0;
+    background-color: #0a4876;
+    transition: all .25s;
+}
+
+    m-navigation.minimized {
+        width: 42px;
+    }
+
+        m-navigation.minimized h1,
+        m-navigation.minimized h2,
+        m-navigation.minimized span {
+            opacity: 0;
+        }
+
+    m-navigation h1 {
+        color: #FFF;
+        font-size: .7em;
+    }
+
+    m-navigation h2 {
+        color: #FFF;
+        font-size: .7em;
+        font-weight: 100;
+    }
+
+    m-navigation i,
+    m-navigation svg {
+        fill: #FFF !important;
+        color: #FFF;
+        width: 1.5em !important;
+        height: 1.5em !important;
+    }
+
+    m-navigation m-flex.sC:first-child {
+        margin: 1em 0;
+    }
+
+    m-navigation m-flex.sC {
+        margin: .15em 0;
+        transition: all .35s;
+    }
+
+        m-navigation m-flex.sC:hover {
+            background-color: rgba(255,255,255,.05);
+        }
+
+        m-navigation m-flex.sC.active {
+            background-color: rgba(255,255,255,.05);
+            border-left: 2px solid #FFF;
+        }
+
+    m-navigation.minimized h1,
+    m-navigation.minimized h2,
+    m-navigation span {
+        transition: all .25s;
+    }
+
+    m-navigation span {
+        color: #FFF;
+        font-size: .75em;
+        height: 40px;
+        line-height: 40px;
+        letter-spacing: .25px;
+    }
+
+    m-navigation label {
+        padding: .5em 1em .5em 1em;
+        margin-top: 0;
+        border-top: 1px solid rgba(0,0,0,.1);
+    }
+
+        m-navigation label:hover {
+            cursor: pointer;
+            background-color: rgba(255,255,255,.05);
+        }
+
+    m-navigation m-sub {
+        overflow: hidden;
+    }
+
+    m-navigation .icon {
+        margin: 0 .35em 0 .25em;
+    }
+
+/*--M-NAVIGATION---------------------------------------------------------------*/
+
 /*--M-ACCORDIAN-------------------------------------------------------------------------------*/
 m-accordian {
     overflow: hidden;
@@ -1329,6 +1427,16 @@ m-body {
     m-body[data-label="Sub Manager Body"] {
         overflow: scroll;
     }
+
+    m-body[data-label="Primary"] {
+        padding-left: 175px !important;
+        transition: padding-left .25s;
+        overflow: scroll;
+    }
+
+        m-body[data-label="Primary"].minimized {
+            padding-left: 42px !important;
+        }
 /*--M-BODY-------------------------------------------------------------------------------*/
 
 /*--M-HEADER-------------------------------------------------------------------------------*/

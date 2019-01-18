@@ -12,56 +12,38 @@ const Members = (function () {
         isShowMore: false,
         vm: {},
         name: `Member`,
-        constructor: function (memberId, name, title, companyName, phone1, phone2,
-            skypeId, email, companyTemp, resume, portfolio, personalWebsite, skills,
-            isEdcFamily, isPotentialStaffing, isDeleted) {
+        constructor: function (memberId, companyId, firstName, lastName, email, phone, isDeleted, roles) {
             this.memberId = memberId;
-            this.name = name;
-            this.title = title;
-            this.companyName = companyName;
-            this.phone1 = phone1;
-            this.phone2 = phone2;
-            this.skypeId = skypeId;
+            this.companyId = companyId;
+            this.firstName = firstName;
+            this.lastName = lastName;
             this.email = email;
-            this.companyTemp = companyTemp;
-            this.resume = resume;
-            this.portfolio = portfolio;
-            this.personalWebsite = personalWebsite;
-            this.skills = skills
-            this.isEdcFamily = isEdcFamily;
-            this.isPotentialStaffing = isPotentialStaffing;
+            this.phone = phone;
             this.isDeleted = isDeleted;
+            this.roles = roles;
         }
     }
 
-    const _addEdit = function () {
+    const _edit = function () {
 
-        _self.vm.name = $(`#txtName${_self.name}`).val();
-        _self.vm.title = $(`#txtTitle${_self.name}`).val();
-        _self.vm.companyName = $(`#txtCompanyName${_self.name}`).val();
-        _self.vm.phone1 = $(`#txtPhone1${_self.name}`).val();
-        _self.vm.phone2 = $(`#txtPhone2${_self.name}`).val();
-        _self.vm.skypeId = $(`#txtSkypeId${_self.name}`).val();
+        _self.vm.companyId = $(`#dboCompanyId${_self.name}`).val();
+        _self.vm.firstName = $(`#txtFirstName${_self.name}`).val();
+        _self.vm.lastName = $(`#txtLastName${_self.name}`).val();
         _self.vm.email = $(`#txtEmail${_self.name}`).val();
-        _self.vm.companyTemp = $(`#txtCompanyTemp${_self.name}`).val();
-        _self.vm.resume = $(`#txtResume${_self.name}`).val();
-        _self.vm.portfolio = $(`#txtPortfolio${_self.name}`).val();
-        _self.vm.personalWebsite = $(`#txtPersonalWebsite${_self.name}`).val();
-        _self.vm.skills = $(`#txtSkills${_self.name}`).val();
-        _self.vm.isEdcFamily = $(`#chkIsEDCFamily${_self.name}`).prop(`checked`);
-        _self.vm.isPotentialStaffing = $(`#chkIsPotentialStaffing${_self.name}`).prop(`checked`);
+        _self.vm.phone = $(`#txtPhone${_self.name}`).val();
         _self.vm.isDeleted = false;
 
-        _addEditDelete();
+        _editDelete();
 
     }
-    const _addEditDelete = function () {
+
+    const _editDelete = function () {
 
         try {
 
             Validation.getIsValidForm($('m-module'));
 
-            Global.post(`Member_AddEditDelete`, _self.vm)
+            Global.post(`${_self.name}_EditDelete`, _self.vm)
                 .done(function (data) {
                     Validation.done();
 
@@ -86,7 +68,7 @@ const Members = (function () {
 
         _self.vm.isDeleted = true;
 
-        _addEditDelete();
+        _editDelete();
 
     }
 
@@ -105,7 +87,7 @@ const Members = (function () {
         $(`m-body[data-label="Primary"] #flx${_self.name}s`).append(Global.getHtmlLoading());
 
         _self.page = page;
-        Global.post(`Member_GetByPage`, vm)
+        Global.post(`${_self.name}_GetByPage`, vm)
             .done(function (data) {
 
                 _self.isShowMore = true;
@@ -130,7 +112,7 @@ const Members = (function () {
             id: id
         }
 
-        Global.post(`Member_GetById`, vm)
+        Global.post(`${_self.name}_GetById`, vm)
             .done(function (data) {
                 console.log(data);
 
@@ -145,7 +127,7 @@ const Members = (function () {
     }
 
     const _getEmptyVM = function () {
-        return new _self.constructor(Global.guidEmpty, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, false, false, false);
+        return new _self.constructor(Global.guidEmpty, Global.guidEmpty, ``, ``, ``, ``, false, []);
     }
 
     const _search = function () {
@@ -166,6 +148,31 @@ const Members = (function () {
         _getByPage(1);
 
     }
+    const _invite = function () {
+
+        const vm = {
+            email: $(`#txtEmail${_self.name}`).val()
+        }
+
+        try {
+
+            Validation.getIsValidForm($('m-module'));
+
+            Global.post(`${_self.name}_Invite`, vm)
+                .done(function (data) {
+                    Validation.done();
+                    Validation.notification(1);
+                    Module.closeModuleAll();
+                })
+                .fail(function (data) {
+                    Validation.fail(data);
+                });
+
+        } catch (ex) {
+            Validation.fail(ex);
+        }
+
+    }
 
     //Public ------------------------------------------------
     const getHtmlModuleAdd = function () {
@@ -175,7 +182,7 @@ const Members = (function () {
             <m-header data-label="${_self.name} Add Header">
                 <m-flex data-type="row" class="n">
                     <m-flex data-type="row" class="n c tab h active">
-                        <span>Add</span>
+                        <span>Invite</span>
                     </m-flex>
                 </m-flex>
                 <m-flex data-type="row" class="n c sQ h btnCloseModule">
@@ -189,20 +196,27 @@ const Members = (function () {
 
                     <m-flex data-type="col" class="n">
                         <h1>${_self.name}</h1>
-                        <label>Add</label>
+                        <label>Invite</label>
                     </m-flex>
                 
                 </m-flex>
 
-                ${getHtmlBodyForm()}
+                <m-flex data-type="col" class="form">
+
+                    <m-input class="mR">
+                        <label for="txtEmail${_self.name}">Email</label>
+                        <input type="text" id="txtEmail${_self.name}" placeholder="Email" value="${_self.vm.email}" />
+                    </m-input>
+
+                </m-flex>
 
                 <m-flex data-type="row" class="footer">
                     <m-button data-type="secondary" class="btnCloseModule">
                         Cancel
                     </m-button>
 
-                    <m-button data-type="primary" id="btnAdd${_self.name}">
-                        Add
+                    <m-button data-type="primary" id="btnInvite${_self.name}">
+                        Invite
                     </m-button>
                 </m-flex>
 
@@ -344,9 +358,26 @@ const Members = (function () {
             `;
     }
     const getHtmlBodyForm = function () {
+
+        let html = ``;
+
+        for (let role of _self.vm.roles)
+            html += getHtmlCardTag(role);
+
         return `
 
             <m-flex data-type="col" class="form">
+
+                <m-flex data-type="row" class="n">
+
+                    <m-input>
+                        <label for="dboCompanyId${_self.name}">Company</label>
+                        <select id="dboCompanyId${_self.name}">
+                            ${Global.getHtmlOptions(Company.getSelf().arr, [_self.vm.companyId])}
+                        </select>
+                    </m-input>
+
+                </m-flex>
 
                 <m-flex data-type="row" class="n">
                     <m-input class="mR">
@@ -370,6 +401,22 @@ const Members = (function () {
                         <label for="txtPhone${_self.name}">Phone</label>
                         <input type="text" id="txtPhone${_self.name}" placeholder="Phone" value="${_self.vm.phone}" />
                     </m-input>
+                </m-flex>
+
+                <m-flex data-type="row" class="n s">
+                    <m-input class="mR">
+                        <input type="text" id="txtRole${_self.name}" placeholder="Role" value="" />
+                    </m-input>
+
+                    <m-flex data-type="row" class="n c sm sQ secondary">
+                        <i class="icon-plus"><svg><use xlink:href="/Content/Images/Bambino.min.svg#icon-plus"></use></svg></i>
+                    </m-flex>
+                </m-flex>
+
+                <label for="txtRole${_self.name}" class="mB">Roles</label>
+
+                <m-flex data-type="row" class="n s">
+                    ${html}
                 </m-flex>
 
             </m-flex>
@@ -396,10 +443,27 @@ const Members = (function () {
 
             `;
     }
+    const getHtmlCardTag = function (obj) {
+        return `
+
+            <m-card class="tag">
+                <m-flex data-type="row" class="n pL">
+                    <h1 class="tE">
+                        ${obj.name}
+                    </h1>
+                    <m-flex data-type="row" class="n c xs sQ tertiary btnDeleteRole">
+                        <i class="icon-delete"><svg><use xlink:href="/Content/Images/Bambino.min.svg#icon-delete"></use></svg></i>
+                    </m-flex>
+                </m-flex>
+            </m-card>
+
+            `;
+    }
 
     const _init = (function () {
         $(document).on(`tap`, `#lst${_self.name}s .sort h2`, function () { _sort($(this)); });
-        $(document).on(`tap`, `#btnAdd${_self.name}, #btnEdit${_self.name}`, function () { _addEdit(); });
+        $(document).on(`tap`, `#btnInvite${_self.name}`, function () { _invite(); });
+        $(document).on(`tap`, `#btnEdit${_self.name}`, function () { _edit(); });
         $(document).on(`tap`, `#btnDelete${_self.name}`, function () { _delete(); });
         $(document).on(`tap`, `#btnShowMore${_self.name}`, function () { _self.page++; _getByPage(_self.page); });
         $(document).on(`keyup`, `#txtSearch${_self.name}`, function () { _search(); });
@@ -413,7 +477,8 @@ const Members = (function () {
         getHtmlBodyList: getHtmlBodyList,
         getHtmlBodyDetail: getHtmlBodyDetail,
         getHtmlBodyForm: getHtmlBodyForm,
-        getHtmlCard: getHtmlCard
+        getHtmlCard: getHtmlCard,
+        getHtmlCardTag: getHtmlCardTag
     }
 
 })();

@@ -158,7 +158,9 @@
   <ItemGroup>
     <Content Include="Content\Images\Bambino.min.svg" />
     <Content Include="Content\Scripts\Modules\module.application.js" />
+    <Content Include="Content\Scripts\Modules\module.company.js" />
     <Content Include="Content\Scripts\Modules\module.members.js" />
+    <Content Include="Content\Scripts\Modules\module.role.js" />
     <Content Include="Content\Styles\site.css" />
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />

@@ -17,11 +17,27 @@ const Application = (function () {
         $(`m-sub[data-label="${$this.html()}"]`).velocity(`stop`).velocity('slideDown', { duration: Global.velocitySettings.durationShort });
         $this.addClass(`btnCloseSub`).removeClass(`btnOpenSub`);
     }
+    const _openMenu = function ($this) {
+
+        $(`m-body[data-label="Primary"]`).removeClass(`minimized`);
+        $(`m-navigation`).removeClass(`minimized`);
+        $(`.btnOpenMenu`).removeClass(`btnOpenMenu`).addClass(`btnCloseMenu`);
+        Global.editIcon($this, `icon-back`);
+
+    };
     const _closeSub = function ($this) {
         if (!$(`m-sub[data-label="${$this.html()}"]`).is(`:visible`)) return;
         $(`m-sub[data-label="${$this.html()}"]`).velocity(`stop`).velocity('slideUp', { duration: Global.velocitySettings.durationShort });
         $this.addClass(`btnOpenSub`).removeClass(`btnCloseSub`);
-    }
+    };
+    const _closeMenu = function ($this) {
+
+        $(`m-body[data-label="Primary"]`).addClass(`minimized`);
+        $(`m-navigation`).addClass(`minimized`);
+        $(`.btnCloseMenu`).removeClass(`btnCloseMenu`).addClass(`btnOpenMenu`);
+        Global.editIcon($this, `icon-forward`);
+
+    };
 
     const _getJackSparrow = function () {
 
@@ -42,10 +58,10 @@ const Application = (function () {
     const getHtml = function () {
         return `
 
-            <m-navigation>
+            <m-navigation class="minimized">
                 <m-flex data-type="col" class="n">
 
-                    <m-flex data-type="row" class="">
+                    <m-flex data-type="row" class="n sC">
                         <!--<m-image class="icon sm contain tR" style="background-image: url('https://authentication.ciclops.software/Content/Images/logo_icon_white.png');"></m-image>-->
                         <m-flex data-type="col" class="w n tE">
                             <h1>Welcome back!</h1>
@@ -57,28 +73,22 @@ const Application = (function () {
                         <m-flex data-type="row" class="n c sm sQ">
                             <i class="icon-notification"><svg><use xlink:href="/Content/Images/Bambino.min.svg#icon-notification"></use></svg></i>
                         </m-flex>
-                        <span>Activity<span>
+                        <span class="tE">Activity<span>
                     </m-flex>
 
-                    <label class="btnOpenSub" id="initOpenSub">Management</label>
-
-                    <m-sub data-label="Management" style="display: none">
-                        <m-flex data-type="row" class="n sC h btnOpenBody" data-label="Primary" data-function="Contacts.getHtmlBody" tabindex="0" role="tab" data-label="Contacts">
-                            <m-flex data-type="row" class="n c sm sQ">
-                                <i class="icon-male-user"><svg><use xlink:href="/Content/Images/Bambino.min.svg#icon-male-user"></use></svg></i>
-                            </m-flex>
-                            <span>Contacts<span>
+                    <m-flex data-type="row" class="n sC h btnOpenBody" data-label="Primary" data-function="Contacts.getHtmlBody" tabindex="0" role="tab" data-label="Contacts">
+                        <m-flex data-type="row" class="n c sm sQ">
+                            <i class="icon-male-user"><svg><use xlink:href="/Content/Images/Bambino.min.svg#icon-male-user"></use></svg></i>
                         </m-flex>
-                    </m-sub>
+                        <span class="tE">Contacts<span>
+                    </m-flex>
 
-                    <m-sub data-label="Management" style="display: none">
-                        <m-flex data-type="row" class="n sC h btnOpenBody" data-label="Primary" data-function="Materials.getHtmlBody" tabindex="0" role="tab" data-label="Materials">
-                            <m-flex data-type="row" class="n c sm sQ">
-                                <i class="icon-news"><svg><use xlink:href="/Content/Images/Bambino.min.svg#icon-news"></use></svg></i>
-                            </m-flex>
-                            <span>Materials<span>
+                    <m-flex data-type="row" class="n sC h btnOpenBody" data-label="Primary" data-function="Materials.getHtmlBody" tabindex="0" role="tab" data-label="Materials">
+                        <m-flex data-type="row" class="n c sm sQ">
+                            <i class="icon-news"><svg><use xlink:href="/Content/Images/Bambino.min.svg#icon-news"></use></svg></i>
                         </m-flex>
-                    </m-sub>
+                        <span class="tE">Materials<span>
+                    </m-flex>
 
                 </m-flex>
 
@@ -88,14 +98,21 @@ const Application = (function () {
                         <m-flex data-type="row" class="n c sm sQ">
                             <i class="icon-padlock"><svg><use xlink:href="/Content/Images/Bambino.min.svg#icon-padlock"></use></svg></i>
                         </m-flex>
-                        <span>Sign Out<span>
+                        <span class="tE">Sign Out<span>
+                    </m-flex>
+
+                    <m-flex data-type="row" class="n sC h btnOpenMenu">
+                        <m-flex data-type="row" class="n c sm sQ">
+                            <i class="icon-forward"><svg><use xlink:href="/Content/Images/Bambino.min.svg#icon-forward"></use></svg></i>
+                        </m-flex>
+                        <span class="tE">Collapse<span>
                     </m-flex>
 
                 </m-flex>
 
             </m-navigation>
 
-            <m-body data-label="Primary">
+            <m-body data-label="Primary" class="minimized">
             </m-body>
 
             `;
@@ -116,6 +133,8 @@ const Application = (function () {
     const _init = (function () {
         $(document).on(`tap`, `.btnOpenSub`, function () { _openSub($(this)); });
         $(document).on(`tap`, `.btnCloseSub`, function () { _closeSub($(this)); });
+        $(document).on(`tap`, `.btnOpenMenu`, function () { _openMenu($(this)); });
+        $(document).on(`tap`, `.btnCloseMenu`, function () { _closeMenu($(this)); });
 
         _getJackSparrow();
 

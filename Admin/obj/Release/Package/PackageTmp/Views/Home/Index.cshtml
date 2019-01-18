@@ -2,7 +2,7 @@
 <html>
 <head>
 
-    <link href="https://entdesign.com/wp-content/uploads/2016/02/cropped-icon-32x32.png" rel="shortcut icon">
+    <link href="https://authentication.bambino.software" rel="shortcut icon">
 
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -25,11 +25,13 @@
     <script src="https://authentication.bambino.software/Content/Scripts/Libraries/velocity.js"></script>
     <script src="https://authentication.bambino.software/Content/Scripts/Libraries/velocity.ui.min.js"></script>
 
-    <script src="https://authentication.bambino.software/Content/Scripts/Modules/module.validation.js"></script>
-    <script src="https://authentication.bambino.software/Content/Scripts/Modules/module.global.js"></script>
-    <script src="https://authentication.bambino.software/Content/Scripts/Modules/module.js"></script>
+    <script src="https://authentication.bambino.software/Content/Scripts/Modules/module.validation.js?@(ViewBag.Version)"></script>
+    <script src="https://authentication.bambino.software/Content/Scripts/Modules/module.global.js?@(ViewBag.Version)"></script>
+    <script src="https://authentication.bambino.software/Content/Scripts/Modules/module.js?@(ViewBag.Version)"></script>
+    <script src="https://desktop.bambino.software/Content/Scripts/Modules/module.log.js?@(ViewBag.Version)"></script>
 
-    <script src="~/Content/Scripts/Modules/module.admin.js"></script>
+    <script src="~/Content/Scripts/Modules/module.members.js?@(ViewBag.Version)"></script>
+    <script src="~/Content/Scripts/Modules/module.application.js?@(ViewBag.Version)"></script>
 
 </body>
 </html>

@@ -12,77 +12,16 @@ h3 {
     color: #BBB;
 }
 
-m-navigation {
-    width: 200px;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    z-index: 1000;
-    position: absolute;
-    transform: translateY(0);
-    top: 0;
-    left: 0;
-    background-color: #0a4876;
+m-card.tag {
+    border-radius: 15px;
+    width: 100px;
+    height: 30px;
+    min-height: 30px;
 }
-
-    m-navigation h1 {
-        color: #FFF;
-        font-size: .7em;
+    m-card.tag > m-flex {
+        height: 100%;
+        min-height: 100%;
     }
-
-    m-navigation h2 {
-        color: #FFF;
-        font-size: .7em;
-        font-weight: 100;
+    m-card.tag h1 {
+        font-size: .65em;
     }
-
-    m-navigation i,
-    m-navigation svg {
-        fill: #FFF !important;
-        color: #FFF;
-        width: 1.25em !important;
-        height: 1.25em !important;
-    }
-
-    m-navigation m-flex.sC {
-        transition: all .35s;
-    }
-
-        m-navigation m-flex.sC:hover {
-            background-color: rgba(255,255,255,.05);
-            cursor: pointer;
-        }
-
-        m-navigation m-flex.sC.active {
-            background-color: rgba(255,255,255,.05);
-            border-left: 6px solid #FFF;
-        }
-
-    m-navigation span {
-        color: #FFF;
-        font-size: .75em;
-        height: 40px;
-        line-height: 40px;
-        letter-spacing: .25px;
-    }
-
-    m-navigation label {
-        padding: .5em 1em .5em 1em;
-        margin-top: 0;
-        border-top: 1px solid rgba(0,0,0,.1);
-    }
-
-        m-navigation label:hover {
-            cursor: pointer;
-            background-color: rgba(255,255,255,.05);
-        }
-
-    m-navigation m-sub {
-        overflow: hidden;
-    }
-
-m-body[data-label="Primary"] {
-    padding-left: 200px;
-    overflow: scroll;
-}

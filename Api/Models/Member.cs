@@ -282,5 +282,19 @@ namespace Api.Models
         public string email { get; set; }
         
     }
-    
+
+    public class MemberInviteViewModel
+    {
+
+        public AuthenticationViewModel authentication { get; set; }
+
+        public string email { get; set; }
+
+        public MemberInviteViewModel()
+        {
+            email = "";
+        }
+
+    }
+
 }

@@ -492,7 +492,15 @@ namespace Api.Controllers
                             originalEmail       = obj.originalEmail,
                             phone               = obj.phone,
                             isValidated         = obj.isValidated,
-                            isDeleted           = obj.isDeleted
+                            isDeleted           = obj.isDeleted,
+                            roles           = obj.roles.Select(role => new RoleViewModel() {
+                                roleId          = role.roleId,
+                                name            = role.name,
+                                isAdmin         = role.isAdmin,
+                                isContractor    = role.isContractor,
+                                isEmployee      = role.isEmployee,
+                                isSuperAdmin    = role.isSuperAdmin
+                            }).ToList()
                         })
                         .FirstOrDefault();
                     
@@ -950,6 +958,45 @@ namespace Api.Controllers
                     var vm = new
                     {
                         validToken = member.memberId
+                    };
+
+                    return Request.CreateResponse(HttpStatusCode.OK, vm);
+
+                }
+                catch (Exception ex)
+                {
+                    return Request.CreateResponse(HttpStatusCode.InternalServerError, ex);
+                }
+
+            }
+            return Request.CreateResponse(HttpStatusCode.InternalServerError, new { Message = "Invalid Token" });
+        }
+
+        [HttpPost]
+        public HttpResponseMessage Invite([FromBody] MemberInviteViewModel data)
+        {
+            Authentication a = AuthenticationController.GetApiAuthenticated(data.authentication.apiId, 1);
+            if (a.isAuthenticated)
+            {
+
+                try
+                {
+
+                    UnitOfWork unitOfWork = new UnitOfWork();
+                    
+                    new Thread(() =>
+                    {
+                        EmailController.Send(new MailAddress(EmailController.email),
+                            data.email,
+                            EmailController.email,
+                            EmailController.email,
+                            "Bambino: Invitation to Sign Up",
+                            "Thank you for your interest in Bambino you can sign up by navigating to <a href='https://desktop.bambino.software/'>desktop.bambino.software</a>");
+                    }).Start();
+
+                    var vm = new
+                    {
+
                     };
 
                     return Request.CreateResponse(HttpStatusCode.OK, vm);

@@ -138,11 +138,11 @@ namespace Api.Controllers
                     
                     UnitOfWork unitOfWork = new UnitOfWork();
 
-                    List<CompanyListViewModel> vm = unitOfWork.CompanyRepository
+                    List<ListViewModel> vm = unitOfWork.CompanyRepository
                         .Get()
-                        .Select(obj => new CompanyListViewModel()
+                        .Select(obj => new ListViewModel()
                         {
-                            companyId = obj.companyId,
+                            value = obj.companyId.ToString(),
                             name = obj.name
                         })
                         .OrderBy(i => i.name)
