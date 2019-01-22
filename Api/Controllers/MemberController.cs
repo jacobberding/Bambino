@@ -20,7 +20,7 @@ namespace Api.Controllers
     [EnableCors(origins: "*", headers: "*", methods: "*")]
     public class MemberController : ApiController
     {
-        
+
         //[HttpPost]
         //public HttpResponseMessage AddCard([FromBody] MemberAddCardViewModel data)
         //{
@@ -30,15 +30,15 @@ namespace Api.Controllers
 
         //        try
         //        {
-                    
+
         //            UnitOfWork unitOfWork = new UnitOfWork();
-                    
+
         //            string stripeId = unitOfWork.MemberRepository
         //                .GetBy(i => i.memberId == a.member.memberId
         //                    && !i.isDeleted)
         //                .Select(str => str.stripeId)
         //                .FirstOrDefault();
-                    
+
         //            if (stripeId == null)
         //                throw new InvalidOperationException("Not Found");
 
@@ -55,7 +55,63 @@ namespace Api.Controllers
         //    }
         //    return Request.CreateResponse(HttpStatusCode.InternalServerError, new { Message = "Invalid Token" });
         //}
-        
+
+        [HttpPost]
+        public HttpResponseMessage AddRole([FromBody] MemberAddDeleteRoleViewModel data)
+        {
+            Authentication a = AuthenticationController.GetMemberAuthenticated(data.authentication.apiId, 1, data.authentication.token);
+            if (a.isAuthenticated)
+            {
+
+                try
+                {
+
+                    UnitOfWork unitOfWork = new UnitOfWork();
+
+                    Member member = unitOfWork.MemberRepository
+                        .GetBy(i => i.memberId == data.memberId
+                            && !i.isDeleted)
+                        .FirstOrDefault();
+
+                    if (member == null)
+                        throw new InvalidOperationException("Not Found");
+
+                    Role role = unitOfWork.RoleRepository
+                        .GetBy(i => i.name == data.name)
+                        .FirstOrDefault();
+
+                    if (role == null)
+                        throw new InvalidOperationException("Not Found");
+
+                    member.roles.Add(role);
+
+                    unitOfWork.MemberRepository.Update(member);
+                    unitOfWork.Save();
+
+                    LogController.Add(a.member.memberId, "Member " + member.email + " Added Role " + role.name, "Member", "AddRole", member.memberId, "Members");
+
+                    var vm = new RoleViewModel
+                    {
+                        roleId = role.roleId,
+                        name = role.name,
+                        isAdmin = role.isAdmin,
+                        isContractor = role.isContractor,
+                        isEmployee = role.isEmployee,
+                        isSuperAdmin = role.isSuperAdmin
+                    };
+
+                    return Request.CreateResponse(HttpStatusCode.OK, vm);
+
+                }
+                catch (Exception ex)
+                {
+                    return Request.CreateResponse(HttpStatusCode.InternalServerError, ex);
+                }
+
+            }
+            return Request.CreateResponse(HttpStatusCode.InternalServerError, new { Message = "Invalid Token" });
+        }
+
         [HttpPost]
         public HttpResponseMessage EditDelete([FromBody] MemberEditDeleteViewModel data)
         {
@@ -308,7 +364,63 @@ namespace Api.Controllers
             }
             return Request.CreateResponse(HttpStatusCode.InternalServerError, new { Message = "Invalid Token" });
         }
-        
+
+        [HttpPost]
+        public HttpResponseMessage DeleteRole([FromBody] MemberAddDeleteRoleViewModel data)
+        {
+            Authentication a = AuthenticationController.GetMemberAuthenticated(data.authentication.apiId, 1, data.authentication.token);
+            if (a.isAuthenticated)
+            {
+
+                try
+                {
+
+                    UnitOfWork unitOfWork = new UnitOfWork();
+                    
+                    Member member = unitOfWork.MemberRepository
+                        .GetBy(i => i.memberId == data.memberId
+                            && !i.isDeleted)
+                        .FirstOrDefault();
+
+                    if (member == null)
+                        throw new InvalidOperationException("Not Found");
+
+                    Role role = unitOfWork.RoleRepository
+                        .GetBy(i => i.roleId == data.roleId)
+                        .FirstOrDefault();
+
+                    if (role == null)
+                        throw new InvalidOperationException("Not Found");
+
+                    member.roles.Remove(role);
+
+                    unitOfWork.MemberRepository.Update(member);
+                    unitOfWork.Save();
+                    
+                    LogController.Add(a.member.memberId, "Member " + member.email + " Removed Role " + role.name, "Member", "DeleteRole", member.memberId, "Members");
+
+                    var vm = new RoleViewModel
+                    {
+                        roleId = role.roleId,
+                        name = role.name,
+                        isAdmin = role.isAdmin,
+                        isContractor = role.isContractor,
+                        isEmployee = role.isEmployee,
+                        isSuperAdmin = role.isSuperAdmin
+                    };
+
+                    return Request.CreateResponse(HttpStatusCode.OK, vm);
+
+                }
+                catch (Exception ex)
+                {
+                    return Request.CreateResponse(HttpStatusCode.InternalServerError, ex);
+                }
+
+            }
+            return Request.CreateResponse(HttpStatusCode.InternalServerError, new { Message = "Invalid Token" });
+        }
+
         //[HttpPost]
         //public HttpResponseMessage DeleteCard([FromBody] MemberDeleteCardViewModel data)
         //{
@@ -318,15 +430,15 @@ namespace Api.Controllers
 
         //        try
         //        {
-                    
+
         //            UnitOfWork unitOfWork = new UnitOfWork();
-                    
+
         //            string customerId = unitOfWork.MemberRepository
         //                .GetBy(i => i.memberId == a.member.memberId
         //                    && !i.isDeleted)
         //                .Select(str => str.customerId)
         //                .FirstOrDefault();
-                    
+
         //            if (customerId == null)
         //                throw new InvalidOperationException("Not Found");
 
@@ -343,7 +455,7 @@ namespace Api.Controllers
         //    }
         //    return Request.CreateResponse(HttpStatusCode.InternalServerError, new { Message = "Invalid Token" });
         //}
-        
+
         [HttpPost]
         public HttpResponseMessage GetTokenApi([FromBody] EmptyAuthenticationViewModel data)
         {

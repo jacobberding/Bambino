@@ -214,7 +214,20 @@ namespace Api.Models
         public int keyCode { get; set; }
 
     }
-    
+
+    public class MemberAddDeleteRoleViewModel
+    {
+
+        public AuthenticationViewModel authentication { get; set; }
+
+        public Guid memberId { get; set; }
+
+        public Guid roleId { get; set; }
+
+        public string name { get; set; }
+
+    }
+
     public class MemberDeleteCardViewModel
     {
         

@@ -17,6 +17,7 @@ namespace Api
         public DbSet<Email> Emails { get; set; }
         public DbSet<Log> Logs { get; set; }
         public DbSet<Material> Materials { get; set; }
+        public DbSet<MaterialTag> MaterialTags { get; set; }
         public DbSet<MaterialPriceOption> MaterialPriceOptions { get; set; }
         public DbSet<Member> Members { get; set; }
         public DbSet<MemberIpAddress> MemberIpAddresses { get; set; }
@@ -37,6 +38,16 @@ namespace Api
             //    .HasMany(u => u.invitationRequests) // <--
             //    .WithRequired(r => r.requestedByMember) // <--
             //    .HasForeignKey(r => r.requestedByMemberId);
+
+            modelBuilder.Entity<Material>()
+                .HasMany<MaterialTag>(s => s.materialTags)
+                .WithMany(c => c.materials)
+                .Map(cs =>
+                {
+                    cs.MapLeftKey("materialId");
+                    cs.MapRightKey("materialTagId");
+                    cs.ToTable("MaterialTagMaterials");
+                });
 
             modelBuilder.Entity<Member>()
                 .HasMany<Role>(s => s.roles)

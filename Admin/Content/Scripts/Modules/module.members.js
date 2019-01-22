@@ -175,6 +175,10 @@ const Members = (function () {
     }
 
     //Public ------------------------------------------------
+    const getSelf = function () {
+        return _self;
+    };
+
     const getHtmlModuleAdd = function () {
         _self.vm = _getEmptyVM();
         return `
@@ -362,7 +366,7 @@ const Members = (function () {
         let html = ``;
 
         for (let role of _self.vm.roles)
-            html += getHtmlCardTag(role);
+            html += Role.getHtmlTag(role);
 
         return `
 
@@ -405,17 +409,17 @@ const Members = (function () {
 
                 <m-flex data-type="row" class="n s">
                     <m-input class="mR">
-                        <input type="text" id="txtRole${_self.name}" placeholder="Role" value="" />
+                        <input type="text" id="txtSearchRole" placeholder="Role" value="" />
                     </m-input>
 
-                    <m-flex data-type="row" class="n c sm sQ secondary">
+                    <m-flex data-type="row" class="n c sm sQ secondary btnAddRole">
                         <i class="icon-plus"><svg><use xlink:href="/Content/Images/Bambino.min.svg#icon-plus"></use></svg></i>
                     </m-flex>
                 </m-flex>
 
-                <label for="txtRole${_self.name}" class="mB">Roles</label>
+                <label for="txtSearchRole" class="mB">Roles</label>
 
-                <m-flex data-type="row" class="n s">
+                <m-flex data-type="row" class="n s" id="flxRoleTags">
                     ${html}
                 </m-flex>
 
@@ -443,22 +447,6 @@ const Members = (function () {
 
             `;
     }
-    const getHtmlCardTag = function (obj) {
-        return `
-
-            <m-card class="tag">
-                <m-flex data-type="row" class="n pL">
-                    <h1 class="tE">
-                        ${obj.name}
-                    </h1>
-                    <m-flex data-type="row" class="n c xs sQ tertiary btnDeleteRole">
-                        <i class="icon-delete"><svg><use xlink:href="/Content/Images/Bambino.min.svg#icon-delete"></use></svg></i>
-                    </m-flex>
-                </m-flex>
-            </m-card>
-
-            `;
-    }
 
     const _init = (function () {
         $(document).on(`tap`, `#lst${_self.name}s .sort h2`, function () { _sort($(this)); });
@@ -471,14 +459,14 @@ const Members = (function () {
     })();
 
     return {
+        getSelf: getSelf,
         getHtmlModuleAdd: getHtmlModuleAdd,
         getHtmlModuleDetail: getHtmlModuleDetail,
         getHtmlBody: getHtmlBody,
         getHtmlBodyList: getHtmlBodyList,
         getHtmlBodyDetail: getHtmlBodyDetail,
         getHtmlBodyForm: getHtmlBodyForm,
-        getHtmlCard: getHtmlCard,
-        getHtmlCardTag: getHtmlCardTag
+        getHtmlCard: getHtmlCard
     }
 
 })();

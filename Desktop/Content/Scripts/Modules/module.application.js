@@ -8,9 +8,14 @@ const Application = (function () {
     };
 
     const _open = function () {
+
         $(`body`).prepend(Application.getHtml());
         Module.openBody(`Primary`, `Application.getHtmlBody`);
         _openSub($(`#initOpenSub`));
+
+        //Load Lists
+        MaterialTag.get();
+
     }
     const _openSub = function ($this) {
         if ($(`m-sub[data-label="${$this.html()}"]`).is(`:visible`)) return;

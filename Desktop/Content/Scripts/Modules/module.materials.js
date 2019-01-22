@@ -13,7 +13,7 @@ const Materials = (function () {
         vm: {},
         name: `Material`,
         constructor: function (materialId, disciplineId, name, description, website, priceMin, priceMax,
-            materialPriceOptionKey, manufacturer, modelNumber, tags, notes, isDeleted) {
+            materialPriceOptionKey, manufacturer, modelNumber, notes, isDeleted) {
             this.materialId = materialId;
             this.disciplineId = disciplineId;
             this.name = name;
@@ -24,7 +24,6 @@ const Materials = (function () {
             this.materialPriceOptionKey = materialPriceOptionKey;
             this.manufacturer = manufacturer;
             this.modelNumber = modelNumber;
-            this.tags = tags;
             this.notes = notes;
             this.isDeleted = isDeleted;
         }
@@ -41,7 +40,6 @@ const Materials = (function () {
         _self.vm.materialPriceOptionKey = $(`#dboMaterialPriceOptionKey${_self.name}`).val();
         _self.vm.manufacturer = $(`#txtManufacturer${_self.name}`).val();
         _self.vm.modelNumber = $(`#txtModelNumber${_self.name}`).val();
-        _self.vm.tags = $(`#txtTags${_self.name}`).val();
         _self.vm.notes = $(`#txtNotes${_self.name}`).val();
         _self.vm.isDeleted = false;
 
@@ -138,7 +136,7 @@ const Materials = (function () {
     }
 
     const _getEmptyVM = function () {
-        return new _self.constructor(Global.guidEmpty,Global.guidEmpty,``,``,``,0,0,0,``,``,``,``,false);
+        return new _self.constructor(Global.guidEmpty,Global.guidEmpty,``,``,``,0,0,0,``,``,``,false);
     }
 
     const _search = function () {
@@ -161,6 +159,10 @@ const Materials = (function () {
     }
 
     //Public ------------------------------------------------
+    const getSelf = function () {
+        return _self;
+    };
+
     const getHtmlModuleAdd = function () {
         _self.vm = _getEmptyVM();
         return `
@@ -342,6 +344,12 @@ const Materials = (function () {
             `;
     }
     const getHtmlBodyForm = function () {
+
+        let html = ``;
+
+        for (let materialTag of _self.vm.materialTags)
+            html += MaterialTag.getHtmlTag(materialTag);
+
         return `
 
             <m-flex data-type="col" class="form">
@@ -408,13 +416,20 @@ const Materials = (function () {
                     </m-input>
                 </m-flex>
 
-                <m-flex data-type="row" class="n">
-
-                    <m-input class="">
-                        <label for="txtTags${_self.name}">Tags</label>
-                        <input type="text" id="txtTags${_self.name}" placeholder="Tags" value="${_self.vm.tags}" />
+                <m-flex data-type="row" class="n s">
+                    <m-input class="mR">
+                        <input type="text" id="txtSearchMaterialTag" placeholder="Tags" value="" />
                     </m-input>
 
+                    <m-flex data-type="row" class="n c sm sQ secondary btnAddMaterialTag">
+                        <i class="icon-plus"><svg><use xlink:href="/Content/Images/Bambino.min.svg#icon-plus"></use></svg></i>
+                    </m-flex>
+                </m-flex>
+
+                <label for="txtSearchMaterialTag" class="mB">Material Tags</label>
+
+                <m-flex data-type="row" class="n s" id="flxMaterialTags">
+                    ${html}
                 </m-flex>
 
             </m-flex>
@@ -455,6 +470,7 @@ const Materials = (function () {
     })();
 
     return {
+        getSelf: getSelf,
         getHtmlModuleAdd: getHtmlModuleAdd,
         getHtmlModuleDetail: getHtmlModuleDetail,
         getHtmlBody: getHtmlBody,
@@ -462,6 +478,137 @@ const Materials = (function () {
         getHtmlBodyDetail: getHtmlBodyDetail,
         getHtmlBodyForm: getHtmlBodyForm,
         getHtmlCard: getHtmlCard
+    }
+
+})();
+
+const MaterialTag = (function () {
+
+    //Private -----------------------------------------
+    let _self = {
+        arr: [],
+        vm: {},
+        name: `MaterialTag`,
+        timeout: undefined
+    };
+
+    const _add = function () {
+
+        const vm = {
+            materialId: Materials.getSelf().vm.materialId,
+            name: $(`#txtSearch${_self.name}`).val()
+        };
+
+        Global.post(`Material_AddMaterialTag`, vm)
+            .done(function (data) {
+
+                $(`#flx${_self.name}s`).append(getHtmlTag(data));
+                $(`#txtSearch${_self.name}`).val(``);
+
+                Validation.notification(1);
+            }).fail(function (data) {
+                Validation.notification(1, `Error`, data.responseJSON.Message,`error`);
+            });
+
+    }
+
+    const _delete = function ($this) {
+
+        const vm = {
+            materialId: Materials.getSelf().vm.materialId,
+            materialTagId: $this.attr(`data-id`)
+        };
+
+        Global.post(`Material_DeleteMaterialTag`, vm)
+            .done(function (data) {
+
+                $(`m-card[data-id="${vm.materialTagId}"]`).remove();
+
+                Validation.notification(1);
+            }).fail(function (data) {
+                Validation.notification(2);
+            });
+
+    }
+
+    const _get = function () {
+
+        Global.post(`${_self.name}_Get`, {})
+            .done(function (data) {
+                _self.arr = data;
+            }).fail(function (data) {
+                Validation.notification(2);
+            });
+
+    }
+
+    const _search = function (e, $this) {
+
+        if (e.which == 13) {
+            
+            $(`m-select[data-name="${_self.name}"]`).remove();
+            _add();
+
+            return;
+
+        }
+
+        let options = ``;
+
+        $(`m-select[data-name="${_self.name}"]`).remove();
+
+        if ($(`#txtSearch${_self.name}`).val() == ``)
+            return;
+
+        for (let obj of _self.arr.filter(function (obj) { return obj.name.toLowerCase().includes($(`#txtSearch${_self.name}`).val().toLowerCase()); }))
+            options += `<m-option data-name="${_self.name}">${obj.name}</m-option>`;
+
+        $this.parent().append(`<m-select data-name="${_self.name}">${options}</m-select>`);
+
+    }
+    const _select = function ($this) {
+
+        $(`#txtSearch${_self.name}`).val($this.html()).focus();
+        $(`m-select[data-name="${_self.name}"]`).remove();
+
+    }
+
+    //Public ------------------------------------------
+    const get = function () {
+        _get();
+    };
+    const getSelf = function () {
+        return _self;
+    };
+
+    const getHtmlTag = function (obj) {
+        return `
+
+            <m-card class="tag" data-id="${obj.materialTagId}">
+                <m-flex data-type="row" class="n">
+                    <h1 class="tE">
+                        ${obj.name}
+                    </h1>
+                    <m-flex data-type="row" class="n c xs sQ tertiary btnDelete${_self.name}" data-id="${obj.materialTagId}">
+                        <i class="icon-delete"><svg><use xlink:href="/Content/Images/Bambino.min.svg#icon-delete"></use></svg></i>
+                    </m-flex>
+                </m-flex>
+            </m-card>
+
+            `;
+    };
+
+    const _init = (function () {
+        $(document).on(`tap`, `m-option[data-name="${_self.name}"]`, function () { _select($(this)); });
+        $(document).on(`keyup`, `#txtSearch${_self.name}`, function (e) { _search(e, $(this)); });
+        $(document).on(`tap`, `.btnAdd${_self.name}`, function () { _add(); });
+        $(document).on(`tap`, `.btnDelete${_self.name}`, function () { _delete($(this)); });
+    })();
+
+    return {
+        get: get,
+        getSelf: getSelf,
+        getHtmlTag: getHtmlTag
     }
 
 })();

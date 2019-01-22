@@ -27,7 +27,7 @@ namespace Api.Models
         public string state { get; set; }
 
     }
-
+    
     public class GetByIdViewModel
     {
 

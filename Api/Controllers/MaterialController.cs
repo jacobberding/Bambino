@@ -43,7 +43,6 @@ namespace Api.Controllers
                     material.materialPriceOptionKey = data.materialPriceOptionKey;
                     material.manufacturer = data.manufacturer;
                     material.modelNumber = data.modelNumber;
-                    material.tags = data.tags;
                     material.notes = data.notes;
                     material.isDeleted = data.isDeleted;
 
@@ -76,6 +75,106 @@ namespace Api.Controllers
         }
 
         [HttpPost]
+        public HttpResponseMessage AddMaterialTag([FromBody] MaterialAddDeleteMaterialTagViewModel data)
+        {
+            Authentication a = AuthenticationController.GetMemberAuthenticated(data.authentication.apiId, 1, data.authentication.token);
+            if (a.isAuthenticated)
+            {
+
+                try
+                {
+
+                    UnitOfWork unitOfWork = new UnitOfWork();
+
+                    Material material = unitOfWork.MaterialRepository
+                        .GetBy(i => i.materialId == data.materialId
+                            && !i.isDeleted)
+                        .FirstOrDefault();
+
+                    if (material == null)
+                        throw new InvalidOperationException("Not Found");
+
+                    MaterialTag materialTag = unitOfWork.MaterialTagRepository
+                        .GetBy(i => i.name == data.name)
+                        .FirstOrDefault();
+
+                    if (materialTag == null)
+                        throw new InvalidOperationException("Not Found");
+
+                    material.materialTags.Add(materialTag);
+
+                    unitOfWork.MaterialRepository.Update(material);
+                    unitOfWork.Save();
+                    
+                    var vm = new MaterialTagViewModel
+                    {
+                        materialTagId = materialTag.materialTagId,
+                        name = materialTag.name
+                    };
+
+                    return Request.CreateResponse(HttpStatusCode.OK, vm);
+
+                }
+                catch (Exception ex)
+                {
+                    return Request.CreateResponse(HttpStatusCode.InternalServerError, ex);
+                }
+
+            }
+            return Request.CreateResponse(HttpStatusCode.InternalServerError, new { Message = "Invalid Token" });
+        }
+
+        [HttpPost]
+        public HttpResponseMessage DeleteMaterialTag([FromBody] MaterialAddDeleteMaterialTagViewModel data)
+        {
+            Authentication a = AuthenticationController.GetMemberAuthenticated(data.authentication.apiId, 1, data.authentication.token);
+            if (a.isAuthenticated)
+            {
+
+                try
+                {
+
+                    UnitOfWork unitOfWork = new UnitOfWork();
+
+                    Material material = unitOfWork.MaterialRepository
+                        .GetBy(i => i.materialId == data.materialId
+                            && !i.isDeleted)
+                        .FirstOrDefault();
+
+                    if (material == null)
+                        throw new InvalidOperationException("Not Found");
+
+                    MaterialTag materialTag = unitOfWork.MaterialTagRepository
+                        .GetBy(i => i.materialTagId == data.materialTagId)
+                        .FirstOrDefault();
+
+                    if (materialTag == null)
+                        throw new InvalidOperationException("Not Found");
+
+                    material.materialTags.Remove(materialTag);
+
+                    unitOfWork.MaterialRepository.Update(material);
+                    unitOfWork.Save();
+
+                    var vm = new MaterialTagViewModel
+                    {
+                        materialTagId = materialTag.materialTagId,
+                        name = materialTag.name
+                    };
+
+                    return Request.CreateResponse(HttpStatusCode.OK, vm);
+
+                }
+                catch (Exception ex)
+                {
+                    return Request.CreateResponse(HttpStatusCode.InternalServerError, ex);
+                }
+
+            }
+            return Request.CreateResponse(HttpStatusCode.InternalServerError, new { Message = "Invalid Token" });
+        }
+
+        [HttpPost]
         public HttpResponseMessage GetByPage([FromBody] SearchViewModel data)
         {
             Authentication a = AuthenticationController.GetMemberAuthenticated(data.authentication.apiId, 1, data.authentication.token);
@@ -91,7 +190,7 @@ namespace Api.Controllers
                         .GetBy(i => (i.name.Contains(data.search)
                             || i.manufacturer.Contains(data.search)
                             || i.modelNumber.Contains(data.search)
-                            || i.tags.Contains(data.search))
+                            || i.materialTags.Any(materialTag => materialTag.name.Contains(data.search)))
                             && !i.isDeleted);
                     
                     int currentPage = data.page - 1;
@@ -124,7 +223,6 @@ namespace Api.Controllers
                             },
                             manufacturer = obj.manufacturer,
                             modelNumber = obj.modelNumber,
-                            tags = obj.tags,
                             notes = obj.notes
                         })
                         .OrderBy(data.sort)
@@ -195,7 +293,13 @@ namespace Api.Controllers
                             },
                             manufacturer = obj.manufacturer,
                             modelNumber = obj.modelNumber,
-                            tags = obj.tags,
+                            materialTags = obj.materialTags.Where(i => !i.isDeleted).Select(materialTag => new MaterialTagViewModel()
+                            {
+                                materialTagId = materialTag.materialTagId,
+                                name = materialTag.name
+                            })
+                            .OrderBy(i => i.name)
+                            .ToList(),
                             notes = obj.notes
                         })
                         .FirstOrDefault();
