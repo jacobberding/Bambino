@@ -160,7 +160,7 @@ const Application = (function () {
     const getHtmlCardTerms = function () {
         return `
 
-            <m-card class="d1" aria-label="Terms" tabindex="0" role="region">
+            <m-card class="d1" data-label="Terms" tabindex="0" role="region">
 
                 <m-flex data-type="col" class="">
 
@@ -538,7 +538,7 @@ const SignIn = (function () {
         Application.type = `SignIn.getHtmlCard`;
         return `
             
-            <m-card class="d1" aria-label="Sign In" tabindex="0" role="region">
+            <m-card class="d1" data-label="Sign In" tabindex="0" role="region">
                 <m-flex data-type="row" class="s">
                 
                     <m-image class="icon mR tR" style="background-image: url('${Settings.logo}');">
@@ -562,7 +562,7 @@ const SignIn = (function () {
                         <input type="password" id="txtPassword" placeholder="Password" required />
                     </m-input>
 
-                    <m-a class="btnReplaceCard" data-label="Sign In" data-function="ForgotPassword.getHtmlCard" tabindex="0" role="tab" aria-label="Forgot Password">Forgot your password? Click here to reset your password</m-a>
+                    <m-a class="btnReplaceCard" data-label="Sign In" data-function="ForgotPassword.getHtmlCard" tabindex="0" role="tab" data-label="Forgot Password">Forgot your password? Click here to reset your password</m-a>
 
                 </m-flex>
                 <m-flex data-type="row" class="footer">
@@ -703,7 +703,7 @@ const SignUp = (function () {
                         $('m-card').append(`
                             <m-flex data-type="row" class="footer">
 
-                                <m-button data-type="primary" id="btnSendNewCode" tabindex="0" role="button" aria-label="Send New Code">
+                                <m-button data-type="primary" id="btnSendNewCode" tabindex="0" role="button" data-label="Send New Code">
                                     Send New Code
                                 </m-button>
 
@@ -754,7 +754,7 @@ const SignUp = (function () {
         Application.type = `SignUp.getHtmlCard`;
         return `
 
-            <m-card class="d1" style="overflow: initial;" aria-label="Sign Up" tabindex="0" role="region">
+            <m-card class="d1" style="overflow: initial;" data-label="Sign Up" tabindex="0" role="region">
                 <m-flex data-type="row" class="s">
                 
                     <m-image class="icon mR tR" style="background-image: url('${Settings.logo}');">
@@ -810,7 +810,7 @@ const SignUp = (function () {
                         </m-flex>
                     </m-input>
 
-                    <m-a class="btnReplaceCard" data-label="Sign Up" data-function="Application.getHtmlCardTerms" tabindex="0" role="tab" aria-label="Terms">By signing up, you agree to the Terms of Use & Privacy Policy</m-a>
+                    <m-a class="btnReplaceCard" data-label="Sign Up" data-function="Application.getHtmlCardTerms" tabindex="0" role="tab" data-label="Terms">By signing up, you agree to the Terms of Use & Privacy Policy</m-a>
 
                 </m-flex>
                 <m-flex data-type="row" class="footer">
@@ -831,7 +831,7 @@ const SignUp = (function () {
         Application.type = `SignUp.getHtmlCardSuccess`;
         return `
 
-            <m-card class="d1" tabindex="0" role="region" aria-label="Sign Up Validation">
+            <m-card class="d1" tabindex="0" role="region" data-label="Sign Up Validation">
                 <m-flex data-type="row" class="sC">
 
                     <m-image class="icon mR tR" style="background-image: url('${Settings.logo}');">
@@ -846,11 +846,11 @@ const SignUp = (function () {
                 <m-flex data-type="col">
 
                     <m-inputs>
-                        <input tabindex="0" role="textbox" onfocus="this.placeholder=''" onblur="this.placeholder='0'" aria-label="First Number in Validation Code" type="number" placeholder="0" id="txtCodeOne" maxlength="1" />
-                        <input tabindex="0" role="textbox" onfocus="this.placeholder=''" onblur="this.placeholder='0'" aria-label="Second Number in Validation Code" type="number" placeholder="0" id="txtCodeTwo" maxlength="1" />
-                        <input tabindex="0" role="textbox" onfocus="this.placeholder=''" onblur="this.placeholder='0'" aria-label="Third Number in Validation Code" type="number" placeholder="0" id="txtCodeThree" maxlength="1" />
-                        <input tabindex="0" role="textbox" onfocus="this.placeholder=''" onblur="this.placeholder='0'" aria-label="Fourth Number in Validation Code" type="number" placeholder="0" id="txtCodeFour" maxlength="1" />
-                        <input tabindex="0" role="textbox" onfocus="this.placeholder=''" onblur="this.placeholder='0'" aria-label="Fifth Number in Validation Code" type="number" placeholder="0" id="txtCodeFive" maxlength="1" />
+                        <input tabindex="0" role="textbox" onfocus="this.placeholder=''" onblur="this.placeholder='0'" data-label="First Number in Validation Code" type="number" placeholder="0" id="txtCodeOne" maxlength="1" />
+                        <input tabindex="0" role="textbox" onfocus="this.placeholder=''" onblur="this.placeholder='0'" data-label="Second Number in Validation Code" type="number" placeholder="0" id="txtCodeTwo" maxlength="1" />
+                        <input tabindex="0" role="textbox" onfocus="this.placeholder=''" onblur="this.placeholder='0'" data-label="Third Number in Validation Code" type="number" placeholder="0" id="txtCodeThree" maxlength="1" />
+                        <input tabindex="0" role="textbox" onfocus="this.placeholder=''" onblur="this.placeholder='0'" data-label="Fourth Number in Validation Code" type="number" placeholder="0" id="txtCodeFour" maxlength="1" />
+                        <input tabindex="0" role="textbox" onfocus="this.placeholder=''" onblur="this.placeholder='0'" data-label="Fifth Number in Validation Code" type="number" placeholder="0" id="txtCodeFive" maxlength="1" />
                     </m-inputs>
 
                     <h2 style="margin-bottom: .5em;text-align: center;">
@@ -879,7 +879,7 @@ const SignUp = (function () {
     const _init = (function () {
         $(document).on(`tap`, `#btnSignUp`, function () { _signUp({ success: true }); });
         $(document).on(`tap`, '#btnSendNewCode', function () { _sendCode(); });
-        $(document).on(`keyup`, 'm-card[aria-label="Sign Up Validation"]', function (e) { _keyUp(e); });
+        $(document).on(`keyup`, 'm-card[data-label="Sign Up Validation"]', function (e) { _keyUp(e); });
         $(document).on(`keyup`, `#txtPhone`, function () { SignUp.phone = $(this).val(); });
     })();
 
@@ -960,7 +960,7 @@ const ForgotPassword = (function () {
         Application.type = `ForgotPassword.getHtmlCard`;
         return `
 
-            <m-card class="d1" tabindex="0" role="region" aria-label="Forgot Password">
+            <m-card class="d1" tabindex="0" role="region" data-label="Forgot Password">
                 <m-flex data-type="row" class="sC">
 
                     <m-image class="icon mR tR" style="background-image: url('${Settings.logo}');">
@@ -982,10 +982,10 @@ const ForgotPassword = (function () {
                 </m-flex>
                 <m-flex data-type="row" class="footer">
 
-                    <m-button data-type="secondary" class="btnReplaceCard" data-label="Forgot Password" data-function="SignIn.getHtmlCard" tabindex="0" role="button" aria-label="Cancel">
+                    <m-button data-type="secondary" class="btnReplaceCard" data-label="Forgot Password" data-function="SignIn.getHtmlCard" tabindex="0" role="button" data-label="Cancel">
                         Cancel
                     </m-button>
-                    <m-button data-type="primary" id="btnForgotPassword" tabindex="0" role="button" aria-label="Reset Password">
+                    <m-button data-type="primary" id="btnForgotPassword" tabindex="0" role="button" data-label="Reset Password">
                         Send Email
                     </m-button>
 
@@ -998,7 +998,7 @@ const ForgotPassword = (function () {
         Application.type = `ForgotPassword.getHtmlCardReset`;
         return `
 
-            <m-card class="d1" tabindex="0" role="region" aria-label="Reset Password">
+            <m-card class="d1" tabindex="0" role="region" data-label="Reset Password">
                 <m-flex data-type="row" class="sC">
 
                     <m-image class="icon mR tR" style="background-image: url('${Settings.logo}');">
@@ -1027,7 +1027,7 @@ const ForgotPassword = (function () {
                 </m-flex>
                 <m-flex data-type="row" class="footer">
 
-                    <m-button data-type="primary" id="btnResetPassword" tabindex="0" role="button" aria-label="Reset Password">
+                    <m-button data-type="primary" id="btnResetPassword" tabindex="0" role="button" data-label="Reset Password">
                         Reset Password
                     </m-button>
 

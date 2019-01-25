@@ -187,6 +187,7 @@ namespace Api.Controllers
                             name = (obj.name == "") ? obj.companyName : obj.name,
                             email = obj.email,
                             skills = obj.skills,
+                            title = obj.title,
                             personalWebsite = obj.personalWebsite
                         })
                         .OrderBy(data.sort)

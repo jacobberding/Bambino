@@ -8,7 +8,7 @@ using System.Text;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Security;
-using Contacts.Models;
+using Api.Models;
 
 namespace Contacts.Controllers
 {

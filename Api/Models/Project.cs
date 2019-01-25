@@ -12,36 +12,27 @@ namespace Api.Models
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public Guid projectId { get; set; }
 
-        public string code { get; set; }
+        public string code { get; set; } = "";
 
-        public string name { get; set; }
+        public string name { get; set; } = "";
 
-        public string addressLine1 { get; set; }
+        public string addressLine1 { get; set; } = "";
 
-        public string addressLine2 { get; set; }
+        public string addressLine2 { get; set; } = "";
 
-        public string city { get; set; }
+        public string city { get; set; } = "";
 
-        public string state { get; set; }
+        public string state { get; set; } = "";
 
-        public string zip { get; set; }
+        public string zip { get; set; } = "";
 
-        public string country { get; set; }
+        public string country { get; set; } = "";
 
-        public bool isDeleted { get; set; }
+        public bool isDeleted { get; set; } = false;
 
-        public Project()
-        {
-            code = "";
-            name = "";
-            addressLine1 = "";
-            addressLine2 = "";
-            city = "";
-            state = "";
-            zip = "";
-            country = "";
-            isDeleted = false;
-        }
+        public virtual ICollection<TimeTrackerProject> timeTrackerProjects { get; set; } = new List<TimeTrackerProject>();
+        public virtual ICollection<Tsk> tsks { get; set; } = new List<Tsk>();
+        public virtual ICollection<Member> members { get; set; } = new List<Member>();
 
     }
 
@@ -50,37 +41,29 @@ namespace Api.Models
 
         public Guid projectId { get; set; }
 
-        public string code { get; set; }
+        public string code { get; set; } = "";
 
-        public string name { get; set; }
+        public string name { get; set; } = "";
 
-        public string addressLine1 { get; set; }
+        public string addressLine1 { get; set; } = "";
 
-        public string addressLine2 { get; set; }
+        public string addressLine2 { get; set; } = "";
 
-        public string city { get; set; }
+        public string city { get; set; } = "";
 
-        public string state { get; set; }
+        public string state { get; set; } = "";
 
-        public string zip { get; set; }
+        public string zip { get; set; } = "";
 
-        public string country { get; set; }
+        public string country { get; set; } = "";
 
-        public bool isDeleted { get; set; }
+        public int numOfMembers { get; set; } = 0;
 
-        public ProjectViewModel()
-        {
-            projectId = Guid.Empty;
-            code = "";
-            name = "";
-            addressLine1 = "";
-            addressLine2 = "";
-            city = "";
-            state = "";
-            zip = "";
-            country = "";
-            isDeleted = false;
-        }
+        public bool isDeleted { get; set; } = false;
+
+        public List<TimeTrackerProjectViewModel> timeTrackerProjects { get; set; } = new List<TimeTrackerProjectViewModel>();
+        public List<TskViewModel> tsks { get; set; } = new List<TskViewModel>();
+        public List<MemberViewModel> members { get; set; } = new List<MemberViewModel>();
 
     }
 
@@ -89,39 +72,38 @@ namespace Api.Models
 
         public AuthenticationViewModel authentication { get; set; }
 
-        public Guid projectId { get; set; }
+        public Guid projectId { get; set; } = Guid.Empty;
 
-        public string code { get; set; }
+        public string code { get; set; } = "";
 
-        public string name { get; set; }
+        public string name { get; set; } = "";
 
-        public string addressLine1 { get; set; }
+        public string addressLine1 { get; set; } = "";
 
-        public string addressLine2 { get; set; }
+        public string addressLine2 { get; set; } = "";
 
-        public string city { get; set; }
+        public string city { get; set; } = "";
 
-        public string state { get; set; }
+        public string state { get; set; } = "";
 
-        public string zip { get; set; }
+        public string zip { get; set; } = "";
 
-        public string country { get; set; }
+        public string country { get; set; } = "";
 
-        public bool isDeleted { get; set; }
+        public bool isDeleted { get; set; } = false;
+        
+    }
 
-        public ProjectAddEditDeleteViewModel()
-        {
-            projectId = Guid.Empty;
-            code = "";
-            name = "";
-            addressLine1 = "";
-            addressLine2 = "";
-            city = "";
-            state = "";
-            zip = "";
-            country = "";
-            isDeleted = false;
-        }
+    public class ProjectAddDeleteMemberViewModel
+    {
+
+        public AuthenticationViewModel authentication { get; set; }
+
+        public Guid projectId { get; set; } = Guid.Empty;
+
+        public Guid token { get; set; } = Guid.Empty;
+
+        public string email { get; set; } = "";
 
     }
 
@@ -130,13 +112,8 @@ namespace Api.Models
 
         public AuthenticationViewModel authentication { get; set; }
 
-        public string code { get; set; }
+        public string code { get; set; } = "";
         
-        public ProjectGetByCodeViewModel()
-        {
-            code = "";
-        }
-
     }
 
 }

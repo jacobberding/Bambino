@@ -4,7 +4,11 @@ const Module = (function () {
     
     //Private ----------------------------------------------------------
     let _history = [];
-    
+
+    const _getIsChildInParent = function ($child, parentTag) {
+        return ($child.parents(parentTag).length) ? true : false;
+    }
+
     const _openScrim = function () {
         if ($(`m-studio`).length == 0) $(`m-scrim`).velocity('stop').css(`z-index`, 1000).velocity({ opacity: .5 }, Global.velocitySettings.options);
     }
@@ -41,18 +45,18 @@ const Module = (function () {
     const getHtmlConfirmation = function (action, id, dataId = ``) {
         return `
 
-            <m-header aria-label="Confirmation Header">
+            <m-header data-label="Confirmation Header">
                 <m-flex data-type="row" class="n">
                     <m-flex data-type="row" class="n c tab h">
                         <span>Confirmation</span>
                     </m-flex>
                 </m-flex>
                 <m-flex data-type="row" class="n c sQ h btnCloseModule">
-                    <i class="icon-delete-3"><svg><use xlink:href="/Content/Images/Bambino.min.svg#icon-delete-3"></use></svg></i>
+                    <i class="icon-delete"><svg><use xlink:href="/Content/Images/Bambino.min.svg#icon-delete"></use></svg></i>
                 </m-flex>
             </m-header>
 
-            <m-body aria-label="Confirmation Body">
+            <m-body data-label="Confirmation Body">
 
                 <m-flex data-type="col">
 
@@ -109,19 +113,22 @@ const Module = (function () {
 
         const i = (args != ``) ? `[data-args="${args}"]` : ``;
 
+        if (_getIsChildInParent($(`.btnOpenBody[data-function="${f}"]`), `m-navigation`))
+            $(`m-navigation .btnOpenBody`).removeClass(`active`);
+
         $(`.btnOpenBody[data-function="${f}"]${i}`).parent().find(`.btnOpenBody`).removeClass(`active`);
         $(`.btnOpenBody[data-function="${f}"]`).removeClass(`active`);
         $(`.btnOpenBody[data-function="${f}"]${i}`).addClass(`active`);
 
         setTimeout(function () { //NEED the timeout for mobile apparently moving the thing you are in causes it to simultaneously stop that animation
-            $(`m-body[aria-label="${label}"]`).velocity(`stop`).velocity('transition.slideDownOut', {
+            $(`m-body[data-label="${label}"]`).velocity(`stop`).velocity('transition.slideDownOut', {
                 duration: Global.velocitySettings.durationShort, 
                 easing: Global.velocitySettings.easing,
                 display: `block`,
                 complete: async function () {
                     const html = await Global.getFunctionByName(f, args);
-                    $(`m-body[aria-label="${label}"]`).html(html)
-                        .append((label == `Primary` && f != `Application.getHtmlBodySuccess`) ? Global.getHtmlFooter() : ``)
+                    $(`m-body[data-label="${label}"]`).html(html)
+                        //.append((label == `Primary` && f != `Application.getHtmlBodySuccess`) ? Global.getHtmlFooter() : ``)
                         .velocity('transition.slideUpIn', Global.velocitySettings.options);
                     $(`html, body`).animate({
                       scrollTop: 0
@@ -154,12 +161,12 @@ const Module = (function () {
         });
     }
     const replaceCard = function (label, f, args) {
-        $(`m-card[aria-label="${label}"]`).velocity('transition.slideRightOut', {
+        $(`m-card[data-label="${label}"]`).velocity('transition.slideRightOut', {
             duration: Global.velocitySettings.durationShort, 
             easing: Global.velocitySettings.easing,
             complete: function () {
                 const $el = $(Global.getFunctionByName(f, {}));
-                $(`m-card[aria-label="${label}"]`).replaceWith($el);
+                $(`m-card[data-label="${label}"]`).replaceWith($el);
                 $el.velocity('transition.slideLeftIn', Global.velocitySettings.options);
             }
         });
@@ -195,6 +202,7 @@ const Module = (function () {
     }
     
     const _init = (function () {
+        $(document).on(`tap`, `m-scrim`, function () { Module.closeModule(1); });
         $(document).on(`tap`, `.btnCloseModule`, function () { Module.closeModule($(this).attr(`data-deleteCount`)); });
         $(document).on(`tap`, `.btnOpenModule`, function () { Module.openModule($(this).attr(`data-function`), $(this).attr(`data-args`), $(this).attr(`data-class`)); });
         $(document).on(`tap`, `.btnOpenBody`, function (e) { e.preventDefault(); e.stopImmediatePropagation(); Module.openBody($(this).attr(`data-label`), $(this).attr(`data-function`), $(this).attr(`data-args`)); });

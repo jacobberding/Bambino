@@ -24,6 +24,10 @@ namespace Api
         public DbSet<Project> Projects { get; set; }
         public DbSet<Report> Reports { get; set; }
         public DbSet<Role> Roles { get; set; }
+        public DbSet<Tsk> Tsks { get; set; }
+        public DbSet<SubTsk> SubTsks { get; set; }
+        public DbSet<TimeTracker> TimeTrackers { get; set; }
+        public DbSet<TimeTrackerProject> TimeTrackerProjects { get; set; }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
@@ -31,6 +35,8 @@ namespace Api
 
             modelBuilder.Entity<Material>().Property(x => x.priceMin).HasPrecision(18, 4);
             modelBuilder.Entity<Material>().Property(x => x.priceMax).HasPrecision(18, 4);
+            modelBuilder.Entity<TimeTracker>().Property(x => x.totalHours).HasPrecision(18, 4);
+            modelBuilder.Entity<TimeTrackerProject>().Property(x => x.totalHours).HasPrecision(18, 4);
 
             //Database.SetInitializer<MESHContext>(null);
 
@@ -38,6 +44,16 @@ namespace Api
             //    .HasMany(u => u.invitationRequests) // <--
             //    .WithRequired(r => r.requestedByMember) // <--
             //    .HasForeignKey(r => r.requestedByMemberId);
+
+            modelBuilder.Entity<Project>()
+                .HasMany<Member>(s => s.members)
+                .WithMany(c => c.projects)
+                .Map(cs =>
+                {
+                    cs.MapLeftKey("projectId");
+                    cs.MapRightKey("memberId");
+                    cs.ToTable("ProjectMembers");
+                });
 
             modelBuilder.Entity<Material>()
                 .HasMany<MaterialTag>(s => s.materialTags)

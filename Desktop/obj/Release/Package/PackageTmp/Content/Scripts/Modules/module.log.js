@@ -15,7 +15,7 @@ const Log = (function () {
             page: page,
             records: _records,
             search: ($(`#txtSearchLog`).val()) ? $(`#txtSearchLog`).val() : ``,
-            tableNames: [`Members`,`Contacts`]
+            tableNames: [`Members`,`Contacts`,`Materials`]
         }
 
         if (page == 1) _arr = [];

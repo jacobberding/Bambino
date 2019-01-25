@@ -12,12 +12,7 @@ namespace Api.Models
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public Guid reportId { get; set; }
 
-        public int projectCount { get; set; }
-
-        public Report()
-        {
-            projectCount = 0;
-        }
-
+        public int projectCount { get; set; } = 0;
+        
     }
 }

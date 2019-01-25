@@ -62,6 +62,18 @@ namespace Api
         private GenericRepository<Role> roleRepository;
         public GenericRepository<Role> RoleRepository { get { if (this.roleRepository == null) this.roleRepository = new GenericRepository<Role>(context); return roleRepository; } }
 
+        private GenericRepository<Tsk> tskRepository;
+        public GenericRepository<Tsk> TskRepository { get { if (this.tskRepository == null) this.tskRepository = new GenericRepository<Tsk>(context); return tskRepository; } }
+
+        private GenericRepository<SubTsk> subTskRepository;
+        public GenericRepository<SubTsk> SubTskRepository { get { if (this.subTskRepository == null) this.subTskRepository = new GenericRepository<SubTsk>(context); return subTskRepository; } }
+
+        private GenericRepository<TimeTracker> timeTrackerRepository;
+        public GenericRepository<TimeTracker> TimeTrackerRepository { get { if (this.timeTrackerRepository == null) this.timeTrackerRepository = new GenericRepository<TimeTracker>(context); return timeTrackerRepository; } }
+
+        private GenericRepository<TimeTrackerProject> timeTrackerProjectRepository;
+        public GenericRepository<TimeTrackerProject> TimeTrackerProjectRepository { get { if (this.timeTrackerProjectRepository == null) this.timeTrackerProjectRepository = new GenericRepository<TimeTrackerProject>(context); return timeTrackerProjectRepository; } }
+
         public void Save()
         {
             context.SaveChanges();

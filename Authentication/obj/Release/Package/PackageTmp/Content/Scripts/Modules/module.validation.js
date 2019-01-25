@@ -82,9 +82,9 @@ const Validation = (function () {
 
 		if (_passwords.length >= 1)
 			for (let _password of _passwords)
-                if (_password.val.length < 8 || !/[0-9]/.test(_password.val)) { // || !/[!@#$%&*]/.test(_password.val)
+                if (_password.val.length < 6 || !/[0-9]/.test(_password.val)) { // || !/[!@#$%&*]/.test(_password.val)
 				    _errors++;
-				    error = `Passwords must be at least 8 characters in length and must contain at least one number.`; //at least one special character and
+				    error = `Passwords must be at least 6 characters in length and must contain at least one number.`; //at least one special character and
 		            $parent.find(`[type="password"]`).addClass(`error`);
 		            $parent.find(`[type="password"]`).parent().find(`m-error`).remove();
 		            $parent.find(`[type="password"]`).parent().append(`<m-error>*Required</m-error>`);

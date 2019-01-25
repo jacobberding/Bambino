@@ -40,6 +40,7 @@ namespace Api.Controllers
                     {
                         isContractor    = role.isContractor,
                         isEmployee      = role.isEmployee,
+                        isManager       = role.isManager,
                         isAdmin         = role.isAdmin,
                         isSuperAdmin    = role.isSuperAdmin,
                     }).ToList()

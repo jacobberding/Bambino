@@ -1,0 +1,7 @@
+C:\Users\jpber\Documents\Work\EDC\Bambino\Development\Bambino\EmailAutomation\bin\Debug\EmailAutomation.exe.config
+C:\Users\jpber\Documents\Work\EDC\Bambino\Development\Bambino\EmailAutomation\bin\Debug\EmailAutomation.exe
+C:\Users\jpber\Documents\Work\EDC\Bambino\Development\Bambino\EmailAutomation\bin\Debug\EmailAutomation.pdb
+C:\Users\jpber\Documents\Work\EDC\Bambino\Development\Bambino\EmailAutomation\obj\Debug\EmailAutomation.csprojAssemblyReference.cache
+C:\Users\jpber\Documents\Work\EDC\Bambino\Development\Bambino\EmailAutomation\obj\Debug\EmailAutomation.csproj.CoreCompileInputs.cache
+C:\Users\jpber\Documents\Work\EDC\Bambino\Development\Bambino\EmailAutomation\obj\Debug\EmailAutomation.exe
+C:\Users\jpber\Documents\Work\EDC\Bambino\Development\Bambino\EmailAutomation\obj\Debug\EmailAutomation.pdb

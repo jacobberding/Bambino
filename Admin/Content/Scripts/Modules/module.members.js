@@ -26,7 +26,7 @@ const Members = (function () {
 
     const _edit = function () {
 
-        _self.vm.companyId = $(`#dboCompanyId${_self.name}`).val();
+        _self.vm.companyId = $(`#dboCompanyId${_self.name}`).length > 0 ? $(`#dboCompanyId${_self.name}`).val() : Global.jack.mCI;
         _self.vm.firstName = $(`#txtFirstName${_self.name}`).val();
         _self.vm.lastName = $(`#txtLastName${_self.name}`).val();
         _self.vm.email = $(`#txtEmail${_self.name}`).val();
@@ -36,20 +36,58 @@ const Members = (function () {
         _editDelete();
 
     }
+    const _editPassword = function () {
+
+        const vm = {
+            passwordOld: $(`#txtCurrentPassword`).val(),
+            passwordNew: $(`#txtNewPassword`).val()
+        };
+
+        try {
+
+            Validation.getIsValidForm($('#flxEditPassword'));
+
+            if ($(`#txtNewPassword`).val() !== $(`#txtNewConfirmPassword`).val())
+                throw `Passwords do not match.`;
+
+            Global.post(`${_self.name}_EditPassword`, vm)
+                .done(function (data) {
+                    Validation.done();
+                    $(`#txtCurrentPassword`).val(``);
+                    $(`#txtNewPassword`).val(``);
+                    $(`#txtNewConfirmPassword`).val(``);
+                    Validation.notification(1);
+                })
+                .fail(function (data) {
+                    Validation.fail(data);
+                });
+
+        } catch (ex) {
+            Validation.fail(ex);
+        }
+
+    };
 
     const _editDelete = function () {
 
         try {
 
             Validation.getIsValidForm($('m-module'));
-
+            
             Global.post(`${_self.name}_EditDelete`, _self.vm)
                 .done(function (data) {
                     Validation.done();
 
+                    Global.jack.mFN = _self.vm.firstName;
+                    Global.jack.mLN = _self.vm.lastName;
+                    Global.jack.mE = _self.vm.email;
+                    Global.jack.mP = _self.vm.phone;
+                    Global.editJackSparrow();
+
                     _self.arr = [];
 
-                    _getByPage(1);
+                    if ($(`#lstMembers`).length > 0)
+                        _getByPage(1);
 
                     Validation.notification(1);
                     Module.closeModuleAll();
@@ -452,6 +490,7 @@ const Members = (function () {
         $(document).on(`tap`, `#lst${_self.name}s .sort h2`, function () { _sort($(this)); });
         $(document).on(`tap`, `#btnInvite${_self.name}`, function () { _invite(); });
         $(document).on(`tap`, `#btnEdit${_self.name}`, function () { _edit(); });
+        $(document).on(`tap`, `#btnEditPassword${_self.name}`, function () { _editPassword(); });
         $(document).on(`tap`, `#btnDelete${_self.name}`, function () { _delete(); });
         $(document).on(`tap`, `#btnShowMore${_self.name}`, function () { _self.page++; _getByPage(_self.page); });
         $(document).on(`keyup`, `#txtSearch${_self.name}`, function () { _search(); });

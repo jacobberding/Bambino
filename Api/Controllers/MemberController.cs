@@ -302,6 +302,7 @@ namespace Api.Controllers
                         mCI = member.companyId,
                         mIC = member.roles.Any(i => i.isContractor),
                         mIE = member.roles.Any(i => i.isEmployee),
+                        mIM = member.roles.Any(i => i.isManager),
                         mIA = member.roles.Any(i => i.isAdmin),
                         mIS = member.roles.Any(i => i.isSuperAdmin),
                         mE = member.email,
@@ -544,22 +545,7 @@ namespace Api.Controllers
                     {
                         totalRecords = totalRecords,
                         totalPages = Math.Ceiling((double)totalRecords / data.records),
-                        arr = arr.Select(obj => new MemberViewModel
-                        {
-                            memberId            = obj.memberId,
-                            companyId           = obj.companyId,
-                            company             = new CompanyViewModel()
-                            {
-                                companyId   = obj.company.companyId,
-                                name        = obj.company.name
-                            },
-                            firstName           = obj.firstName,
-                            lastName            = obj.lastName,
-                            email               = obj.email,
-                            originalEmail       = obj.originalEmail,
-                            phone               = obj.phone,
-                            isDeleted           = obj.isDeleted
-                        }).ToList()
+                        arr = arr.ToList()
                     };
                     
                     return Request.CreateResponse(HttpStatusCode.OK, vm);
@@ -857,6 +843,7 @@ namespace Api.Controllers
                         mCI = member.companyId,
                         mIC = member.roles.Any(i => i.isContractor),
                         mIE = member.roles.Any(i => i.isEmployee),
+                        mIM = member.roles.Any(i => i.isManager),
                         mIA = member.roles.Any(i => i.isAdmin),
                         mIS = member.roles.Any(i => i.isSuperAdmin),
                         mE = member.email,

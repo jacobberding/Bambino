@@ -52,6 +52,65 @@ m-a {
         text-decoration: underline;
     }
 
+/*--M-TIMETRACKER-----------------------------------------------------------*/
+m-timetracker {
+    position: fixed;
+    bottom: 1em;
+    right: 1em;
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+    z-index: 999;
+    transition: box-shadow .35s;
+}
+    m-timetracker:hover {
+        cursor: pointer;
+        box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
+    }
+    m-timetracker[data-isActive="true"] {
+        background-color: green;
+    }
+    m-timetracker[data-isActive="false"] {
+        background-color: red;
+    }
+    m-timetracker .sQ i > svg,
+    m-timetracker .sQ i {
+        fill: #FFF;
+    }
+
+
+m-timetrackerprojects {
+    position: fixed;
+    bottom: 60px;
+    right: 1em;
+    z-index: 999;
+    background-color: #FFF;
+    width: 300px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+    border-radius: 2px;
+}
+    m-timetrackerprojects h6 {
+        font-size: .7em;
+        color: #AAA;
+    }
+    m-timetrackerprojects m-card {
+        background-color: none;
+        border: none;
+    }
+    m-timetrackerprojects h1 {
+        font-size: .75em;
+    }
+    m-timetrackerprojects h5 {
+        font-size: .75em;
+        text-align: center;
+        width: 100%;
+    }
+/*--M-TIMETRACKER-----------------------------------------------------------*/
+
 /*--M-NAVIGATION---------------------------------------------------------------*/
 m-navigation {
     width: 175px;
@@ -102,7 +161,7 @@ m-navigation {
     }
 
     m-navigation m-flex.sC {
-        margin: .15em 0;
+        margin: 0 0;
         transition: all .35s;
     }
 
@@ -450,6 +509,26 @@ m-submenu {
     }
 /*--M-SUBMENU-------------------------------------------------------------------------------*/
 
+/*--M-DOT-------------------------------------------------------------------------------*/
+m-dot {
+    min-width: 10px;
+    max-width: 10px;
+    width: 10px;
+    min-height: 10px;
+    max-height: 10px;
+    height: 10px;
+    border-radius: 50%;
+    margin-right: .5em;
+    display: block;
+}
+    m-dot.g {
+        background-color: green;
+    }
+    m-dot.r {
+        background-color: red;
+    }
+/*--M-DOT-------------------------------------------------------------------------------*/
+
 /*--M-BUTTON-------------------------------------------------------------------------------*/
 m-button {
     padding-left: 1em;
@@ -481,6 +560,24 @@ m-button {
             cursor: pointer;
         }
 
+    m-button.sQ {
+        width: 100px;
+        max-width: 100px;
+        height: 100px;
+        max-height: 100px;
+        padding: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    m-button.sm {
+        height: 26px;
+        line-height: 26px;
+        padding-left: 1.25em;
+        padding-right: 1.25em;
+        font-size: 0.75em;
+    }
     m-button.lg {
         height: 72px;
         line-height: 72px;
@@ -1727,7 +1824,14 @@ m-notification p {
 .icon-erase,
 .icon-print,
 .icon-fit-to-width,
-.icon-defense {
+.icon-defense,
+.icon-expired,
+.icon-alarm,
+.icon-task,
+.icon-task-completed,
+.icon-task-planning,
+.icon-todo-list,
+.icon-check-list {
     display: inline-block;
     width: 1.25em;
     height: 1.25em;
@@ -1849,7 +1953,14 @@ m-notification p {
     .icon-erase > svg,
     .icon-print > svg,
     .icon-fit-to-width > svg,
-    .icon-defense > svg {
+    .icon-defense > svg,
+    .icon-expired > svg,
+    .icon-alarm > svg,
+    .icon-task > svg,
+    .icon-task-completed > svg,
+    .icon-task-planning > svg,
+    .icon-todo-list > svg,
+    .icon-check-list > svg {
         display: inline-block;
         width: 1.25em;
         height: 1.25em;

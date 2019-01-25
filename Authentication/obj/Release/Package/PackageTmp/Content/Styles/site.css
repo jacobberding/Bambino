@@ -41,28 +41,28 @@ m-card {
     max-height: 700px;
     overflow: scroll;
 }
-    m-card[aria-label="Terms"] m-h1 {
+    m-card[data-label="Terms"] m-h1 {
         margin-bottom: .25em;
     }
-    m-card[aria-label="Terms"] m-h2 {
+    m-card[data-label="Terms"] m-h2 {
         margin-bottom: 1em;
         font-size: .9em;
     }
-    m-card[aria-label="Terms"] h2,
-    m-card[aria-label="Terms"] h3 {
+    m-card[data-label="Terms"] h2,
+    m-card[data-label="Terms"] h3 {
         text-align: left;
         margin-bottom: .25em;
         font-size: .9em;
     }
-    m-card[aria-label="Terms"] ul {
+    m-card[data-label="Terms"] ul {
         list-style: decimal;
     }
-        m-card[aria-label="Terms"] ul li {
+        m-card[data-label="Terms"] ul li {
             margin-left: 1.5em;
             font-size: .9em;
             margin-bottom: .5em;
         }
-    m-card[aria-label="Terms"] p {
+    m-card[data-label="Terms"] p {
         text-align: left;
         margin-bottom: 1em;
         font-size: .9em;

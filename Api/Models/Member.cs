@@ -12,125 +12,85 @@ namespace Api.Models
         public Guid memberId { get; set; }
         
         [ForeignKey("company")]
-        public Guid companyId { get; set; }
+        public Guid companyId { get; set; } = Guid.Empty;
         public virtual Company company { get; set; }
         
-        public Guid token { get; set; }
-        
-        public Guid tokenApi { get; set; }
-        
-        public string stripeId { get; set; }
-        
-        public string firstName { get; set; }
-        
-        public string lastName { get; set; }
-        
-        public string email { get; set; }
-        
-        public string originalEmail { get; set; }
-        
-        public string phone { get; set; }
-        
-        public byte[] password { get; set; }
-        
-        public byte[] keyValue { get; set; }
-        
-        public byte[] iVValue { get; set; }
-        
-        public Guid? forgotPasswordToken { get; set; }
-        
-        public DateTimeOffset? forgotPasswordDateTime { get; set; }
-        
-        public int? keyCode { get; set; }
-        
-        public DateTimeOffset? keyCodeDateTime { get; set; }
-        
-        public DateTimeOffset lastLoginDateTime { get; set; }
-        
-        public bool isValidated { get; set; }
-        
-        public bool isDeleted { get; set; }
-        
-        public virtual ICollection<MemberIpAddress> memberIpAddresss { get; set; }
-        public virtual ICollection<Log> logs { get; set; }
-        public virtual ICollection<Role> roles { get; set; }
+        public Guid token { get; set; } = Guid.Empty;
 
-        public Member()
-        {
-            companyId                   = Guid.Empty;
-            token                       = Guid.Empty;
-            tokenApi                    = Guid.Empty;
-            stripeId                    = "";
-            firstName                   = ""; 
-            lastName                    = "";
-            email                       = "";
-            originalEmail               = "";
-            phone                       = "";
-            password                    = new byte[] { };
-            keyValue                    = new byte[] { };
-            iVValue                     = new byte[] { };
-            forgotPasswordToken         = null;
-            forgotPasswordDateTime      = null;
-            keyCode                     = null;
-            keyCodeDateTime             = null;
-            lastLoginDateTime           = DateTimeOffset.UtcNow;
-            isValidated                 = false;
-            isDeleted                   = false;
-            memberIpAddresss            = new List<MemberIpAddress>();
-            logs                        = new List<Log>();
-            roles                       = new List<Role>();
-        }
+        public Guid tokenApi { get; set; } = Guid.Empty;
+
+        public string stripeId { get; set; } = "";
+
+        public string firstName { get; set; } = "";
+
+        public string lastName { get; set; } = "";
+
+        public string email { get; set; } = "";
+
+        public string originalEmail { get; set; } = "";
+
+        public string phone { get; set; } = "";
+
+        public byte[] password { get; set; } = new byte[] { };
+
+        public byte[] keyValue { get; set; } = new byte[] { };
+
+        public byte[] iVValue { get; set; } = new byte[] { };
+
+        public Guid? forgotPasswordToken { get; set; } = null;
+
+        public DateTimeOffset? forgotPasswordDateTime { get; set; } = null;
+
+        public int? keyCode { get; set; } = null;
+
+        public DateTimeOffset? keyCodeDateTime { get; set; } = null;
+
+        public DateTimeOffset lastLoginDateTime { get; set; } = DateTimeOffset.UtcNow;
+
+        public bool isValidated { get; set; } = false;
+
+        public bool isDeleted { get; set; } = false;
+
+        public virtual ICollection<MemberIpAddress> memberIpAddresss { get; set; } = new List<MemberIpAddress>();
+        public virtual ICollection<Log> logs { get; set; } = new List<Log>();
+        public virtual ICollection<Role> roles { get; set; } = new List<Role>();
+        public virtual ICollection<Project> projects { get; set; } = new List<Project>();
+        public virtual ICollection<TimeTracker> timeTrackers { get; set; } = new List<TimeTracker>();
 
     }
 
     public class MemberViewModel
     {
         
-        public Guid memberId { get; set; }
-        
-        public Guid companyId { get; set; }
-        public CompanyViewModel company { get; set; }
-        
-        public Guid token { get; set; }
-        
-        public Guid tokenApi { get; set; }
-        
-        public string stripeId { get; set; }
-        
-        public string firstName { get; set; }
-        
-        public string lastName { get; set; }
-        
-        public string email { get; set; }
-        
-        public string originalEmail { get; set; }
-        
-        public string phone { get; set; }
-        
-        public bool isValidated { get; set; }
-        
-        public bool isDeleted { get; set; }
-        
-        public List<RoleViewModel> roles { get; set; }
+        public Guid memberId { get; set; } = Guid.Empty;
 
-        public MemberViewModel()
-        {
-            memberId                    = Guid.Empty;
-            companyId                   = Guid.Empty;
-            company                     = new CompanyViewModel();
-            token                       = Guid.Empty;
-            tokenApi                    = Guid.Empty;
-            stripeId                    = "";
-            firstName                   = ""; 
-            lastName                    = "";
-            email                       = "";
-            originalEmail               = "";
-            phone                       = "";
-            isValidated                 = false;
-            isDeleted                   = false;
-            roles                       = new List<RoleViewModel>();
-        }
+        public Guid companyId { get; set; } = Guid.Empty;
+        public CompanyViewModel company { get; set; } = new CompanyViewModel();
 
+        public Guid token { get; set; } = Guid.Empty;
+
+        public Guid tokenApi { get; set; } = Guid.Empty;
+
+        public string stripeId { get; set; } = "";
+
+        public string firstName { get; set; } = "";
+
+        public string lastName { get; set; } = "";
+
+        public string email { get; set; } = "";
+
+        public string originalEmail { get; set; } = "";
+
+        public string phone { get; set; } = "";
+
+        public bool isActive { get; set; } = false;
+
+        public bool isValidated { get; set; } = false;
+
+        public bool isDeleted { get; set; } = false;
+
+        public List<RoleViewModel> roles { get; set; } = new List<RoleViewModel>();
+        
     }
     
     public class MemberAddCardViewModel
@@ -138,45 +98,29 @@ namespace Api.Models
         
         public AuthenticationViewModel authentication { get; set; }
         
-        public string token { get; set; }
+        public string token { get; set; } = "";
         
-        public MemberAddCardViewModel()
-        {
-            token                       = "";
-        }
-
     }
 
     public class MemberEditDeleteViewModel
     {
         
-        public AuthenticationViewModel authentication { get; set; }
+        public AuthenticationViewModel authentication { get; set; } 
         
-        public Guid memberId { get; set; }
-        
-        public Guid companyId { get; set; }
-        
-        public string firstName { get; set; }
-        
-        public string lastName { get; set; }
-        
-        public string email { get; set; }
-        
-        public string phone { get; set; }
-        
-        public bool isDeleted { get; set; }
-        
-        public MemberEditDeleteViewModel()
-        {
-            memberId                    = Guid.Empty;
-            companyId                   = Guid.Empty;
-            firstName                   = ""; 
-            lastName                    = "";
-            email                       = "";
-            phone                       = "";
-            isDeleted                   = false;
-        }
+        public Guid memberId { get; set; } = Guid.Empty;
 
+        public Guid companyId { get; set; } = Guid.Empty;
+
+        public string firstName { get; set; } = "";
+
+        public string lastName { get; set; } = "";
+
+        public string email { get; set; } = "";
+
+        public string phone { get; set; } = "";
+
+        public bool isDeleted { get; set; } = false;
+        
     }
 
 
@@ -301,13 +245,8 @@ namespace Api.Models
 
         public AuthenticationViewModel authentication { get; set; }
 
-        public string email { get; set; }
-
-        public MemberInviteViewModel()
-        {
-            email = "";
-        }
-
+        public string email { get; set; } = "";
+        
     }
 
 }

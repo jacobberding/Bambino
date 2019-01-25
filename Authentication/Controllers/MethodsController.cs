@@ -9,7 +9,7 @@ using System.Web;
 using System.Web.Mvc;
 using System.Web.Script.Serialization;
 using System.Web.Security;
-using Authentication.Models;
+using Api.Models;
 
 namespace Authentication.Controllers
 {

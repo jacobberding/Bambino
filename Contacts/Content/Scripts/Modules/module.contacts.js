@@ -348,6 +348,9 @@ const Contacts = (function () {
                     <h2 class="${Global.getSort(_self.sort, `email`)}" data-sort="email">
                         Email
                     </h2>
+                    <h2 class="${Global.getSort(_self.sort, `title`)}" data-sort="title">
+                        Title
+                    </h2>
                     ${(Global.isMobile()) ? `` : `
                     <h2 class="${Global.getSort(_self.sort, `skills`)}" data-sort="skills">
                         Skills
@@ -510,12 +513,15 @@ const Contacts = (function () {
                     <h2 class="tE">
                         ${obj.email}
                     </h2>
+                    <h2 class="tE">
+                        ${obj.title}
+                    </h2>
                     ${(Global.isMobile()) ? `` : `
                     <h2 class="tE">
                         ${obj.skills}
                     </h2>
                     <h2 class="tE">
-                        <a href="${obj.personalWebsite}">${obj.personalWebsite}</a>
+                        <a href="${obj.personalWebsite}" target="_blank">${obj.personalWebsite}</a>
                     </h2>`}
                 </m-flex>
             </m-card>

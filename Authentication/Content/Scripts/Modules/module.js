@@ -202,6 +202,7 @@ const Module = (function () {
     }
     
     const _init = (function () {
+        $(document).on(`tap`, `m-scrim`, function () { Module.closeModule(1); });
         $(document).on(`tap`, `.btnCloseModule`, function () { Module.closeModule($(this).attr(`data-deleteCount`)); });
         $(document).on(`tap`, `.btnOpenModule`, function () { Module.openModule($(this).attr(`data-function`), $(this).attr(`data-args`), $(this).attr(`data-class`)); });
         $(document).on(`tap`, `.btnOpenBody`, function (e) { e.preventDefault(); e.stopImmediatePropagation(); Module.openBody($(this).attr(`data-label`), $(this).attr(`data-function`), $(this).attr(`data-args`)); });

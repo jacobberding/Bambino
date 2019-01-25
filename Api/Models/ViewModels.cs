@@ -73,4 +73,11 @@ namespace Api.Models
 
     }
 
+    public class AutomateViewModel
+    {
+
+        public string authenticationId { get; set; }
+
+    }
+
 }

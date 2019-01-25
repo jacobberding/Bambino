@@ -52,6 +52,135 @@ m-a {
         text-decoration: underline;
     }
 
+/*--M-TIMETRACKER-----------------------------------------------------------*/
+m-timetracker {
+    position: fixed;
+    bottom: 1em;
+    right: 1em;
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+    z-index: 999;
+    transition: box-shadow .35s;
+}
+    m-timetracker:hover {
+        cursor: pointer;
+        box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
+    }
+    m-timetracker[data-isActive="true"] {
+        background-color: green;
+    }
+    m-timetracker[data-isActive="false"] {
+        background-color: red;
+    }
+    m-timetracker .sQ i > svg,
+    m-timetracker .sQ i {
+        fill: #FFF;
+    }
+/*--M-TIMETRACKER-----------------------------------------------------------*/
+
+/*--M-NAVIGATION---------------------------------------------------------------*/
+m-navigation {
+    width: 175px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    z-index: 1000;
+    position: absolute;
+    transform: translateY(0);
+    top: 0;
+    left: 0;
+    background-color: #0a4876;
+    transition: all .25s;
+}
+
+    m-navigation.minimized {
+        width: 42px;
+    }
+
+        m-navigation.minimized h1,
+        m-navigation.minimized h2,
+        m-navigation.minimized span {
+            opacity: 0;
+        }
+
+    m-navigation h1 {
+        color: #FFF;
+        font-size: .7em;
+    }
+
+    m-navigation h2 {
+        color: #FFF;
+        font-size: .7em;
+        font-weight: 100;
+    }
+
+    m-navigation i,
+    m-navigation svg {
+        fill: #FFF !important;
+        color: #FFF;
+        width: 1.5em !important;
+        height: 1.5em !important;
+    }
+
+    m-navigation m-flex.sC:first-child {
+        margin: 1em 0;
+    }
+
+    m-navigation m-flex.sC {
+        margin: .15em 0;
+        transition: all .35s;
+    }
+
+        m-navigation m-flex.sC:hover {
+            background-color: rgba(255,255,255,.05);
+        }
+
+        m-navigation m-flex.sC.active {
+            background-color: rgba(255,255,255,.05);
+            border-left: 2px solid #FFF;
+        }
+
+    m-navigation.minimized h1,
+    m-navigation.minimized h2,
+    m-navigation span {
+        transition: all .25s;
+    }
+
+    m-navigation span {
+        color: #FFF;
+        font-size: .75em;
+        height: 40px;
+        line-height: 40px;
+        letter-spacing: .25px;
+    }
+
+    m-navigation label {
+        padding: .5em 1em .5em 1em;
+        margin-top: 0;
+        border-top: 1px solid rgba(0,0,0,.1);
+    }
+
+        m-navigation label:hover {
+            cursor: pointer;
+            background-color: rgba(255,255,255,.05);
+        }
+
+    m-navigation m-sub {
+        overflow: hidden;
+    }
+
+    m-navigation .icon {
+        margin: 0 .35em 0 .25em;
+    }
+
+/*--M-NAVIGATION---------------------------------------------------------------*/
+
 /*--M-ACCORDIAN-------------------------------------------------------------------------------*/
 m-accordian {
     overflow: hidden;
@@ -670,15 +799,15 @@ m-flex {
             cursor: pointer;
         }
         m-flex.xs {
-            min-width: 25px;
-            max-width: 25px;
-            height: 25px;
+            min-width: 16px;
+            max-width: 16px;
+            height: 16px;
             background-color: #EEE;
         }
             m-flex.xs i,
             m-flex.xs svg {
-                width: 1.25em;
-                height: 1.25em;
+                width: 1em;
+                height: 1em;
             }
         m-flex.sm {
             min-width: 40px;
@@ -724,8 +853,8 @@ m-flex {
         margin: 0 auto;
         justify-content: flex-start;
     }
-        [aria-label="Primary"] > .container-sm,
-        [aria-label="Primary"] > .container {
+        [data-label="Primary"] > .container-sm,
+        [data-label="Primary"] > .container {
             min-height: 800px;
         }
     m-flex.container-sm {
@@ -865,7 +994,52 @@ m-card {
             margin: 0;
             color: #424242;
         }
+
+    m-card.tag {
+        border-radius: 15px;
+        width: 100px;
+        height: 30px;
+        min-height: 30px;
+        margin: 0 .25em 0 0;
+    }
+
+        m-card.tag > m-flex {
+            height: 100%;
+            min-height: 100%;
+        }
+
+        m-card.tag h1 {
+            font-size: .65em;
+        }
+
+        m-card.tag > m-flex {
+            padding: 0 .75em;
+        }
 /*--M-CARD-------------------------------------------------------------------------------*/
+
+/*--M-SELECT-------------------------------------------------------------------------------*/
+m-select {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background-color: #FFF;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+    z-index: 1000;
+    border-radius: 2px;
+}
+    m-select m-option {
+        width: 100%;
+        padding: .5em 1em;
+        font-size: .75em;
+    }
+        m-select m-option:hover {
+            cursor: pointer;
+            background-color: #EEE;
+        }
+/*--M-SELECT-------------------------------------------------------------------------------*/
 
 /*--LOADING-------------------------------------------------------------------------------*/
 .loading {
@@ -942,7 +1116,7 @@ m-button.loading {
             height: 100%;
             background-color: rgba(0,0,0,.35);
         }
-        m-body[aria-label="Sub Manager Body"] #lstTemplates m-card.active:after {
+        m-body[data-label="Sub Manager Body"] #lstTemplates m-card.active:after {
             font-size: 1em;
         }
 /*--LIST-------------------------------------------------------------------------------*/
@@ -1317,18 +1491,28 @@ m-body {
     -webkit-backface-visibility: hidden;
     -moz-backface-visibility: hidden;
 }
-    m-body[aria-label="Manager Body"] {
+    m-body[data-label="Manager Body"] {
         /* overflow-y: visible; */
         /* overflow-x: visible; */
         /* overflow: visible; */
         border-right: 1px solid #dcdee1;
     }
-    m-body[aria-label="Settings Body"] {
+    m-body[data-label="Settings Body"] {
         position: initial;
     }
-    m-body[aria-label="Sub Manager Body"] {
+    m-body[data-label="Sub Manager Body"] {
         overflow: scroll;
     }
+
+    m-body[data-label="Primary"] {
+        padding-left: 175px !important;
+        transition: padding-left .25s;
+        overflow: scroll;
+    }
+
+        m-body[data-label="Primary"].minimized {
+            padding-left: 42px !important;
+        }
 /*--M-BODY-------------------------------------------------------------------------------*/
 
 /*--M-HEADER-------------------------------------------------------------------------------*/
@@ -1460,289 +1644,261 @@ m-notification p {
 }
 /*--M-NOTIFICATION-------------------------------------------------------------------------------*/
 
-.icon-plus,
-.icon-plus-math,
-.icon-plus-sign,
-.icon-minus,
-.icon-subtract,
-.icon-line-in-square,
-.icon-download,
-.icon-more,
-.icon-more-info,
-.icon-hamburger-button,
-.icon-three-dots-symbol,
-.icon-delete-button,
 .icon-delete,
-.icon-delete-2,
-.icon-delete-3,
 .icon-edit,
-.icon-create,
 .icon-search,
-.icon-notification,
-.icon-settings,
-.icon-engineer-symbol,
-.icon-text-color,
-.icon-text-height,
-.icon-text-cursor,
-.icon-add-text,
-.icon-text-width,
-.icon-typography,
-.icon-text-align-left,
-.icon-list,
-.icon-paste,
-.icon-lowercase,
-.icon-type,
-.icon-align-justify,
-.icon-align-center,
-.icon-align-right,
-.icon-strikethrough,
-.icon-uppercase,
-.icon-horizontal-line,
-.icon-rounded-rectangle-stroked,
-.icon-pentagon,
-.icon-triangle,
-.icon-hexagon,
-.icon-oval,
-.icon-rectangular,
-.icon-image,
+.icon-trash-can,
+.icon-restart,
+.icon-plus,
+.icon-refresh,
+.icon-share,
+.icon-synchronize,
+.icon-download-from-the-cloud,
+.icon-upload-to-the-cloud,
+.icon-bookmark,
+.icon-no-synchronize,
+.icon-connect,
+.icon-file,
+.icon-folder,
+.icon-picture,
 .icon-image-file,
-.icon-rotate-left,
-.icon-paint-bucket,
-.icon-resize,
-.icon-crop,
-.icon-rotate,
-.icon-rotate-right,
-.icon-flip-horizontal,
-.icon-drag-reorder,
-.icon-product,
-.icon-bring-forward,
-.icon-send-to-back,
-.icon-gender-neutral-user,
-.icon-sign-out,
-.icon-circled-question-mark,
-.icon-available-updates,
-.icon-thumbs-up-hand,
-.icon-email-address,
-.icon-in-progress,
-.icon-tasks,
-.icon-opacity,
-.icon-resize-corners,
-.icon-magnifying-glass-with-plus,
-.icon-magnifying-glass-with-minus,
-.icon-underline,
-.icon-bold,
-.icon-italic,
-.icon-page,
-.icon-layers,
-.icon-push-cart,
-.icon-purchase-order,
-.icon-checkout,
-.icon-shipping,
-.icon-shipping-truck,
-.icon-airport,
-.icon-sent,
-.icon-event,
-.icon-event-2,
-.icon-event-3,
-.icon-group,
-.icon-group-objects,
-.icon-step-back,
-.icon-forward,
-.icon-send-backward,
-.icon-copy-to-clipboard,
-.icon-copy,
-.icon-template,
-.icon-card-payment,
-.icon-payment-history,
-.icon-debit-cards,
-.icon-bill,
-.icon-link,
-.icon-broken-chain-link,
-.icon-delete-link,
-.icon-add-link,
-.icon-external-link,
+.icon-document,
+.icon-opened-folder,
+.icon-support,
+.icon-services,
+.icon-cancel,
+.icon-checked,
 .icon-lock,
-.icon-password,
-.icon-lock-outline,
-.icon-caps-lock-on,
-.icon-security-lock,
-.icon-clockwise-arrow,
-.icon-sand-clock,
-.icon-filter,
-.icon-filter-2,
-.icon-clear-filters,
-.icon-product-code,
-.icon-group-message,
-.icon-paint-brush,
-.icon-paint-bucket-2,
+.icon-padlock,
+.icon-clock,
+.icon-home,
+.icon-info,
+.icon-briefcase,
+.icon-about,
+.icon-contacts,
+.icon-news,
+.icon-rating,
+.icon-external-link,
+.icon-menu,
+.icon-calendar,
+.icon-checkmark,
+.icon-speech-bubble,
+.icon-toolbox,
+.icon-user-male,
+.icon-female-user,
+.icon-mailbox,
+.icon-check-all,
+.icon-for-you,
+.icon-undo,
+.icon-redo,
+.icon-return,
+.icon-advance,
+.icon-rotate-right,
+.icon-rotate-left,
+.icon-down-arrow,
+.icon-up,
+.icon-right,
+.icon-forward,
+.icon-back,
+.icon-expand-arrow,
+.icon-collapse-arrow,
+.icon-next-page,
+.icon-slide-up,
+.icon-down-button,
+.icon-back-to,
+.icon-curved-arrow,
+.icon-left-3,
+.icon-drag,
+.icon-sort,
+.icon-sort-down,
+.icon-sort-up,
+.icon-move-up,
+.icon-move-down,
+.icon-move-right,
+.icon-move-left,
+.icon-admin-settings-male,
+.icon-male-user,
+.icon-user,
+.icon-staff,
+.icon-member,
+.icon-join,
+.icon-remove-user-group-man-man,
+.icon-save,
 .icon-save-as,
-.icon-green-check-mark,
-.icon-check-mark-symbol,
-.icon-green-check-mark-2,
-.icon-price-label,
-.icon-pricing,
-.icon-align-bottom,
-.icon-align-top,
-.icon-grid-2,
-.icon-warning,
-.icon-warning-shield,
-.icon-explanation-mark,
-.icon-fee,
-.icon-discount,
-.icon-sale,
-.icon-low-price,
-.icon-discount-2,
-.icon-shipping-truck-2,
+.icon-error,
+.icon-download,
+.icon-upload,
+.icon-comments,
+.icon-list,
+.icon-email,
+.icon-notification,
+.icon-numbered-list,
+.icon-change-theme,
+.icon-privacy,
+.icon-increase,
+.icon-maintenance,
 .icon-faq,
-.icon-bar-chart-and-polyline,
-.icon-pie-chart {
+.icon-online-support,
+.icon-menu-vertical,
+.icon-squared-menu,
+.icon-circled-menu,
+.icon-advertisement-page,
+.icon-small-icons,
+.icon-content,
+.icon-in-progress,
+.icon-submit-progress,
+.icon-quick-mode-on,
+.icon-quick-mode-off,
+.icon-high-priority,
+.icon-navigation-toolbar-left,
+.icon-zoom-in,
+.icon-zoom-out,
+.icon-downloads,
+.icon-zip,
+.icon-erase,
+.icon-print,
+.icon-fit-to-width,
+.icon-defense,
+.icon-expired,
+.icon-alarm,
+.icon-task,
+.icon-task-completed,
+.icon-task-planning,
+.icon-todo-list,
+.icon-check-list {
     display: inline-block;
-    width: 1.5em;
-    height: 1.5em;
+    width: 1.25em;
+    height: 1.25em;
     fill: currentColor;
     vertical-align: -0.1em;
 }
 
-.icon-plus > svg,
-.icon-plus-math > svg,
-.icon-plus-sign > svg,
-.icon-minus > svg,
-.icon-subtract > svg,
-.icon-line-in-square > svg,
-.icon-download > svg,
-.icon-more > svg,
-.icon-more-info > svg,
-.icon-hamburger-button > svg,
-.icon-three-dots-symbol > svg,
-.icon-delete-button > svg,
-.icon-delete > svg,
-.icon-delete-2 > svg,
-.icon-delete-3 > svg,
-.icon-edit > svg,
-.icon-create > svg,
-.icon-search > svg,
-.icon-notification > svg,
-.icon-settings > svg,
-.icon-engineer-symbol > svg,
-.icon-text-color > svg,
-.icon-text-height > svg,
-.icon-text-cursor > svg,
-.icon-add-text > svg,
-.icon-text-width > svg,
-.icon-typography > svg,
-.icon-text-align-left > svg,
-.icon-list > svg,
-.icon-paste > svg,
-.icon-lowercase > svg,
-.icon-type > svg,
-.icon-align-justify > svg,
-.icon-align-center > svg,
-.icon-align-right > svg,
-.icon-strikethrough > svg,
-.icon-uppercase > svg,
-.icon-horizontal-line > svg,
-.icon-rounded-rectangle-stroked > svg,
-.icon-pentagon > svg,
-.icon-triangle > svg,
-.icon-hexagon > svg,
-.icon-oval > svg,
-.icon-rectangular > svg,
-.icon-image > svg,
-.icon-image-file > svg,
-.icon-rotate-left > svg,
-.icon-paint-bucket > svg,
-.icon-resize > svg,
-.icon-crop > svg,
-.icon-rotate > svg,
-.icon-rotate-right > svg,
-.icon-flip-horizontal > svg,
-.icon-drag-reorder > svg,
-.icon-product > svg,
-.icon-bring-forward > svg,
-.icon-send-to-back > svg,
-.icon-gender-neutral-user > svg,
-.icon-sign-out > svg,
-.icon-circled-question-mark > svg,
-.icon-available-updates > svg,
-.icon-thumbs-up-hand > svg,
-.icon-email-address > svg,
-.icon-in-progress > svg,
-.icon-tasks > svg,
-.icon-opacity > svg,
-.icon-resize-corners > svg,
-.icon-magnifying-glass-with-plus > svg,
-.icon-magnifying-glass-with-minus > svg,
-.icon-underline > svg,
-.icon-bold > svg,
-.icon-italic > svg,
-.icon-page > svg,
-.icon-layers > svg,
-.icon-push-cart > svg,
-.icon-purchase-order > svg,
-.icon-checkout > svg,
-.icon-shipping > svg,
-.icon-shipping-truck > svg,
-.icon-airport > svg,
-.icon-sent > svg,
-.icon-event > svg,
-.icon-event-2 > svg,
-.icon-event-3 > svg,
-.icon-group > svg,
-.icon-group-objects > svg,
-.icon-step-back > svg,
-.icon-forward > svg,
-.icon-send-backward > svg,
-.icon-copy-to-clipboard > svg,
-.icon-copy > svg,
-.icon-template > svg,
-.icon-card-payment > svg,
-.icon-payment-history > svg,
-.icon-debit-cards > svg,
-.icon-bill > svg,
-.icon-link > svg,
-.icon-broken-chain-link > svg,
-.icon-delete-link > svg,
-.icon-add-link > svg,
-.icon-external-link > svg,
-.icon-lock > svg,
-.icon-password > svg,
-.icon-lock-outline > svg,
-.icon-caps-lock-on > svg,
-.icon-security-lock > svg,
-.icon-clockwise-arrow > svg,
-.icon-sand-clock > svg,
-.icon-filter > svg,
-.icon-filter-2 > svg,
-.icon-clear-filters > svg,
-.icon-product-code > svg,
-.icon-group-message > svg,
-.icon-paint-brush > svg,
-.icon-paint-bucket-2 > svg,
-.icon-save-as > svg,
-.icon-green-check-mark > svg,
-.icon-check-mark-symbol > svg,
-.icon-green-check-mark-2 > svg,
-.icon-price-label > svg,
-.icon-pricing > svg,
-.icon-align-bottom > svg,
-.icon-align-top > svg,
-.icon-grid-2 > svg,
-.icon-warning > svg,
-.icon-warning-shield > svg,
-.icon-explanation-mark > svg,
-.icon-fee > svg,
-.icon-discount > svg,
-.icon-sale > svg,
-.icon-low-price > svg,
-.icon-discount-2 > svg,
-.icon-shipping-truck-2 > svg,
-.icon-faq > svg,
-.icon-bar-chart-and-polyline > svg,
-.icon-pie-chart > svg {
-    display: inline-block;
-    width: 1.5em;
-    height: 1.5em;
-    fill: currentColor;
-    vertical-align: -0.1em;
-}
+    .icon-delete > svg,
+    .icon-edit > svg,
+    .icon-search > svg,
+    .icon-trash-can > svg,
+    .icon-restart > svg,
+    .icon-plus > svg,
+    .icon-refresh > svg,
+    .icon-share > svg,
+    .icon-synchronize > svg,
+    .icon-download-from-the-cloud > svg,
+    .icon-upload-to-the-cloud > svg,
+    .icon-bookmark > svg,
+    .icon-no-synchronize > svg,
+    .icon-connect > svg,
+    .icon-file > svg,
+    .icon-folder > svg,
+    .icon-picture > svg,
+    .icon-image-file > svg,
+    .icon-document > svg,
+    .icon-opened-folder > svg,
+    .icon-support > svg,
+    .icon-services > svg,
+    .icon-cancel > svg,
+    .icon-checked > svg,
+    .icon-lock > svg,
+    .icon-padlock > svg,
+    .icon-clock > svg,
+    .icon-home > svg,
+    .icon-info > svg,
+    .icon-briefcase > svg,
+    .icon-about > svg,
+    .icon-contacts > svg,
+    .icon-news > svg,
+    .icon-rating > svg,
+    .icon-external-link > svg,
+    .icon-menu > svg,
+    .icon-calendar > svg,
+    .icon-checkmark > svg,
+    .icon-speech-bubble > svg,
+    .icon-toolbox > svg,
+    .icon-user-male > svg,
+    .icon-female-user > svg,
+    .icon-mailbox > svg,
+    .icon-check-all > svg,
+    .icon-for-you > svg,
+    .icon-undo > svg,
+    .icon-redo > svg,
+    .icon-return > svg,
+    .icon-advance > svg,
+    .icon-rotate-right > svg,
+    .icon-rotate-left > svg,
+    .icon-down-arrow > svg,
+    .icon-up > svg,
+    .icon-right > svg,
+    .icon-forward > svg,
+    .icon-back > svg,
+    .icon-expand-arrow > svg,
+    .icon-collapse-arrow > svg,
+    .icon-next-page > svg,
+    .icon-slide-up > svg,
+    .icon-down-button > svg,
+    .icon-back-to > svg,
+    .icon-curved-arrow > svg,
+    .icon-left-3 > svg,
+    .icon-drag > svg,
+    .icon-sort > svg,
+    .icon-sort-down > svg,
+    .icon-sort-up > svg,
+    .icon-move-up > svg,
+    .icon-move-down > svg,
+    .icon-move-right > svg,
+    .icon-move-left > svg,
+    .icon-admin-settings-male > svg,
+    .icon-male-user > svg,
+    .icon-user > svg,
+    .icon-staff > svg,
+    .icon-member > svg,
+    .icon-join > svg,
+    .icon-remove-user-group-man-man > svg,
+    .icon-save > svg,
+    .icon-save-as > svg,
+    .icon-error > svg,
+    .icon-download > svg,
+    .icon-upload > svg,
+    .icon-comments > svg,
+    .icon-list > svg,
+    .icon-email > svg,
+    .icon-notification > svg,
+    .icon-numbered-list > svg,
+    .icon-change-theme > svg,
+    .icon-privacy > svg,
+    .icon-increase > svg,
+    .icon-maintenance > svg,
+    .icon-faq > svg,
+    .icon-online-support > svg,
+    .icon-menu-vertical > svg,
+    .icon-squared-menu > svg,
+    .icon-circled-menu > svg,
+    .icon-advertisement-page > svg,
+    .icon-small-icons > svg,
+    .icon-content > svg,
+    .icon-in-progress > svg,
+    .icon-submit-progress > svg,
+    .icon-quick-mode-on > svg,
+    .icon-quick-mode-off > svg,
+    .icon-high-priority > svg,
+    .icon-navigation-toolbar-left > svg,
+    .icon-zoom-in > svg,
+    .icon-zoom-out > svg,
+    .icon-downloads > svg,
+    .icon-zip > svg,
+    .icon-erase > svg,
+    .icon-print > svg,
+    .icon-fit-to-width > svg,
+    .icon-defense > svg,
+    .icon-expired > svg,
+    .icon-alarm > svg,
+    .icon-task > svg,
+    .icon-task-completed > svg,
+    .icon-task-planning > svg,
+    .icon-todo-list > svg,
+    .icon-check-list > svg {
+        display: inline-block;
+        width: 1.25em;
+        height: 1.25em;
+        fill: currentColor;
+        vertical-align: -0.1em;
+    }
 

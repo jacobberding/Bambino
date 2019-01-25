@@ -13,54 +13,39 @@ namespace Api.Models
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public Guid roleId { get; set; }
         
-        public string name { get; set; }
+        public string name { get; set; } = "";
 
-        public bool isContractor { get; set; }
-        
-        public bool isEmployee { get; set; }
-        
-        public bool isAdmin { get; set; }
-        
-        public bool isSuperAdmin { get; set; }
-        
-        public virtual ICollection<Member> members { get; set; }
+        public bool isContractor { get; set; } = false;
 
-        public Role()
-        {
-            name                = "";
-            isContractor        = false;
-            isEmployee          = false;
-            isAdmin             = false;
-            isSuperAdmin        = false;
-            members             = new List<Member>();
-        }
+        public bool isEmployee { get; set; } = false;
 
+        public bool isManager { get; set; } = false;
+
+        public bool isAdmin { get; set; } = false;
+
+        public bool isSuperAdmin { get; set; } = false;
+
+        public virtual ICollection<Member> members { get; set; } = new List<Member>();
+        
     }
     
     public class RoleViewModel
     {
 
-        public Guid roleId { get; set; }
+        public Guid roleId { get; set; } = Guid.Empty;
+
+        public string name { get; set; } = "";
+
+        public bool isContractor { get; set; } = false;
+
+        public bool isEmployee { get; set; } = false;
+
+        public bool isManager { get; set; } = false;
+
+        public bool isAdmin { get; set; } = false;
+
+        public bool isSuperAdmin { get; set; } = false;
         
-        public string name { get; set; }
-
-        public bool isContractor { get; set; }
-
-        public bool isEmployee { get; set; }
-
-        public bool isAdmin { get; set; }
-
-        public bool isSuperAdmin { get; set; }
-
-        public RoleViewModel()
-        {
-            name                = "";
-            isContractor        = false;
-            isEmployee          = false;
-            isAdmin             = false;
-            isSuperAdmin        = false;
-        }
-
     }
 
 }
