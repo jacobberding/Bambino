@@ -27,7 +27,20 @@ namespace Api.Models
         public string state { get; set; }
 
     }
-    
+
+    public class AddDeleteManyToManyViewModel
+    {
+
+        public AuthenticationViewModel authentication { get; set; }
+
+        public Guid tableId { get; set; }
+
+        public Guid manyId { get; set; }
+
+        public string name { get; set; }
+
+    }
+
     public class GetByIdViewModel
     {
 
@@ -70,6 +83,17 @@ namespace Api.Models
         public string value { get; set; }
 
         public string name { get; set; }
+
+    }
+
+    public class DateTimeOffsetViewModel
+    {
+
+        public AuthenticationViewModel authentication { get; set; }
+
+        public DateTimeOffset startDate { get; set; } = DateTimeOffset.UtcNow;
+
+        public DateTimeOffset endDate { get; set; } = DateTimeOffset.UtcNow;
 
     }
 

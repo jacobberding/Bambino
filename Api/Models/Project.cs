@@ -12,6 +12,10 @@ namespace Api.Models
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public Guid projectId { get; set; }
 
+        [ForeignKey("company")]
+        public Guid companyId { get; set; } = Guid.Empty;
+        public virtual Company company { get; set; }
+
         public string code { get; set; } = "";
 
         public string name { get; set; } = "";
@@ -28,6 +32,8 @@ namespace Api.Models
 
         public string country { get; set; } = "";
 
+        public bool isDefault { get; set; } = false;
+
         public bool isDeleted { get; set; } = false;
 
         public virtual ICollection<TimeTrackerProject> timeTrackerProjects { get; set; } = new List<TimeTrackerProject>();
@@ -40,6 +46,9 @@ namespace Api.Models
     {
 
         public Guid projectId { get; set; }
+        
+        public Guid companyId { get; set; } = Guid.Empty;
+        public CompanyViewModel company { get; set; }
 
         public string code { get; set; } = "";
 
@@ -58,6 +67,8 @@ namespace Api.Models
         public string country { get; set; } = "";
 
         public int numOfMembers { get; set; } = 0;
+
+        public bool isDefault { get; set; } = false;
 
         public bool isDeleted { get; set; } = false;
 
@@ -89,6 +100,8 @@ namespace Api.Models
         public string zip { get; set; } = "";
 
         public string country { get; set; } = "";
+
+        public bool isDefault { get; set; } = false;
 
         public bool isDeleted { get; set; } = false;
         

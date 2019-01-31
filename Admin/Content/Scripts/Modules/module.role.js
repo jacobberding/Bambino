@@ -13,14 +13,16 @@ const Role = (function () {
     const _add = function () {
 
         const vm = {
-            memberId: Members.getSelf().vm.memberId,
+            tableId: Members.getSelf().vm.memberId,
             name: $(`#txtSearch${_self.name}`).val()
         };
 
         Global.post(`Member_AddRole`, vm)
             .done(function (data) {
 
-                $(`#flxRoleTags`).append(Role.getHtmlTag(data));
+                if ($(`m-card[data-id="${data.manyId}"]`).length == 0)
+                    $(`#flxRoleTags`).append(getHtmlTag(data));
+
                 $(`#txtSearch${_self.name}`).val(``);
 
                 Validation.notification(1);
@@ -33,8 +35,8 @@ const Role = (function () {
     const _delete = function ($this) {
 
         const vm = {
-            memberId: Members.getSelf().vm.memberId,
-            roleId: $this.attr(`data-id`)
+            tableId: Members.getSelf().vm.memberId,
+            manyId: $this.attr(`data-id`)
         };
 
         Global.post(`Member_DeleteRole`, vm)

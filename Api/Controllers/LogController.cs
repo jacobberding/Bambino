@@ -52,7 +52,7 @@ namespace Api.Controllers
                             || i.activity.Contains(data.search)
                             || String.Concat(i.member.firstName, " ", i.member.lastName).Contains(data.search)
                             || i.member.email.Contains(data.search)
-                            || i.member.company.name.Contains(data.search)));
+                            || i.member.companies.Any(x => x.name.Contains(data.search))));
 
                     int currentPage = data.page - 1;
                     int skip = currentPage * data.records;
@@ -69,10 +69,10 @@ namespace Api.Controllers
                                 phone           = obj.member.phone,
                                 firstName       = obj.member.firstName,
                                 lastName        = obj.member.lastName,
-                                company         = new CompanyViewModel()
+                                companies       = obj.member.companies.Select(company => new CompanyViewModel()
                                 {
-                                    name        = obj.member.company.name
-                                }
+                                    name        = company.name
+                                }).ToList()
                             },
                             activity        = obj.activity,
                             controllerName  = obj.controllerName,
@@ -93,29 +93,7 @@ namespace Api.Controllers
                     {
                         totalRecords = totalRecords,
                         totalPages = Math.Ceiling((double)totalRecords / data.records),
-                        arr = arr.Select(obj => new LogViewModel()
-                        {
-                            logId       = obj.logId,
-                            memberId    = obj.memberId,
-                            member      = new MemberViewModel()
-                            {
-                                memberId        = obj.member.memberId,
-                                email           = obj.member.email,
-                                phone           = obj.member.phone,
-                                firstName       = obj.member.firstName,
-                                lastName        = obj.member.lastName,
-                                company         = new CompanyViewModel()
-                                {
-                                    name        = obj.member.company.name
-                                }
-                            },
-                            activity        = obj.activity,
-                            controllerName  = obj.controllerName,
-                            methodName      = obj.methodName,
-                            tableName       = obj.tableName,
-                            tableId         = obj.tableId,
-                            createdDate     = obj.createdDate
-                        }).ToList()
+                        arr = arr.ToList()
                     };
                     
                     return Request.CreateResponse(HttpStatusCode.OK, vm);

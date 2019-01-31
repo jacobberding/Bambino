@@ -82,7 +82,7 @@ const Application = (function () {
                         <span class="tE">Dashboard<span>
                     </m-flex>
 
-                    <m-flex data-type="row" class="n sC h btnOpenBody" data-label="Primary" data-function="Contacts.getHtmlBody" tabindex="0" role="tab" data-label="Contacts">
+                    <!--<m-flex data-type="row" class="n sC h btnOpenBody" data-label="Primary" data-function="Contacts.getHtmlBody" tabindex="0" role="tab" data-label="Contacts">
                         <m-flex data-type="row" class="n c sm sQ">
                             <i class="icon-male-user"><svg><use xlink:href="/Content/Images/Bambino.min.svg#icon-male-user"></use></svg></i>
                         </m-flex>
@@ -94,6 +94,13 @@ const Application = (function () {
                             <i class="icon-news"><svg><use xlink:href="/Content/Images/Bambino.min.svg#icon-news"></use></svg></i>
                         </m-flex>
                         <span class="tE">Materials<span>
+                    </m-flex>-->
+
+                    <m-flex data-type="row" class="n sC h btnOpenBody" data-label="Primary" data-function="Application.getHtmlBodyManage" tabindex="0" role="tab" data-label="Manage">
+                        <m-flex data-type="row" class="n c sm sQ">
+                            <i class="icon-squared-menu"><svg><use xlink:href="/Content/Images/Bambino.min.svg#icon-squared-menu"></use></svg></i>
+                        </m-flex>
+                        <span class="tE">Manage<span>
                     </m-flex>
 
                     <m-flex data-type="row" class="n sC h btnOpenBody" data-label="Primary" data-function="Settings.getHtmlBody" tabindex="0" role="tab" data-label="Settings">
@@ -150,6 +157,32 @@ const Application = (function () {
 
             `;
     };
+    const getHtmlBodyManage = function () {
+        return `
+
+            <m-flex data-type="col" class="container">
+
+                <m-flex data-type="row" class="n s wR">
+
+                    <m-button data-type="secondary" class="sQ btnOpenBody mR" data-label="Primary" data-function="Contacts.getHtmlBody" data-args="">
+                        Contacts
+                    </m-button>
+
+                    <m-button data-type="secondary" class="sQ btnOpenBody mR" data-label="Primary" data-function="Materials.getHtmlBody" data-args="">
+                        Materials
+                    </m-button>
+
+                    ${Global.jack.mIA ? `
+                    <m-button data-type="secondary" class="sQ btnOpenBody mR" data-label="Primary" data-function="TimeTracker.getHtmlBody" data-args="">
+                        Time Sheets
+                    </m-button>` : ``}
+
+                </m-flex>
+
+            </m-flex>
+
+            `;
+    };
 
     const _init = (function () {
         $(document).on(`tap`, `.btnOpenSub`, function () { _openSub($(this)); });
@@ -163,7 +196,8 @@ const Application = (function () {
 
     return {
         getHtml: getHtml,
-        getHtmlBody: getHtmlBody
+        getHtmlBody: getHtmlBody,
+        getHtmlBodyManage: getHtmlBodyManage
     }
 
 })();

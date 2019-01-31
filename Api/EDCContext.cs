@@ -45,6 +45,16 @@ namespace Api
             //    .WithRequired(r => r.requestedByMember) // <--
             //    .HasForeignKey(r => r.requestedByMemberId);
 
+            modelBuilder.Entity<Member>()
+                .HasMany<Company>(s => s.companies)
+                .WithMany(c => c.members)
+                .Map(cs =>
+                {
+                    cs.MapLeftKey("memberId");
+                    cs.MapRightKey("companyId");
+                    cs.ToTable("MemberCompanies");
+                });
+
             modelBuilder.Entity<Project>()
                 .HasMany<Member>(s => s.members)
                 .WithMany(c => c.projects)

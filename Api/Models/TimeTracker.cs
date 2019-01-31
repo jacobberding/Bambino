@@ -62,12 +62,16 @@ namespace Api.Models
         public AuthenticationViewModel authentication { get; set; }
 
         public Guid timeTrackerId { get; set; } = Guid.Empty;
-        
+
         public DateTimeOffset dateIn { get; set; } = DateTimeOffset.UtcNow;
 
         public DateTimeOffset dateOut { get; set; } = DateTimeOffset.MinValue;
 
+        public decimal totalHours { get; set; } = 0.0000m;
+
         public bool isDeleted { get; set; } = false;
+
+        public List<TimeTrackerProjectViewModel> projects { get; set; } = new List<TimeTrackerProjectViewModel>();
 
     }
 

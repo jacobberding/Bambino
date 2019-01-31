@@ -57,7 +57,7 @@ namespace Api.Controllers
         //}
 
         [HttpPost]
-        public HttpResponseMessage AddRole([FromBody] MemberAddDeleteRoleViewModel data)
+        public HttpResponseMessage AddRole([FromBody] AddDeleteManyToManyViewModel data)
         {
             Authentication a = AuthenticationController.GetMemberAuthenticated(data.authentication.apiId, 1, data.authentication.token);
             if (a.isAuthenticated)
@@ -69,7 +69,7 @@ namespace Api.Controllers
                     UnitOfWork unitOfWork = new UnitOfWork();
 
                     Member member = unitOfWork.MemberRepository
-                        .GetBy(i => i.memberId == data.memberId
+                        .GetBy(i => i.memberId == data.tableId
                             && !i.isDeleted)
                         .FirstOrDefault();
 
@@ -90,14 +90,66 @@ namespace Api.Controllers
 
                     LogController.Add(a.member.memberId, "Member " + member.email + " Added Role " + role.name, "Member", "AddRole", member.memberId, "Members");
 
-                    var vm = new RoleViewModel
+                    var vm = new
                     {
-                        roleId = role.roleId,
+                        manyId = role.roleId,
                         name = role.name,
                         isAdmin = role.isAdmin,
                         isContractor = role.isContractor,
                         isEmployee = role.isEmployee,
                         isSuperAdmin = role.isSuperAdmin
+                    };
+
+                    return Request.CreateResponse(HttpStatusCode.OK, vm);
+
+                }
+                catch (Exception ex)
+                {
+                    return Request.CreateResponse(HttpStatusCode.InternalServerError, ex);
+                }
+
+            }
+            return Request.CreateResponse(HttpStatusCode.InternalServerError, new { Message = "Invalid Token" });
+        }
+
+        [HttpPost]
+        public HttpResponseMessage AddCompany([FromBody] AddDeleteManyToManyViewModel data)
+        {
+            Authentication a = AuthenticationController.GetMemberAuthenticated(data.authentication.apiId, 1, data.authentication.token);
+            if (a.isAuthenticated)
+            {
+
+                try
+                {
+
+                    UnitOfWork unitOfWork = new UnitOfWork();
+
+                    Member member = unitOfWork.MemberRepository
+                        .GetBy(i => i.memberId == data.tableId
+                            && !i.isDeleted)
+                        .FirstOrDefault();
+
+                    if (member == null)
+                        throw new InvalidOperationException("Not Found");
+
+                    Company company = unitOfWork.CompanyRepository
+                        .GetBy(i => i.name == data.name)
+                        .FirstOrDefault();
+
+                    if (company == null)
+                        throw new InvalidOperationException("Not Found");
+
+                    member.companies.Add(company);
+
+                    unitOfWork.MemberRepository.Update(member);
+                    unitOfWork.Save();
+
+                    LogController.Add(a.member.memberId, "Member " + member.email + " Added Company " + company.name, "Member", "AddCompany", member.memberId, "Members");
+
+                    var vm = new
+                    {
+                        manyId = company.companyId,
+                        name = company.name
                     };
 
                     return Request.CreateResponse(HttpStatusCode.OK, vm);
@@ -133,7 +185,6 @@ namespace Api.Controllers
                     if (member == null)
                         throw new InvalidOperationException("Not Found");
                     
-                    member.companyId = data.companyId;
                     member.firstName = data.firstName;
                     member.lastName = data.lastName;
                     member.email = data.email;
@@ -299,7 +350,7 @@ namespace Api.Controllers
                     var vm = new e()
                     {
                         mT = member.token,
-                        mCI = member.companyId,
+                        mCI = member.activeCompanyId,
                         mIC = member.roles.Any(i => i.isContractor),
                         mIE = member.roles.Any(i => i.isEmployee),
                         mIM = member.roles.Any(i => i.isManager),
@@ -367,7 +418,7 @@ namespace Api.Controllers
         }
 
         [HttpPost]
-        public HttpResponseMessage DeleteRole([FromBody] MemberAddDeleteRoleViewModel data)
+        public HttpResponseMessage DeleteRole([FromBody] AddDeleteManyToManyViewModel data)
         {
             Authentication a = AuthenticationController.GetMemberAuthenticated(data.authentication.apiId, 1, data.authentication.token);
             if (a.isAuthenticated)
@@ -379,7 +430,7 @@ namespace Api.Controllers
                     UnitOfWork unitOfWork = new UnitOfWork();
                     
                     Member member = unitOfWork.MemberRepository
-                        .GetBy(i => i.memberId == data.memberId
+                        .GetBy(i => i.memberId == data.tableId
                             && !i.isDeleted)
                         .FirstOrDefault();
 
@@ -387,7 +438,7 @@ namespace Api.Controllers
                         throw new InvalidOperationException("Not Found");
 
                     Role role = unitOfWork.RoleRepository
-                        .GetBy(i => i.roleId == data.roleId)
+                        .GetBy(i => i.roleId == data.manyId)
                         .FirstOrDefault();
 
                     if (role == null)
@@ -408,6 +459,58 @@ namespace Api.Controllers
                         isContractor = role.isContractor,
                         isEmployee = role.isEmployee,
                         isSuperAdmin = role.isSuperAdmin
+                    };
+
+                    return Request.CreateResponse(HttpStatusCode.OK, vm);
+
+                }
+                catch (Exception ex)
+                {
+                    return Request.CreateResponse(HttpStatusCode.InternalServerError, ex);
+                }
+
+            }
+            return Request.CreateResponse(HttpStatusCode.InternalServerError, new { Message = "Invalid Token" });
+        }
+
+        [HttpPost]
+        public HttpResponseMessage DeleteCompany([FromBody] AddDeleteManyToManyViewModel data)
+        {
+            Authentication a = AuthenticationController.GetMemberAuthenticated(data.authentication.apiId, 1, data.authentication.token);
+            if (a.isAuthenticated)
+            {
+
+                try
+                {
+
+                    UnitOfWork unitOfWork = new UnitOfWork();
+
+                    Member member = unitOfWork.MemberRepository
+                        .GetBy(i => i.memberId == data.tableId
+                            && !i.isDeleted)
+                        .FirstOrDefault();
+
+                    if (member == null)
+                        throw new InvalidOperationException("Not Found");
+
+                    Company company = unitOfWork.CompanyRepository
+                        .GetBy(i => i.companyId == data.manyId)
+                        .FirstOrDefault();
+
+                    if (company == null)
+                        throw new InvalidOperationException("Not Found");
+
+                    member.companies.Remove(company);
+
+                    unitOfWork.MemberRepository.Update(member);
+                    unitOfWork.Save();
+
+                    LogController.Add(a.member.memberId, "Member " + member.email + " Removed Company " + company.name, "Member", "DeleteCompany", member.memberId, "Members");
+
+                    var vm = new CompanyViewModel
+                    {
+                        companyId = company.companyId,
+                        name = company.name
                     };
 
                     return Request.CreateResponse(HttpStatusCode.OK, vm);
@@ -507,7 +610,7 @@ namespace Api.Controllers
 
                     var query = unitOfWork.MemberRepository
                         .GetBy(i => !i.isDeleted
-                            && (i.company.name.Contains(data.search) 
+                            && (i.companies.Any(x => x.name.Contains(data.search))
                             || i.email.Contains(data.search) 
                             || String.Concat(i.firstName, " ", i.lastName).Contains(data.search)
                             || i.phone.Contains(data.search)
@@ -520,12 +623,12 @@ namespace Api.Controllers
                         .Select(obj => new MemberViewModel
                         {
                             memberId            = obj.memberId,
-                            companyId           = obj.companyId,
-                            company             = new CompanyViewModel()
+                            activeCompanyId     = obj.activeCompanyId,
+                            companies           = obj.companies.Select(company => new CompanyViewModel() 
                             {
-                                companyId   = obj.company.companyId,
-                                name        = obj.company.name
-                            },
+                                companyId           = company.companyId,
+                                name                = company.name
+                            }).ToList(),
                             firstName           = obj.firstName,
                             lastName            = obj.lastName,
                             email               = obj.email,
@@ -578,12 +681,12 @@ namespace Api.Controllers
                         .Select(obj => new MemberViewModel
                         {
                             memberId            = obj.memberId,
-                            companyId           = obj.companyId,
-                            company             = new CompanyViewModel()
+                            activeCompanyId     = obj.activeCompanyId,
+                            companies           = obj.companies.Select(company => new CompanyViewModel()
                             {
-                                companyId   = obj.company.companyId,
-                                name        = obj.company.name
-                            },
+                                companyId           = company.companyId,
+                                name                = company.name
+                            }).ToList(),
                             firstName           = obj.firstName,
                             lastName            = obj.lastName,
                             email               = obj.email,
@@ -840,7 +943,7 @@ namespace Api.Controllers
                     var vm = new e()
                     {
                         mT = member.token,
-                        mCI = member.companyId,
+                        mCI = member.activeCompanyId,
                         mIC = member.roles.Any(i => i.isContractor),
                         mIE = member.roles.Any(i => i.isEmployee),
                         mIM = member.roles.Any(i => i.isManager),
@@ -907,7 +1010,8 @@ namespace Api.Controllers
                     if (company.pin != data.pin)
                         throw new InvalidOperationException("Company pin does not match.");
 
-                    member.companyId = data.companyId;
+                    member.activeCompanyId = data.companyId;
+                    member.companies.Add(company);
                     member.email = email;
                     member.originalEmail = email;
                     member.password = encrypt.password;

@@ -273,7 +273,7 @@ namespace Api.Controllers
                             members                 = obj.members.Where(i => !i.isDeleted).Select(member => new MemberViewModel()
                             {
                                 memberId            = member.memberId,
-                                companyId           = member.companyId,
+                                activeCompanyId     = member.activeCompanyId,
                                 firstName           = member.firstName,
                                 lastName            = member.lastName,
                                 email               = member.email,

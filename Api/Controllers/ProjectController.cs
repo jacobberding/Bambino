@@ -52,6 +52,7 @@ namespace Api.Controllers
                         unitOfWork.ReportRepository.Update(report);
                         unitOfWork.Save();
 
+                        project.companyId = a.member.activeCompanyId;
                         project.code = DateTime.Now.Year.ToString() + report.projectCount.ToString();
 
                         unitOfWork.ProjectRepository.Insert(project);

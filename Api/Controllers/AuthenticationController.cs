@@ -34,21 +34,21 @@ namespace Api.Controllers
                     && !i.isDeleted)
                 .Select(obj => new MemberViewModel()
                 {
-                    memberId    = obj.memberId,
-                    companyId   = obj.companyId,
-                    roles       = obj.roles.Select(role => new RoleViewModel()
+                    memberId            = obj.memberId,
+                    activeCompanyId     = obj.activeCompanyId,
+                    roles               = obj.roles.Select(role => new RoleViewModel()
                     {
-                        isContractor    = role.isContractor,
-                        isEmployee      = role.isEmployee,
-                        isManager       = role.isManager,
-                        isAdmin         = role.isAdmin,
-                        isSuperAdmin    = role.isSuperAdmin,
+                        isContractor        = role.isContractor,
+                        isEmployee          = role.isEmployee,
+                        isManager           = role.isManager,
+                        isAdmin             = role.isAdmin,
+                        isSuperAdmin        = role.isSuperAdmin,
                     }).ToList()
                 })
                 .FirstOrDefault();
             
             authentication.isAuthenticated = (api != null && member != null) ? true : false;
-            authentication.member = (member != null) ? new MemberViewModel() { memberId = member.memberId, companyId = member.companyId, company = member.company, roles = member.roles } : new MemberViewModel();
+            authentication.member = (member != null) ? new MemberViewModel() { memberId = member.memberId, activeCompanyId = member.activeCompanyId, roles = member.roles } : new MemberViewModel();
             
             return authentication;
                 

@@ -12,21 +12,21 @@ const Members = (function () {
         isShowMore: false,
         vm: {},
         name: `Member`,
-        constructor: function (memberId, companyId, firstName, lastName, email, phone, isDeleted, roles) {
+        constructor: function (memberId, activeCompanyId, firstName, lastName, email, phone, isDeleted, companies, roles) {
             this.memberId = memberId;
-            this.companyId = companyId;
+            this.activeCompanyId = activeCompanyId;
             this.firstName = firstName;
             this.lastName = lastName;
             this.email = email;
             this.phone = phone;
             this.isDeleted = isDeleted;
+            this.companies = companies;
             this.roles = roles;
         }
     }
 
     const _edit = function () {
-
-        _self.vm.companyId = $(`#dboCompanyId${_self.name}`).length > 0 ? $(`#dboCompanyId${_self.name}`).val() : Global.jack.mCI;
+        
         _self.vm.firstName = $(`#txtFirstName${_self.name}`).val();
         _self.vm.lastName = $(`#txtLastName${_self.name}`).val();
         _self.vm.email = $(`#txtEmail${_self.name}`).val();
@@ -401,25 +401,18 @@ const Members = (function () {
     }
     const getHtmlBodyForm = function () {
 
-        let html = ``;
+        let htmlRole = ``;
+        let htmlCompany = ``;
 
         for (let role of _self.vm.roles)
-            html += Role.getHtmlTag(role);
+            htmlRole += Role.getHtmlTag(role);
+
+        for (let company of _self.vm.companies)
+            htmlCompany += Company.getHtmlTag(company);
 
         return `
 
             <m-flex data-type="col" class="form">
-
-                <m-flex data-type="row" class="n">
-
-                    <m-input>
-                        <label for="dboCompanyId${_self.name}">Company</label>
-                        <select id="dboCompanyId${_self.name}">
-                            ${Global.getHtmlOptions(Company.getSelf().arr, [_self.vm.companyId])}
-                        </select>
-                    </m-input>
-
-                </m-flex>
 
                 <m-flex data-type="row" class="n">
                     <m-input class="mR">
@@ -447,6 +440,22 @@ const Members = (function () {
 
                 <m-flex data-type="row" class="n s">
                     <m-input class="mR">
+                        <input type="text" id="txtSearchCompany" placeholder="Company" value="" />
+                    </m-input>
+
+                    <m-flex data-type="row" class="n c sm sQ secondary btnAddCompany">
+                        <i class="icon-plus"><svg><use xlink:href="/Content/Images/Bambino.min.svg#icon-plus"></use></svg></i>
+                    </m-flex>
+                </m-flex>
+
+                <label for="txtSearchCompany" class="mB">Companies</label>
+
+                <m-flex data-type="row" class="n s mB" id="flxCompanyTags">
+                    ${htmlCompany}
+                </m-flex>
+
+                <m-flex data-type="row" class="n s mT">
+                    <m-input class="mR">
                         <input type="text" id="txtSearchRole" placeholder="Role" value="" />
                     </m-input>
 
@@ -458,7 +467,7 @@ const Members = (function () {
                 <label for="txtSearchRole" class="mB">Roles</label>
 
                 <m-flex data-type="row" class="n s" id="flxRoleTags">
-                    ${html}
+                    ${htmlRole}
                 </m-flex>
 
             </m-flex>

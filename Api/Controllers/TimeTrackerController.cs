@@ -1,6 +1,7 @@
 ﻿using Api.Models;
 using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.IO;
 using System.Linq;
 using System.Linq.Dynamic;
@@ -19,7 +20,7 @@ namespace Api.Controllers
     {
         
         [HttpPost]
-        public HttpResponseMessage AddEditDelete([FromBody] TimeTrackerAddEditDeleteViewModel data)
+        public HttpResponseMessage EditDelete([FromBody] TimeTrackerAddEditDeleteViewModel data)
         {
             Authentication a = AuthenticationController.GetMemberAuthenticated(data.authentication.apiId, 1, data.authentication.token);
             if (a.isAuthenticated)
@@ -30,31 +31,46 @@ namespace Api.Controllers
 
                     UnitOfWork unitOfWork = new UnitOfWork();
 
-                    TimeTracker timeTracker = (data.timeTrackerId == Guid.Empty) ? new TimeTracker() : unitOfWork.TimeTrackerRepository
+                    TimeTracker timeTracker = unitOfWork.TimeTrackerRepository
                         .GetBy(i => i.timeTrackerId == data.timeTrackerId
                             && !i.isDeleted)
                         .FirstOrDefault();
 
                     if (timeTracker == null)
-                        throw new InvalidOperationException("Layer Not Found");
+                        throw new InvalidOperationException("Not Found");
 
                     timeTracker.dateIn = data.dateIn;
                     timeTracker.dateOut = data.dateOut;
+                    timeTracker.totalHours = data.totalHours;
+                    timeTracker.isDeleted = data.isDeleted;
 
-                    if (data.timeTrackerId == Guid.Empty)
-                        unitOfWork.TimeTrackerRepository.Insert(timeTracker);
-                    else
-                        unitOfWork.TimeTrackerRepository.Update(timeTracker);
+                    timeTracker.timeTrackerProjects.ToList().ForEach(r => unitOfWork.TimeTrackerProjectRepository.Delete(r));
+                    foreach (var project in data.projects)
+                    {
 
+                        TimeTrackerProject timeTrackerProject = new TimeTrackerProject();
+
+                        timeTrackerProject.projectId = (project.projectId == Guid.Empty) ? unitOfWork.ProjectRepository.GetBy(i => i.isDefault && i.companyId == a.member.activeCompanyId).FirstOrDefault().projectId : project.projectId;
+
+                        timeTrackerProject.timeTrackerId = timeTracker.timeTrackerId;
+                        timeTrackerProject.totalHours = project.totalHours;
+                        //add description eventually
+
+                        unitOfWork.TimeTrackerProjectRepository.Insert(timeTrackerProject);
+                        unitOfWork.Save();
+
+                    }
+
+                    unitOfWork.TimeTrackerRepository.Update(timeTracker);
                     unitOfWork.Save();
 
-                    var activity = (data.timeTrackerId == Guid.Empty) ? "Added" : (data.isDeleted) ? "Deleted" : "Edited";
-                    LogController.Add(a.member.memberId, String.Format("{0} {1} {2} a time sheet record", timeTracker.member.firstName, timeTracker.member.lastName, activity), "TimeTracker", "AddEditDelete", timeTracker.timeTrackerId, "TimeTrackers");
+                    var activity = (data.isDeleted) ? "Deleted" : "Edited";
+                    LogController.Add(a.member.memberId, String.Format("{0} {1} {2} a time sheet record", timeTracker.member.firstName, timeTracker.member.lastName, activity), "TimeTracker", "EditDelete", timeTracker.timeTrackerId, "TimeTrackers");
 
                     var vm = new AddEditDeleteReturnViewModel()
                     {
                         id = timeTracker.timeTrackerId,
-                        state = (data.timeTrackerId == Guid.Empty) ? "add" : (data.isDeleted) ? "delete" : "edit"
+                        state = (data.isDeleted) ? "delete" : "edit"
                     };
 
                     return Request.CreateResponse(HttpStatusCode.OK, vm);
@@ -157,9 +173,10 @@ namespace Api.Controllers
                     {
 
                         TimeTrackerProject timeTrackerProject = new TimeTrackerProject();
+                        
+                        timeTrackerProject.projectId = (project.projectId == Guid.Empty) ? unitOfWork.ProjectRepository.GetBy(i => i.isDefault && i.companyId == a.member.activeCompanyId).FirstOrDefault().projectId : project.projectId;
 
                         timeTrackerProject.timeTrackerId = timeTracker.timeTrackerId;
-                        timeTrackerProject.projectId = project.projectId;
                         timeTrackerProject.totalHours = project.totalHours;
                         //add description eventually
 
@@ -353,6 +370,69 @@ namespace Api.Controllers
                         .Count() > 0 ? true : false;
 
                     return Request.CreateResponse(HttpStatusCode.OK, isActive);
+
+                }
+                catch (Exception ex)
+                {
+                    return Request.CreateResponse(HttpStatusCode.InternalServerError, ex);
+                }
+
+            }
+            return Request.CreateResponse(HttpStatusCode.InternalServerError, new { Message = "Invalid Token" });
+        }
+
+        [HttpPost]
+        public HttpResponseMessage GetReport([FromBody] DateTimeOffsetViewModel data)
+        {
+            Authentication a = AuthenticationController.GetMemberAuthenticated(data.authentication.apiId, 1, data.authentication.token);
+            if (a.isAuthenticated)
+            {
+
+                try
+                {
+
+                    UnitOfWork unitOfWork = new UnitOfWork();
+
+                    DateTimeOffset min = data.startDate.Date.AddDays(-1);
+                    DateTimeOffset max = data.endDate.Date.AddDays(1);
+
+                    var arr = unitOfWork.TimeTrackerRepository
+                        .GetBy(i => DbFunctions.TruncateTime(i.dateCreated) >= min
+                            && DbFunctions.TruncateTime(i.dateCreated) <= max
+                            && !i.isActive
+                            && !i.isDeleted)
+                        .Select(obj => new TimeTrackerViewModel
+                        {
+                            timeTrackerId = obj.timeTrackerId,
+                            member = new MemberViewModel()
+                            {
+                                token = obj.member.token,
+                                email = obj.member.email,
+                                firstName = obj.member.firstName,
+                                lastName = obj.member.lastName,
+                                isActive = obj.member.timeTrackers.Any(i => i.isActive)
+                            },
+                            dateCreated = obj.dateCreated,
+                            dateIn = obj.dateIn,
+                            dateOut = obj.dateOut,
+                            totalHours = obj.totalHours,
+                            isActive = obj.isActive,
+                            timeTrackerProjects = obj.timeTrackerProjects.Select(timeTrackerProject => new TimeTrackerProjectViewModel()
+                            {
+                                timeTrackerProjectId = timeTrackerProject.timeTrackerProjectId,
+                                projectId = timeTrackerProject.projectId,
+                                project = new ProjectViewModel()
+                                {
+                                    name = timeTrackerProject.project.name
+                                },
+                                description = timeTrackerProject.description,
+                                totalHours = timeTrackerProject.totalHours,
+                            }).ToList()
+                        })
+                        .OrderByDescending(i => i.dateCreated)
+                        .ToList();
+                    
+                    return Request.CreateResponse(HttpStatusCode.OK, arr);
 
                 }
                 catch (Exception ex)

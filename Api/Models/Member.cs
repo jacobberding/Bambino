@@ -10,11 +10,9 @@ namespace Api.Models
     {
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public Guid memberId { get; set; }
-        
-        [ForeignKey("company")]
-        public Guid companyId { get; set; } = Guid.Empty;
-        public virtual Company company { get; set; }
-        
+
+        public Guid activeCompanyId { get; set; } = Guid.Empty;
+
         public Guid token { get; set; } = Guid.Empty;
 
         public Guid tokenApi { get; set; } = Guid.Empty;
@@ -51,6 +49,7 @@ namespace Api.Models
 
         public bool isDeleted { get; set; } = false;
 
+        public virtual ICollection<Company> companies { get; set; } = new List<Company>();
         public virtual ICollection<MemberIpAddress> memberIpAddresss { get; set; } = new List<MemberIpAddress>();
         public virtual ICollection<Log> logs { get; set; } = new List<Log>();
         public virtual ICollection<Role> roles { get; set; } = new List<Role>();
@@ -64,8 +63,7 @@ namespace Api.Models
         
         public Guid memberId { get; set; } = Guid.Empty;
 
-        public Guid companyId { get; set; } = Guid.Empty;
-        public CompanyViewModel company { get; set; } = new CompanyViewModel();
+        public Guid activeCompanyId { get; set; } = Guid.Empty;
 
         public Guid token { get; set; } = Guid.Empty;
 
@@ -89,6 +87,7 @@ namespace Api.Models
 
         public bool isDeleted { get; set; } = false;
 
+        public List<CompanyViewModel> companies { get; set; } = new List<CompanyViewModel>();
         public List<RoleViewModel> roles { get; set; } = new List<RoleViewModel>();
         
     }
