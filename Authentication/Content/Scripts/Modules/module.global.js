@@ -45,7 +45,19 @@ const Global = (function () {
     
         return domain;
     }
-    
+
+    const _openHref = function ($this) {
+
+        let href = $this.attr(`data-href`);
+        const prefix = 'http://';
+        if (href.substr(0, prefix.length) !== prefix) {
+            href = prefix + href;
+        }
+
+        window.open(href);
+
+    }
+
     const _post = function (m, vm) {
         //console.log(`m`, m);
         //console.log(`vm`, vm);
@@ -265,6 +277,7 @@ const Global = (function () {
     const _init = (function () {
         //$(document).on(`tap`, `#`, function () { window.location = `https://desktop.bambino.software`; });
         $(document).on(`tap`, `#btnSignOut`, function (e) { _signOut(); });
+        $(document).on(`tap`, `.a`, function (e) { e.preventDefault(); e.stopImmediatePropagation(); _openHref($(this)); });
 
         if (!isMobile()) {
             $(document).on('mouseenter', '.tooltip', function (e) {

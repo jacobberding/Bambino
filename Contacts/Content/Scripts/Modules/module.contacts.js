@@ -150,6 +150,41 @@ const Contacts = (function () {
     const _getEmptyVM = function () {
         return new _self.constructor(Global.guidEmpty,``,``,``,``,``,``,``,``,``,``,``,``,false,false,false);
     }
+    const _getExport = function () {
+        
+        Global.post(`${_self.name}_GetReport`, {})
+            .done(function (data) {
+                _getCSV(data);
+            })
+            .fail(function (data) {
+                Validation.notification(2);
+            });
+
+    };
+    const _getCSV = function (data) {
+
+        //By Person
+
+        let csvArray = [
+            [`Name`, `Email`]
+        ];
+        let lineArray = [];
+
+        for (let obj of data)
+            csvArray.push([obj.name,obj.email]);
+
+        csvArray.forEach(function (csvRow, index) {
+
+            for (var i = 0; i < csvRow.length; i++)
+                csvRow[i] = csvRow[i].toString().replace(/,/g, "");
+
+            lineArray.push(csvRow.join(","));
+
+        });
+
+        saveAs(new Blob([lineArray.join("\n")], { type: "text/plain;charset=utf-8" }), `Bambino Report_Contacts_${moment().format(`MMDDYYYY hhmmssa`)}.csv`);
+        
+    }
 
     const _search = function () {
 
@@ -170,7 +205,27 @@ const Contacts = (function () {
         
     }
     const _upload = function (files) {
-        console.log(`_upload`);
+
+        if (files.length == 0 || $(`#btnUpload${_self.name}`).hasClass('disabled')) { _uploadReset(); return; }
+        $(`#btnUpload${_self.name}`).addClass('disabled');
+
+        let formData = new FormData();
+
+        for (let i = 0; i < files.length; i++) {
+            console.log(Global.getIsValidFile(files[i])); //10MB
+            if (files[i].size > 10000000) { Validation.notification(1, `File Upload Limit`, `File size is above 10MB in size, please reduce the file size before uploading.`, `error`); _uploadReset(); return; }
+            if (Global.getIsValidFile(files[i]) == false) { Validation.notification(1, `File Upload Type`, `File extension is not allowed.`, `error`); _uploadReset(); return; }
+            formData.append(files[i].name, files[i]);
+        }
+
+        Global.upload(formData, Settings.uploadSuccess, '/File/Upload');
+
+    }
+    const _uploadReset = function () {
+        $(`#upl${_self.name}`).val(``);
+        $(`#btnUpload${_self.name}`).removeClass(`disabled`);
+    }
+    const _uploadData = function (files) {
 
         const file = files[0];
         let reader = new FileReader();
@@ -308,16 +363,20 @@ const Contacts = (function () {
                             <input type="text" id="txtSearch${_self.name}" placeholder="Search" value="" required />
                         </m-input>
 
-                        <m-flex data-type="row" class="n c sm sQ primary btnOpenModule" data-function="Contacts.getHtmlModuleAdd">
+                        <m-flex data-type="row" class="n c sm sQ mR primary btnOpenModule" data-function="Contacts.getHtmlModuleAdd">
                             <i class="icon-plus"><svg><use xlink:href="/Content/Images/Bambino.min.svg#icon-plus"></use></svg></i>
+                        </m-flex>
+
+                        <m-flex data-type="row" class="n c sm sQ secondary" id="btnExport${_self.name}">
+                            <i class="icon-download"><svg><use xlink:href="/Content/Images/Bambino.min.svg#icon-download"></use></svg></i>
                         </m-flex>
 
                         <!--<m-flex data-type="row" class="n pL pR">
 
-                            <m-button data-type="primary" class="" id="btnUpload${_self.name}">
+                            <m-button data-type="primary" class="" id="btnUploadData${_self.name}">
                                 Upload
                             </m-button>
-                            <input type="file" class="none" id="upl${_self.name}" />
+                            <input type="file" class="none" id="uplData${_self.name}" />
 
                         </m-flex>-->
 
@@ -408,6 +467,15 @@ const Contacts = (function () {
         return `
 
             <m-flex data-type="col" class="form">
+
+                <m-flex data-type="row" class="n pL pR">
+
+                    <m-button data-type="primary" class="" id="btnUpload${_self.name}">
+                        Upload
+                    </m-button>
+                    <input type="file" class="none" id="upl${_self.name}" />
+
+                </m-flex>
 
                 <m-flex data-type="row" class="n">
                     <m-input class="mR">
@@ -521,7 +589,7 @@ const Contacts = (function () {
                         ${obj.skills}
                     </h2>
                     <h2 class="tE">
-                        <a href="${obj.personalWebsite}" target="_blank">${obj.personalWebsite}</a>
+                        <span class="a" data-href="${obj.personalWebsite}">${obj.personalWebsite}</span>
                     </h2>`}
                 </m-flex>
             </m-card>
@@ -529,9 +597,17 @@ const Contacts = (function () {
             `;
     };
 
+    const uploadSuccess = function (arr) {
+        ContactFile.add(arr[0]);
+        _uploadReset();
+    }
+
     const _init = (function () {
-        //$(document).on(`tap`, `#btnUpload${_self.name}`, function (e) { e.stopPropagation(); e.preventDefault(); $(`#upl${_self.name}`).click(); });
-        //$(document).on(`change`, `#upl${_self.name}`, function () { _upload($(this).prop(`files`)); });
+        //$(document).on(`tap`, `#btnUploadData${_self.name}`, function (e) { e.stopPropagation(); e.preventDefault(); $(`#uplData${_self.name}`).click(); });
+        //$(document).on(`change`, `#uplData${_self.name}`, function () { _uploadData($(this).prop(`files`)); });
+        $(document).on(`tap`, `#btnUpload${_self.name}`, function (e) { e.stopPropagation(); e.preventDefault(); $(`#upl${_self.name}`).click(); });
+        $(document).on(`change`, `#upl${_self.name}`, function () { _upload($(this).prop(`files`)); });
+        $(document).on(`tap`, `#btnExport${_self.name}`, function () { _getExport($(this)); });
         $(document).on(`tap`, `#lst${_self.name}s .sort h2`, function () { _sort($(this)); });
         $(document).on(`tap`, `#btnAdd${_self.name}, #btnEdit${_self.name}`, function () { _addEdit(); });
         $(document).on(`tap`, `#btnDelete${_self.name}`, function () { _delete(); });
@@ -548,6 +624,57 @@ const Contacts = (function () {
         getHtmlBodyDetail: getHtmlBodyDetail,
         getHtmlBodyForm: getHtmlBodyForm,
         getHtmlCard: getHtmlCard
+    }
+
+})();
+const ContactFile = (function () {
+
+    //Private ------------------------------------------------
+    let _self = {
+        timeout: undefined,
+        records: 100,
+        page: 1,
+        sort: `name asc`,
+        isShowMore: false,
+        name: `ContactFile`,
+        arr: [],
+        vm: {},
+        constructor: function (contactFileId, contactId, name, path, originalFileName, isDeleted) {
+            this.contactFileId = contactFileId;
+            this.contactId = contactId;
+            this.name = name;
+            this.path = path;
+            this.originalFileName = originalFileName;
+            this.isDeleted = isDeleted;
+        }
+    };
+
+    const _add = function (obj) {
+
+        const vm = {
+
+        };
+
+        console.log(`obj`,obj);
+
+    };
+
+    //Public ------------------------------------------------
+    const add = function (obj) {
+        _add(obj);
+    };
+
+    const getSelf = function () {
+        return _self;
+    };
+
+    const _init = (function () {
+
+    })();
+
+    return {
+        add: add,
+        getSelf: getSelf
     }
 
 })();

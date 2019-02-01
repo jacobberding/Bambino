@@ -13,6 +13,7 @@ namespace Api
         public DbSet<ApiToken> ApiTokens { get; set; }
         public DbSet<Company> Companies { get; set; }
         public DbSet<Contact> Contacts { get; set; }
+        public DbSet<ContactFile> ContactFiles { get; set; }
         public DbSet<Discipline> Disciplines { get; set; }
         public DbSet<Email> Emails { get; set; }
         public DbSet<Log> Logs { get; set; }

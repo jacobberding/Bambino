@@ -11,3 +11,34 @@ h3 {
     font-size: .7em;
     color: #BBB;
 }
+
+.crdInfo {
+    
+}
+
+    .crdInfo h5 {
+        font-size: .8em;
+        color: #454545;
+    }
+    .crdInfo h6 {
+        font-size: .75em;
+        color: #AAA;
+        margin-bottom: .25em;
+    }
+
+.bC {
+    padding: .25em 1em;
+}
+    .bC span {
+        font-size: .65em;
+        background-color: #FFF;
+        padding: .25em .5em;
+    }
+        .bC span:hover {
+            background-color: #AAA;
+            cursor: pointer;
+        }
+        .bC span.active {
+            background-color: #0a4876;
+            color: #FFF;
+        }

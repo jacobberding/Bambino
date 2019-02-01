@@ -98,4 +98,27 @@ namespace Api.Models
 
     }
 
+    public class Upload
+    {
+
+        public Guid id { get; set; }
+
+        public string path { get; set; } = "";
+
+        public string originalFileName { get; set; } = "";
+
+        public int width { get; set; } = 0;
+
+        public int height { get; set; } = 0;
+
+        public int resolutionHorizontal { get; set; } = 0;
+
+        public int resolutionVertical { get; set; } = 0;
+
+        public int contentLength { get; set; } = 0;
+
+        public int type { get; set; } = 0;
+
+    }
+
 }

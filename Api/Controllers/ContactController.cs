@@ -1,6 +1,7 @@
 ﻿using Api.Models;
 using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
 using System.Linq.Dynamic;
 using System.Net;
@@ -258,6 +259,41 @@ namespace Api.Controllers
                         throw new InvalidOperationException("Not Found");
                 
                     return Request.CreateResponse(HttpStatusCode.OK, vm);
+
+                }
+                catch (Exception ex)
+                {
+                    return Request.CreateResponse(HttpStatusCode.InternalServerError, ex);
+                }
+
+            }
+            return Request.CreateResponse(HttpStatusCode.InternalServerError, new { Message = "Invalid Token" });
+        }
+
+        [HttpPost]
+        public HttpResponseMessage GetReport([FromBody] EmptyAuthenticationViewModel data)
+        {
+            Authentication a = AuthenticationController.GetMemberAuthenticated(data.authentication.apiId, 1, data.authentication.token);
+            if (a.isAuthenticated)
+            {
+
+                try
+                {
+
+                    UnitOfWork unitOfWork = new UnitOfWork();
+                    
+                    var arr = unitOfWork.ContactRepository
+                        .GetBy(i => !i.isDeleted)
+                        .Select(obj => new ContactViewModel
+                        {
+                            contactId = obj.contactId,
+                            name = (obj.name == "") ? obj.companyName : obj.name,
+                            email = obj.email
+                        })
+                        .OrderBy(i => i.name)
+                        .ToList();
+
+                    return Request.CreateResponse(HttpStatusCode.OK, arr);
 
                 }
                 catch (Exception ex)

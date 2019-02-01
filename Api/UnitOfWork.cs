@@ -29,6 +29,9 @@ namespace Api
         private GenericRepository<Contact> contactRepository;
         public GenericRepository<Contact> ContactRepository { get { if (this.contactRepository == null) this.contactRepository = new GenericRepository<Contact>(context); return contactRepository; } }
 
+        private GenericRepository<ContactFile> contactFileRepository;
+        public GenericRepository<ContactFile> ContactFileRepository { get { if (this.contactFileRepository == null) this.contactFileRepository = new GenericRepository<ContactFile>(context); return contactFileRepository; } }
+
         private GenericRepository<Discipline> disciplineRepository;
         public GenericRepository<Discipline> DisciplineRepository { get { if (this.disciplineRepository == null) this.disciplineRepository = new GenericRepository<Discipline>(context); return disciplineRepository; } }
 

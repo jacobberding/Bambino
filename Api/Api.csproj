@@ -199,6 +199,7 @@
     <Compile Include="Models\AESGCM.cs" />
     <Compile Include="Models\ApiToken.cs" />
     <Compile Include="Models\Authentication.cs" />
+    <Compile Include="Models\ContactFile.cs" />
     <Compile Include="Models\e.cs" />
     <Compile Include="Models\Company.cs" />
     <Compile Include="Models\Contact.cs" />

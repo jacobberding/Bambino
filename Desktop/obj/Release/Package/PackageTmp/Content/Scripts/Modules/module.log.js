@@ -3,36 +3,39 @@
 const Log = (function () {
 
     //Private ----------------------------------------------
-    let _timeout;
-    const _records = 25;
-    let _page = 1;
-    let _isShowMore = false;
-    let _arr = [];
+    let _self = {
+        arr: [],
+        vm: {},
+        page: 1,
+        records: 25,
+        isShowMore: false,
+        timeout: undefined
+    }
 
     const _getByPage = function (page) {
 
         const vm = {
             page: page,
-            records: _records,
+            records: _self.records,
             search: ($(`#txtSearchLog`).val()) ? $(`#txtSearchLog`).val() : ``,
             tableNames: [`Members`,`Contacts`,`Materials`]
         }
 
-        if (page == 1) _arr = [];
+        if (page == 1) _self.arr = [];
 
-        _page = page;
+        _self.page = page;
         Global.post(`Log_GetByTableName`, vm)
             .done(function (data) {
 
-                _isShowMore = true;
+                _self.isShowMore = true;
                 if (data.totalRecords < (vm.page * vm.records))
-                    _isShowMore = false;
+                    _self.isShowMore = false;
 
                 for (let obj of data.arr)
-                    _arr.push(obj);
+                    _self.arr.push(obj);
 
                 $(`m-body[data-label="Primary"] #lstLogs`).remove();
-                $(`m-body[data-label="Primary"] #flxLogs`).append(Log.getHtmlBodyList(_arr));
+                $(`m-body[data-label="Primary"] #flxLogs`).append(Log.getHtmlBodyList(_self.arr));
 
             })
             .fail(function (data) {
@@ -43,22 +46,14 @@ const Log = (function () {
 
     const _search = function () {
 
-        clearTimeout(_timeout);
-        _timeout = setTimeout(function () {
+        clearTimeout(_self.timeout);
+        _self.timeout = setTimeout(function () {
             _getByPage(1);
         }, Global.keyUpTimeout);
 
     }
 
     //Public ----------------------------------------------
-    let arr = [];
-    let vm = {};
-    const init = function () {
-        $(document).on(`tap`, `#btnShowMoreLog`, function () { _page++; _getByPage(_page); });
-        $(document).on(`keyup`, `#txtSearchLog`, function () { _search(); });
-        _getByPage(1);
-    }
-
     const getByPage = function (page) {
         _getByPage(page);
     }
@@ -109,7 +104,7 @@ const Log = (function () {
 
                 ${html}
 
-                ${(_isShowMore) ? `
+                ${(_self.isShowMore) ? `
                 <m-card class="load" id="btnShowMoreLog">
                     <m-flex data-type="row" class="c">
                         <h2>
@@ -142,10 +137,12 @@ const Log = (function () {
             `;
     }
 
+    const _init = (function () {
+        $(document).on(`tap`, `#btnShowMoreLog`, function () { _self.page++; _getByPage(_self.page); });
+        $(document).on(`keyup`, `#txtSearchLog`, function () { _search(); });
+    })();
+
     return {
-        arr: arr,
-        vm: vm,
-        init: init,
         getByPage: getByPage,
         getHtmlBody: getHtmlBody,
         getHtmlBodyList: getHtmlBodyList,

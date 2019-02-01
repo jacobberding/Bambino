@@ -82,7 +82,7 @@ const Application = (function () {
                         <span class="tE">Dashboard<span>
                     </m-flex>
 
-                    <m-flex data-type="row" class="n sC h btnOpenBody" data-label="Primary" data-function="Contacts.getHtmlBody" tabindex="0" role="tab" data-label="Contacts">
+                    <!--<m-flex data-type="row" class="n sC h btnOpenBody" data-label="Primary" data-function="Contacts.getHtmlBody" tabindex="0" role="tab" data-label="Contacts">
                         <m-flex data-type="row" class="n c sm sQ">
                             <i class="icon-male-user"><svg><use xlink:href="/Content/Images/Bambino.min.svg#icon-male-user"></use></svg></i>
                         </m-flex>
@@ -94,6 +94,20 @@ const Application = (function () {
                             <i class="icon-news"><svg><use xlink:href="/Content/Images/Bambino.min.svg#icon-news"></use></svg></i>
                         </m-flex>
                         <span class="tE">Materials<span>
+                    </m-flex>-->
+
+                    <m-flex data-type="row" class="n sC h btnOpenBody" data-label="Primary" data-function="Application.getHtmlBodyManage" tabindex="0" role="tab" data-label="Manage">
+                        <m-flex data-type="row" class="n c sm sQ">
+                            <i class="icon-squared-menu"><svg><use xlink:href="/Content/Images/Bambino.min.svg#icon-squared-menu"></use></svg></i>
+                        </m-flex>
+                        <span class="tE">Manage<span>
+                    </m-flex>
+
+                    <m-flex data-type="row" class="n sC h btnOpenBody" data-label="Primary" data-function="Settings.getHtmlBody" tabindex="0" role="tab" data-label="Settings">
+                        <m-flex data-type="row" class="n c sm sQ">
+                            <i class="icon-services"><svg><use xlink:href="/Content/Images/Bambino.min.svg#icon-services"></use></svg></i>
+                        </m-flex>
+                        <span class="tE">Settings<span>
                     </m-flex>
 
                 </m-flex>
@@ -143,6 +157,32 @@ const Application = (function () {
 
             `;
     };
+    const getHtmlBodyManage = function () {
+        return `
+
+            <m-flex data-type="col" class="container">
+
+                <m-flex data-type="row" class="n s wR">
+
+                    <m-button data-type="secondary" class="sQ btnOpenBody mR" data-label="Primary" data-function="Contacts.getHtmlBody" data-args="">
+                        Contacts
+                    </m-button>
+
+                    <m-button data-type="secondary" class="sQ btnOpenBody mR" data-label="Primary" data-function="Materials.getHtmlBody" data-args="">
+                        Materials
+                    </m-button>
+
+                    ${Global.jack.mIA ? `
+                    <m-button data-type="secondary" class="sQ btnOpenBody mR" data-label="Primary" data-function="TimeTracker.getHtmlBody" data-args="">
+                        Time Sheets
+                    </m-button>` : ``}
+
+                </m-flex>
+
+            </m-flex>
+
+            `;
+    };
 
     const _init = (function () {
         $(document).on(`tap`, `.btnOpenSub`, function () { _openSub($(this)); });
@@ -156,7 +196,8 @@ const Application = (function () {
 
     return {
         getHtml: getHtml,
-        getHtmlBody: getHtmlBody
+        getHtmlBody: getHtmlBody,
+        getHtmlBodyManage: getHtmlBodyManage
     }
 
 })();
@@ -187,6 +228,12 @@ const Settings = (function () {
                         <m-card class="mB active btnOpenBody" data-label="Settings Body" data-function="Settings.getHtmlBodyAccount">
                             <m-flex class="c" data-type="row">
                                 <h2>Account</h2>
+                            </m-flex>
+                        </m-card>
+
+                        <m-card class="mB btnOpenBody" data-label="Settings Body" data-function="TimeTracker.getHtmlBodyMember">
+                            <m-flex class="c" data-type="row">
+                                <h2>Time Sheet</h2>
                             </m-flex>
                         </m-card>
 
@@ -224,13 +271,13 @@ const Settings = (function () {
                         <m-flex data-type="row" class="n">
 
                             <m-input class="mR">
-                                <label for="txtFirstName">First Name</label>
-                                <input type="text" id="txtFirstName" placeholder="First Name" value="${Global.jack.mFN}" />
+                                <label for="txtFirstNameMember">First Name</label>
+                                <input type="text" id="txtFirstNameMember" placeholder="First Name" value="${Global.jack.mFN}" />
                             </m-input>
 
                             <m-input>
-                                <label for="txtLastName">Last Name</label>
-                                <input type="text" id="txtLastName" placeholder="Last Name" value="${Global.jack.mLN}" />
+                                <label for="txtLastNameMember">Last Name</label>
+                                <input type="text" id="txtLastNameMember" placeholder="Last Name" value="${Global.jack.mLN}" />
                             </m-input>
 
                         </m-flex>
@@ -238,13 +285,13 @@ const Settings = (function () {
                         <m-flex data-type="row" class="n">
 
                             <m-input class="mR">
-                                <label for="txtEmail">Email</label>
-                                <input type="email" id="txtEmail" placeholder="Email" value="${Global.jack.mE}" required />
+                                <label for="txtEmailMember">Email</label>
+                                <input type="email" id="txtEmailMember" placeholder="Email" value="${Global.jack.mE}" required />
                             </m-input>
 
                             <m-input>
-                                <label for="txtPhone">Phone</label>
-                                <input type="text" id="txtPhone" placeholder="Phone" value="${Global.jack.mP}" />
+                                <label for="txtPhoneMember">Phone</label>
+                                <input type="text" id="txtPhoneMember" placeholder="Phone" value="${Global.jack.mP}" />
                             </m-input>
 
                         </m-flex>
@@ -290,7 +337,7 @@ const Settings = (function () {
 
                     <m-flex data-type="row" class="footer mB">
                 
-                        <m-button data-type="primary" id="btnEditPassword">
+                        <m-button data-type="primary" id="btnEditPasswordMember">
                             Update Password
                         </m-button>
 
@@ -298,36 +345,6 @@ const Settings = (function () {
 
                 </m-flex>
                 
-                <m-flex data-type="col" class="n" id="flxEditMember">
-
-                    <m-flex data-type="col">
-
-                        <h1 class="w mB">API Integration</h1>
-                        
-                        <m-flex data-type="row" class="n">
-                        
-                            <m-flex data-type="row" class="sC w n" id="flxTokenApi">
-
-                                <h2>
-                                    **************
-                                </h2>
-                                
-                            </m-flex>
-                        
-                            <m-button data-type="primary" class="mR" id="btnGetToken">
-                                Show
-                            </m-button>
-                        
-                            <m-button data-type="secondary" class="btnOpenModule" data-function="Application.getHtmlModuleResetTokenConfirmation" data-args="">
-                                Reset
-                            </m-button>
-
-                        </m-flex>
-
-                    </m-flex>
-                    
-                </m-flex>
-
             </m-flex>
 
             `;
@@ -345,17 +362,17 @@ const Settings = (function () {
 
                 <m-flex data-type="col" class="mB">
                 
-                    <h1>1.0.0</h1>
-                    <label class="mB">July 5th, 2018</label>
+                    <h1>0.0.0</h1>
+                    <label class="mB">January 1st, 2019</label>
 
-                    <h3>Bug Fixes</h3>
+                    <!--<h3>Bug Fixes</h3>
                     <ul class="mB">
-                        <li>Maiden Name and Nickname added to final review</li>
-                    </ul>
+                        <li>Published Authentication</li>
+                    </ul>-->
 
                     <h3>Updates</h3>
                     <ul class="mB">
-                        <li>Nickname added to orders</li>
+                        <li>Published Authentication</li>
                     </ul>
 
                 </m-flex>
