@@ -40,6 +40,7 @@ namespace Api.Controllers
                     project.state = data.state;
                     project.zip = data.zip;
                     project.country = data.country;
+                    project.scale = data.scale;
                     project.isDeleted = data.isDeleted;
 
                     if (data.projectId == Guid.Empty)
@@ -56,6 +57,9 @@ namespace Api.Controllers
                         project.code = DateTime.Now.Year.ToString() + report.projectCount.ToString();
 
                         unitOfWork.ProjectRepository.Insert(project);
+
+                        ProjectPhaseController.AddDefaults(project.projectId);
+                        ProjectZoneController.AddDefaults(project.projectId);
 
                     }
                     else
@@ -137,7 +141,7 @@ namespace Api.Controllers
             }
             return Request.CreateResponse(HttpStatusCode.InternalServerError, new { Message = "Invalid Token" });
         }
-
+        
         [HttpPost]
         public HttpResponseMessage DeleteMember([FromBody] ProjectAddDeleteMemberViewModel data)
         {
@@ -273,12 +277,15 @@ namespace Api.Controllers
 
                     UnitOfWork unitOfWork = new UnitOfWork();
 
+                    DateTimeOffset today = DateTimeOffset.UtcNow;
+
                     var vm = unitOfWork.ProjectRepository
                         .GetBy(i => i.projectId == data.id
                             && !i.isDeleted)
                         .Select(obj => new ProjectViewModel
                         {
                             projectId = obj.projectId,
+                            projectPhaseId = obj.projectPhases.Select(i => new { dateStart = i.dateStart, dateEnd = i.dateEnd, projectPhaseId = i.projectPhaseId }).Where(x => x.dateStart <= today && x.dateEnd >= today).DefaultIfEmpty(new { dateStart = DateTimeOffset.UtcNow, dateEnd = DateTimeOffset.UtcNow, projectPhaseId = Guid.Empty }).FirstOrDefault().projectPhaseId,
                             code = obj.code,
                             name = obj.name,
                             addressLine1 = obj.addressLine1,
@@ -287,6 +294,13 @@ namespace Api.Controllers
                             state = obj.state,
                             zip = obj.zip,
                             country = obj.country,
+                            scale = obj.scale,
+                            numOfHours = obj.timeTrackerProjects.Sum(x => x.totalHours),
+                            numOfMembers = obj.members.Count(),
+                            projectPhases = obj.projectPhases.Select(projectPhase => new ProjectPhaseViewModel() {
+                                projectPhaseId = projectPhase.projectPhaseId,
+                                name = projectPhase.name
+                            }).ToList(),
                             members = obj.members.Select(member => new MemberViewModel() {
                                 token = member.token,
                                 firstName = member.firstName,

@@ -56,6 +56,21 @@ namespace Api
         private GenericRepository<Project> projectRepository;
         public GenericRepository<Project> ProjectRepository { get { if (this.projectRepository == null) this.projectRepository = new GenericRepository<Project>(context); return projectRepository; } }
 
+        private GenericRepository<ProjectPhase> projectPhaseRepository;
+        public GenericRepository<ProjectPhase> ProjectPhaseRepository { get { if (this.projectPhaseRepository == null) this.projectPhaseRepository = new GenericRepository<ProjectPhase>(context); return projectPhaseRepository; } }
+
+        private GenericRepository<ProjectZone> projectZoneRepository;
+        public GenericRepository<ProjectZone> ProjectZoneRepository { get { if (this.projectZoneRepository == null) this.projectZoneRepository = new GenericRepository<ProjectZone>(context); return projectZoneRepository; } }
+
+        private GenericRepository<ProjectAttraction> projectAttractionRepository;
+        public GenericRepository<ProjectAttraction> ProjectAttractionRepository { get { if (this.projectAttractionRepository == null) this.projectAttractionRepository = new GenericRepository<ProjectAttraction>(context); return projectAttractionRepository; } }
+
+        private GenericRepository<ProjectElement> projectElementRepository;
+        public GenericRepository<ProjectElement> ProjectElementRepository { get { if (this.projectElementRepository == null) this.projectElementRepository = new GenericRepository<ProjectElement>(context); return projectElementRepository; } }
+
+        private GenericRepository<ProjectWritingDocument> projectWritingDocumentRepository;
+        public GenericRepository<ProjectWritingDocument> ProjectWritingDocumentRepository { get { if (this.projectWritingDocumentRepository == null) this.projectWritingDocumentRepository = new GenericRepository<ProjectWritingDocument>(context); return projectWritingDocumentRepository; } }
+        
         private GenericRepository<Report> reportRepository;
         public GenericRepository<Report> ReportRepository { get { if (this.reportRepository == null) this.reportRepository = new GenericRepository<Report>(context); return reportRepository; } }
 

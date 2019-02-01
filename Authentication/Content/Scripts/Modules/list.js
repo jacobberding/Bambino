@@ -1,4 +1,7 @@
-﻿
+﻿const listScales = [
+    { name: 'Imperial', value: 'Imperial' },
+    { name: 'Metric', value: 'Metric' },
+];
 const listStates = [
     { name: 'Alabama', value: 'AL' },
     { name: 'Alaska', value: 'AK' },

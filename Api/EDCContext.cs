@@ -22,6 +22,11 @@ namespace Api
         public DbSet<Member> Members { get; set; }
         public DbSet<MemberIpAddress> MemberIpAddresses { get; set; }
         public DbSet<Project> Projects { get; set; }
+        public DbSet<ProjectPhase> ProjectPhases { get; set; }
+        public DbSet<ProjectZone> ProjectZones { get; set; }
+        public DbSet<ProjectAttraction> ProjectAttractions { get; set; }
+        public DbSet<ProjectElement> ProjectElements { get; set; }
+        public DbSet<ProjectWritingDocument> ProjectWritingDocuments { get; set; }
         public DbSet<Report> Reports { get; set; }
         public DbSet<Role> Roles { get; set; }
         public DbSet<Tsk> Tsks { get; set; }

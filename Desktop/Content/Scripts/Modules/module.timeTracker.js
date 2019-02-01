@@ -411,8 +411,14 @@ const TimeTracker = (function () {
         const hours = Math.ceil(Math.abs(duration.asHours()));
         let html = ``;
 
-        for (let obj of data.projects)
+        for (let obj of data.projects) {
+
+            if (data.projects.length == 1)
+                obj.totalHours = hours;
+
             html += _getHtmlCardProject(obj, hours);
+
+        }
 
         _self.totalHours = hours;
 
@@ -443,7 +449,7 @@ const TimeTracker = (function () {
                     <m-input class="n mL w">
                     </m-input>
 
-                    <h5 class="w25" id="h5CurrentHours">0.0</h5>
+                    <h5 class="w25" id="h5CurrentHours">${data.projects.length == 1 ? hours : `0.0`}</h5>
 
                 </m-flex>
 
@@ -849,14 +855,8 @@ const TimeTrackerProject = (function () {
         _getByPage(1, id);
         return `
 
-            <m-flex data-type="col" id="flx${_self.name}s">
+            <m-flex data-type="col" class="n" id="flx${_self.name}s">
 
-                <m-flex data-type="row" class="c n pL pR">
-
-                    <h1 class="w">${_self.name}</h1>
-
-                </m-flex>
-            
                 ${Global.getHtmlLoading()}
 
             </m-flex>
@@ -872,13 +872,13 @@ const TimeTrackerProject = (function () {
 
         return `
 
-            <m-flex data-type="row" class="s" id="">
+            <m-flex data-type="row" class="s n" id="">
 
                 <h1>Total Hours: ${totalHours}</h1>
             
             </m-flex>
 
-            <m-flex data-type="col" class="s cards selectable" id="lst${_self.name}s">
+            <m-flex data-type="col" class="s n cards selectable" id="lst${_self.name}s">
 
                 <m-flex data-type="row" class="tableRow n pL pR mB sC sort" style="width: 100%;">
                     <h2 class="${Global.getSort(_self.sort, `timeTracker.member.firstName`)}" data-sort="firstName">

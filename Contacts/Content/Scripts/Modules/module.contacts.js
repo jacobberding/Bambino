@@ -403,7 +403,7 @@ const Contacts = (function () {
             </m-flex>
 
             `;
-    }
+    };
     const getHtmlBodyForm = function () {
         return `
 
@@ -500,7 +500,7 @@ const Contacts = (function () {
             </m-flex>
 
             `;
-    }
+    };
 
     const getHtmlCard = function (obj) {
         return `
@@ -527,7 +527,7 @@ const Contacts = (function () {
             </m-card>
 
             `;
-    }
+    };
 
     const _init = (function () {
         //$(document).on(`tap`, `#btnUpload${_self.name}`, function (e) { e.stopPropagation(); e.preventDefault(); $(`#upl${_self.name}`).click(); });

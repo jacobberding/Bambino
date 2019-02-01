@@ -617,7 +617,7 @@ m-button {
     .tableRow h2.expand {
         flex: 2;
     }
-    .tableRow:first-child h2 {
+    .tableRow:not(.nT):first-child h2 {
         font-size: .7em;
         color: #CCC;
         position: relative;
@@ -1557,6 +1557,9 @@ m-body {
     -webkit-backface-visibility: hidden;
     -moz-backface-visibility: hidden;
 }
+    m-body.inh {
+        position: inherit !important;
+    }
     m-body[data-label="Manager Body"] {
         /* overflow-y: visible; */
         /* overflow-x: visible; */

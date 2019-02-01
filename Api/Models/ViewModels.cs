@@ -55,26 +55,20 @@ namespace Api.Models
 
         public AuthenticationViewModel authentication { get; set; }
 
-        public int page { get; set; }
+        public int page { get; set; } = 0;
 
-        public int records { get; set; }
-
-        [DisplayFormat(ConvertEmptyStringToNull = false)]
-        public string search { get; set; }
+        public int records { get; set; } = 0;
 
         [DisplayFormat(ConvertEmptyStringToNull = false)]
-        public string sort { get; set; }
+        public string search { get; set; } = "";
 
-        public Guid id { get; set; }
+        [DisplayFormat(ConvertEmptyStringToNull = false)]
+        public string sort { get; set; } = "";
 
-        public SearchViewModel()
-        {
-            page = 0;
-            records = 0;
-            sort = "";
-            id = Guid.Empty;
-        }
+        public Guid id { get; set; } = Guid.Empty;
 
+        public Guid projectPhaseId { get; set; } = Guid.Empty;
+        
     }
 
     public class ListViewModel
