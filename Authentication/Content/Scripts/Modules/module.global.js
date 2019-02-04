@@ -15,7 +15,7 @@ const Global = (function () {
     const _easing = [.54, -0.23, .45, 1.26];
     const _durationShort = 200;
     const _durationLong = 700;
-    const _allowedFileExtensions = ['jpg', 'jpeg', 'png'];
+    const _allowedFileExtensions = ['pdf','jpg', 'jpeg', 'png'];
     let _timeout;
     
     const _getHostName = function (url) {

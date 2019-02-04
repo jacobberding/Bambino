@@ -14,7 +14,7 @@ namespace site.Controllers
     public class FileController : Controller
     {
         
-        public static readonly List<string> ImageExtensions = new List<string> { ".JPG", ".JPEG", ".BMP", ".GIF", ".PNG" };
+        public static readonly List<string> ImageExtensions = new List<string> { ".PDF", ".JPG", ".JPEG", ".BMP", ".GIF", ".PNG" };
 
         public bool ThumbnailCallback()
         {

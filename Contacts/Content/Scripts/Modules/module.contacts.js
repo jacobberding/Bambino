@@ -256,6 +256,10 @@ const Contacts = (function () {
     }
 
     //Public ------------------------------------------------
+    const getSelf = function () {
+        return _self;
+    };
+
     const getHtmlModuleAdd = function () {
         _self.vm = _getEmptyVM();
         return `
@@ -582,6 +586,7 @@ const Contacts = (function () {
     })();
 
     return {
+        getSelf: getSelf,
         getHtmlModuleAdd: getHtmlModuleAdd,
         getHtmlModuleDetail: getHtmlModuleDetail,
         getHtmlBody: getHtmlBody,
@@ -647,17 +652,24 @@ const ContactFile = (function () {
             formData.append(files[i].name, files[i]);
         }
 
-        Global.upload(formData, Settings.uploadSuccess, '/File/Upload');
+        console.log(`uploadSuccess`);
+        Global.upload(formData, ContactFile.uploadSuccess, '/File/Upload');
 
     };
     const _uploadReset = function () {
         $(`#upl${_self.name}`).val(``);
         $(`#btnUpload${_self.name}`).removeClass(`disabled`);
     };
+    const _download = function ($this) {
+
+        console.log(`download`);
+        window.open($this.attr(`data-path`));
+
+    }
 
     //Public ------------------------------------------------
-    const add = function (obj) {
-        _add(obj);
+    const addMany = function (obj) {
+        _addMany(obj);
     };
 
     const getSelf = function () {
@@ -668,7 +680,7 @@ const ContactFile = (function () {
 
         let html = ``;
 
-        for (let obj of Contact.getSelf().vm.contactFiles)
+        for (let obj of Contacts.getSelf().vm.contactFiles)
             html += getHtmlCard(obj);
 
         return `
@@ -695,24 +707,37 @@ const ContactFile = (function () {
         return `
 
             <m-card class="">
-                ${obj.originalFileName}
+                <m-flex data-type="row" class="n">
+                    <h6>
+                        ${obj.originalFileName}
+                    </h6>
+                    <m-flex data-type="row" class="n c sm sQ secondary" id="btnDownload${_self.name}" data-path="${obj.path}">
+                        <i class="icon-download"><svg><use xlink:href="/Content/Images/Bambino.min.svg#icon-download"></use></svg></i>
+                    </m-flex>
+                </m-flex>
             </m-card>
             
             `;
-    }
+    };
 
     const uploadSuccess = function (arr) {
-        ContactFile.add(arr);
+
+        for (let obj of arr)
+            obj["contactId"] = Contacts.getSelf().vm.contactId;
+
+        _addMany(arr);
         _uploadReset();
+
     };
 
     const _init = (function () {
         $(document).on(`tap`, `#btnUpload${_self.name}`, function (e) { e.stopPropagation(); e.preventDefault(); $(`#upl${_self.name}`).click(); });
         $(document).on(`change`, `#upl${_self.name}`, function () { _upload($(this).prop(`files`)); });
+        $(document).on(`tap`, `#btnDownload${_self.name}`, function () { _download($(this)); });
     })();
 
     return {
-        add: add,
+        addMany: addMany,
         getSelf: getSelf,
         getHtmlBodyForm: getHtmlBodyForm,
         getHtmlCard: getHtmlCard,

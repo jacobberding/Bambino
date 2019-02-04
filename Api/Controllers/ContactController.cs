@@ -245,6 +245,14 @@ namespace Api.Controllers
                             isDeleted = obj.isDeleted,
                             isPotentialStaffing = obj.isPotentialStaffing,
                             personalWebsite = obj.personalWebsite,
+                            contactFiles = obj.contactFiles.Select(contactFile => new ContactFileViewModel() {
+                                contactFileId = contactFile.contactFileId,
+                                contactId = contactFile.contactId,
+                                name = contactFile.name,
+                                path = contactFile.path,
+                                originalFileName = contactFile.originalFileName,
+                                isDeleted = contactFile.isDeleted
+                            }).ToList(),
                             phone1 = obj.phone1,
                             phone2 = obj.phone2,
                             portfolio = obj.portfolio,
