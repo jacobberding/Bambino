@@ -295,7 +295,7 @@ namespace Api.Controllers
                             zip = obj.zip,
                             country = obj.country,
                             scale = obj.scale,
-                            numOfHours = obj.timeTrackerProjects.Sum(x => x.totalHours),
+                            numOfHours = obj.timeTrackerProjects.DefaultIfEmpty(new TimeTrackerProject()).ToList().Sum(x => x.totalHours),
                             numOfMembers = obj.members.Count(),
                             projectPhases = obj.projectPhases.Select(projectPhase => new ProjectPhaseViewModel() {
                                 projectPhaseId = projectPhase.projectPhaseId,

@@ -43,5 +43,14 @@ namespace Api.Models
         public bool isDeleted { get; set; } = false;
 
     }
+    
+    public class ContactFileAddManyViewModel
+    {
+
+        public AuthenticationViewModel authentication { get; set; }
+
+        public List<ContactFileViewModel> contactFiles { get; set; } = new List<ContactFileViewModel>();
+        
+    }
 
 }

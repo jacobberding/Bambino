@@ -204,27 +204,6 @@ const Contacts = (function () {
         _getByPage(1);
         
     }
-    const _upload = function (files) {
-
-        if (files.length == 0 || $(`#btnUpload${_self.name}`).hasClass('disabled')) { _uploadReset(); return; }
-        $(`#btnUpload${_self.name}`).addClass('disabled');
-
-        let formData = new FormData();
-
-        for (let i = 0; i < files.length; i++) {
-            console.log(Global.getIsValidFile(files[i])); //10MB
-            if (files[i].size > 10000000) { Validation.notification(1, `File Upload Limit`, `File size is above 10MB in size, please reduce the file size before uploading.`, `error`); _uploadReset(); return; }
-            if (Global.getIsValidFile(files[i]) == false) { Validation.notification(1, `File Upload Type`, `File extension is not allowed.`, `error`); _uploadReset(); return; }
-            formData.append(files[i].name, files[i]);
-        }
-
-        Global.upload(formData, Settings.uploadSuccess, '/File/Upload');
-
-    }
-    const _uploadReset = function () {
-        $(`#upl${_self.name}`).val(``);
-        $(`#btnUpload${_self.name}`).removeClass(`disabled`);
-    }
     const _uploadData = function (files) {
 
         const file = files[0];
@@ -468,14 +447,7 @@ const Contacts = (function () {
 
             <m-flex data-type="col" class="form">
 
-                <m-flex data-type="row" class="n pL pR">
-
-                    <m-button data-type="primary" class="" id="btnUpload${_self.name}">
-                        Upload
-                    </m-button>
-                    <input type="file" class="none" id="upl${_self.name}" />
-
-                </m-flex>
+                ${ContactFile.getHtmlBodyForm()}
 
                 <m-flex data-type="row" class="n">
                     <m-input class="mR">
@@ -597,16 +569,9 @@ const Contacts = (function () {
             `;
     };
 
-    const uploadSuccess = function (arr) {
-        ContactFile.add(arr[0]);
-        _uploadReset();
-    }
-
     const _init = (function () {
         //$(document).on(`tap`, `#btnUploadData${_self.name}`, function (e) { e.stopPropagation(); e.preventDefault(); $(`#uplData${_self.name}`).click(); });
         //$(document).on(`change`, `#uplData${_self.name}`, function () { _uploadData($(this).prop(`files`)); });
-        $(document).on(`tap`, `#btnUpload${_self.name}`, function (e) { e.stopPropagation(); e.preventDefault(); $(`#upl${_self.name}`).click(); });
-        $(document).on(`change`, `#upl${_self.name}`, function () { _upload($(this).prop(`files`)); });
         $(document).on(`tap`, `#btnExport${_self.name}`, function () { _getExport($(this)); });
         $(document).on(`tap`, `#lst${_self.name}s .sort h2`, function () { _sort($(this)); });
         $(document).on(`tap`, `#btnAdd${_self.name}, #btnEdit${_self.name}`, function () { _addEdit(); });
@@ -649,14 +614,45 @@ const ContactFile = (function () {
         }
     };
 
-    const _add = function (obj) {
+    const _addMany = function (arr) {
+
+        for (let obj of arr)
+            $(`#lst${_self.name}`).prepend(getHtmlCard(obj));
 
         const vm = {
+            contactFiles: arr
+        }
 
-        };
+        Global.post(`${_self.name}_AddMany`, vm)
+            .done(function (data) {
+                Validation.notification(1);
+            })
+            .fail(function (data) {
+                Validation.notification(2);
+            });
 
-        console.log(`obj`,obj);
+    };
 
+    const _upload = function (files) {
+
+        if (files.length == 0 || $(`#btnUpload${_self.name}`).hasClass('disabled')) { _uploadReset(); return; }
+        $(`#btnUpload${_self.name}`).addClass('disabled');
+
+        let formData = new FormData();
+
+        for (let i = 0; i < files.length; i++) {
+            console.log(Global.getIsValidFile(files[i])); //10MB
+            if (files[i].size > 10000000) { Validation.notification(1, `File Upload Limit`, `File size is above 10MB in size, please reduce the file size before uploading.`, `error`); _uploadReset(); return; }
+            if (Global.getIsValidFile(files[i]) == false) { Validation.notification(1, `File Upload Type`, `File extension is not allowed.`, `error`); _uploadReset(); return; }
+            formData.append(files[i].name, files[i]);
+        }
+
+        Global.upload(formData, Settings.uploadSuccess, '/File/Upload');
+
+    };
+    const _uploadReset = function () {
+        $(`#upl${_self.name}`).val(``);
+        $(`#btnUpload${_self.name}`).removeClass(`disabled`);
     };
 
     //Public ------------------------------------------------
@@ -668,13 +664,59 @@ const ContactFile = (function () {
         return _self;
     };
 
-    const _init = (function () {
+    const getHtmlBodyForm = function () {
 
+        let html = ``;
+
+        for (let obj of Contact.getSelf().vm.contactFiles)
+            html += getHtmlCard(obj);
+
+        return `
+
+            <m-flex data-type="row" class="n">
+
+                <m-button data-type="primary" class="" id="btnUpload${_self.name}">
+                    Upload
+                </m-button>
+                <input type="file" class="none" id="upl${_self.name}" />
+
+            </m-flex>
+
+            <m-flex data-type="row" class="n pB w wR" id="lst${_self.name}">
+
+                ${html}
+
+            </m-flex>
+
+            `;
+    };
+
+    const getHtmlCard = function (obj) {
+        return `
+
+            <m-card class="">
+                ${obj.originalFileName}
+            </m-card>
+            
+            `;
+    }
+
+    const uploadSuccess = function (arr) {
+        ContactFile.add(arr);
+        _uploadReset();
+    };
+
+    const _init = (function () {
+        $(document).on(`tap`, `#btnUpload${_self.name}`, function (e) { e.stopPropagation(); e.preventDefault(); $(`#upl${_self.name}`).click(); });
+        $(document).on(`change`, `#upl${_self.name}`, function () { _upload($(this).prop(`files`)); });
     })();
 
     return {
         add: add,
-        getSelf: getSelf
+        getSelf: getSelf,
+        getHtmlBodyForm: getHtmlBodyForm,
+        getHtmlCard: getHtmlCard,
+        uploadSuccess: uploadSuccess
     }
 
 })();
