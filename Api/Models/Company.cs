@@ -5,163 +5,76 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Api.Models
 {
-    [Table("Companies")]
-    public class Company
-    {
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public Guid companyId { get; set; }
-        
-        public int type { get; set; }
-        
-        public int terms { get; set; }
-        
-        public string name { get; set; }
-
-        public int pin { get; set; }
-
-        public string email { get; set; }
-        
-        public string phone { get; set; }
-        
-        public string website { get; set; }
-        
-        public string billingAddressLine1 { get; set; }
-
-        public string billingAddressLine2 { get; set; }
-
-        public string billingCity { get; set; }
-
-        public string billingState { get; set; }
-
-        public string billingZip { get; set; }
-        
-        public string shippingAddressLine1 { get; set; }
-
-        public string shippingAddressLine2 { get; set; }
-
-        public string shippingCity { get; set; }
-
-        public string shippingState { get; set; }
-
-        public string shippingZip { get; set; }
-        
-        public bool isApproved { get; set; }
-
-        public bool isDeleted { get; set; }
-        
-        public virtual ICollection<Member> members { get; set; }
-
-        public Company()
-        {
-            type                    = 0;
-            terms                   = 0;
-            name                    = "";
-            pin                     = 0;
-            email                   = "";
-            phone                   = "";
-            website                 = "";
-            billingAddressLine1     = "";
-            billingAddressLine2     = "";
-            billingCity             = "";
-            billingState            = "";
-            billingZip              = "";
-            shippingAddressLine1    = "";
-            shippingAddressLine2    = "";
-            shippingCity            = "";
-            shippingState           = "";
-            shippingZip             = "";
-            isApproved              = false;
-            isDeleted               = false;
-            members                 = new List<Member>();
-        }
-
-    }
     
     public class CompanyViewModel
     {
 
-        public Guid companyId { get; set; }
+        public Guid companyId { get; set; } = Guid.Empty;
+
+        public int type { get; set; } = 0;
+
+        public int terms { get; set; } = 0;
+
+        [DisplayFormat(ConvertEmptyStringToNull = false)]
+        public string name { get; set; } = "";
+
+        public int pin { get; set; } = 0;
+
+        [DisplayFormat(ConvertEmptyStringToNull = false)]
+        public string email { get; set; } = "";
+
+        [DisplayFormat(ConvertEmptyStringToNull = false)]
+        public string phone { get; set; } = "";
+
+        [DisplayFormat(ConvertEmptyStringToNull = false)]
+        public string website { get; set; } = "";
+
+        [DisplayFormat(ConvertEmptyStringToNull = false)]
+        public string billingAddressLine1 { get; set; } = "";
+
+        [DisplayFormat(ConvertEmptyStringToNull = false)]
+        public string billingAddressLine2 { get; set; } = "";
+
+        [DisplayFormat(ConvertEmptyStringToNull = false)]
+        public string billingCity { get; set; } = "";
+
+        [DisplayFormat(ConvertEmptyStringToNull = false)]
+        public string billingState { get; set; } = "";
+
+        [DisplayFormat(ConvertEmptyStringToNull = false)]
+        public string billingZip { get; set; } = "";
+
+        [DisplayFormat(ConvertEmptyStringToNull = false)]
+        public string shippingAddressLine1 { get; set; } = "";
+
+        [DisplayFormat(ConvertEmptyStringToNull = false)]
+        public string shippingAddressLine2 { get; set; } = "";
+
+        [DisplayFormat(ConvertEmptyStringToNull = false)]
+        public string shippingCity { get; set; } = "";
+
+        [DisplayFormat(ConvertEmptyStringToNull = false)]
+        public string shippingState { get; set; } = "";
+
+        [DisplayFormat(ConvertEmptyStringToNull = false)]
+        public string shippingZip { get; set; } = "";
+
+        public bool isApproved { get; set; } = false;
+
+        public bool isDeleted { get; set; } = false;
+
+        public List<MemberViewModel> members { get; set; } = new List<MemberViewModel>();
         
-        public int type { get; set; }
-        
-        public int terms { get; set; }
-        
-        public string name { get; set; }
-
-        public int pin { get; set; }
-
-        public string email { get; set; }
-        
-        public string phone { get; set; }
-        
-        public string website { get; set; }
-        
-        public string billingAddressLine1 { get; set; }
-
-        public string billingAddressLine2 { get; set; }
-
-        public string billingCity { get; set; }
-
-        public string billingState { get; set; }
-
-        public string billingZip { get; set; }
-        
-        public string shippingAddressLine1 { get; set; }
-
-        public string shippingAddressLine2 { get; set; }
-
-        public string shippingCity { get; set; }
-
-        public string shippingState { get; set; }
-
-        public string shippingZip { get; set; }
-        
-        public bool isApproved { get; set; }
-
-        public bool isDeleted { get; set; }
-        
-        public List<MemberViewModel> members { get; set; }
-
-        public CompanyViewModel()
-        {
-            companyId                   = Guid.Empty;
-            type                        = 0;
-            terms                       = 0;
-            name                        = "";
-            pin                         = 0;
-            email                       = "";
-            phone                       = "";
-            website                     = "";
-            billingAddressLine1         = "";
-            billingAddressLine2         = "";
-            billingCity                 = "";
-            billingState                = "";
-            billingZip                  = "";
-            shippingAddressLine1        = "";
-            shippingAddressLine2        = "";
-            shippingCity                = "";
-            shippingState               = "";
-            shippingZip                 = "";
-            isApproved                  = false;
-            isDeleted                   = false;
-            members                     = new List<MemberViewModel>();
-        }
-
     }
     
     public class CompanyListViewModel
     {
 
-        public Guid companyId { get; set; }
-        
-        public string name { get; set; }
-        
-        public CompanyListViewModel()
-        {
-            companyId                   = Guid.Empty;
-            name                        = "";
-        }
+        public Guid companyId { get; set; } = Guid.Empty;
 
+        [DisplayFormat(ConvertEmptyStringToNull = false)]
+        public string name { get; set; } = "";
+        
     }
     
     public class CompanyAddEditDeleteViewModel
@@ -169,70 +82,60 @@ namespace Api.Models
         
         public AuthenticationViewModel authentication { get; set; }
         
-        public Guid companyId { get; set; }
+        public Guid companyId { get; set; } = Guid.Empty;
+
+        public int type { get; set; } = 0;
+
+        public int terms { get; set; } = 0;
+
+        [DisplayFormat(ConvertEmptyStringToNull = false)]
+        public string name { get; set; } = "";
+
+        public int pin { get; set; } = 0;
+
+        [DisplayFormat(ConvertEmptyStringToNull = false)]
+        public string email { get; set; } = "";
+
+        [DisplayFormat(ConvertEmptyStringToNull = false)]
+        public string phone { get; set; } = "";
+
+        [DisplayFormat(ConvertEmptyStringToNull = false)]
+        public string website { get; set; } = "";
+
+        [DisplayFormat(ConvertEmptyStringToNull = false)]
+        public string billingAddressLine1 { get; set; } = "";
+
+        [DisplayFormat(ConvertEmptyStringToNull = false)]
+        public string billingAddressLine2 { get; set; } = "";
+
+        [DisplayFormat(ConvertEmptyStringToNull = false)]
+        public string billingCity { get; set; } = "";
+
+        [DisplayFormat(ConvertEmptyStringToNull = false)]
+        public string billingState { get; set; } = "";
+
+        [DisplayFormat(ConvertEmptyStringToNull = false)]
+        public string billingZip { get; set; } = "";
+
+        [DisplayFormat(ConvertEmptyStringToNull = false)]
+        public string shippingAddressLine1 { get; set; } = "";
+
+        [DisplayFormat(ConvertEmptyStringToNull = false)]
+        public string shippingAddressLine2 { get; set; } = "";
+
+        [DisplayFormat(ConvertEmptyStringToNull = false)]
+        public string shippingCity { get; set; } = "";
+
+        [DisplayFormat(ConvertEmptyStringToNull = false)]
+        public string shippingState { get; set; } = "";
+
+        [DisplayFormat(ConvertEmptyStringToNull = false)]
+        public string shippingZip { get; set; } = "";
+
+        public bool isApproved { get; set; } = false;
+
+        public bool isDeleted { get; set; } = false;
         
-        public int type { get; set; }
-        
-        public int terms { get; set; }
-        
-        public string name { get; set; }
-
-        public int pin { get; set; }
-
-        public string email { get; set; }
-        
-        public string phone { get; set; }
-        
-        public string website { get; set; }
-        
-        public string billingAddressLine1 { get; set; }
-
-        public string billingAddressLine2 { get; set; }
-
-        public string billingCity { get; set; }
-
-        public string billingState { get; set; }
-
-        public string billingZip { get; set; }
-        
-        public string shippingAddressLine1 { get; set; }
-
-        public string shippingAddressLine2 { get; set; }
-
-        public string shippingCity { get; set; }
-
-        public string shippingState { get; set; }
-
-        public string shippingZip { get; set; }
-        
-        public bool isApproved { get; set; }
-
-        public bool isDeleted { get; set; }
-        
-        public CompanyAddEditDeleteViewModel()
-        {
-            companyId               = Guid.Empty;
-            type                    = 0;
-            terms                   = 0;
-            name                    = "";
-            pin                     = 0;
-            email                   = "";
-            phone                   = "";
-            website                 = "";
-            billingAddressLine1     = "";
-            billingAddressLine2     = "";
-            billingCity             = "";
-            billingState            = "";
-            billingZip              = "";
-            shippingAddressLine1    = "";
-            shippingAddressLine2    = "";
-            shippingCity            = "";
-            shippingState           = "";
-            shippingZip             = "";
-            isApproved              = false;
-            isDeleted               = false;
-        }
-
     }
 
     public class CompanyAddCardViewModel
@@ -240,40 +143,35 @@ namespace Api.Models
         
         public AuthenticationViewModel authentication { get; set; }
         
-        public Guid companyId { get; set; }
-        
-        public string number { get; set; }
-        
-        public string expMonth { get; set; }
-        
-        public string expYear { get; set; }
-        
-        public string name { get; set; }
-        
-        public string cvc { get; set; }
-        
-        public string streetAddress { get; set; }
-        
-        public string city { get; set; }
-        
-        public string region { get; set; }
-        
-        public string postalCode { get; set; }
-        
-        public CompanyAddCardViewModel()
-        {
-            companyId       = Guid.Empty;
-            number          = "";
-            expMonth        = "";
-            expYear         = "";
-            name            = "";
-            cvc             = "";
-            streetAddress   = "";
-            city            = "";
-            region          = "";
-            postalCode      = "";
-        }
+        public Guid companyId { get; set; } = Guid.Empty;
 
+        [DisplayFormat(ConvertEmptyStringToNull = false)]
+        public string number { get; set; } = "";
+
+        [DisplayFormat(ConvertEmptyStringToNull = false)]
+        public string expMonth { get; set; } = "";
+
+        [DisplayFormat(ConvertEmptyStringToNull = false)]
+        public string expYear { get; set; } = "";
+
+        [DisplayFormat(ConvertEmptyStringToNull = false)]
+        public string name { get; set; } = "";
+
+        [DisplayFormat(ConvertEmptyStringToNull = false)]
+        public string cvc { get; set; } = "";
+
+        [DisplayFormat(ConvertEmptyStringToNull = false)]
+        public string streetAddress { get; set; } = "";
+
+        [DisplayFormat(ConvertEmptyStringToNull = false)]
+        public string city { get; set; } = "";
+
+        [DisplayFormat(ConvertEmptyStringToNull = false)]
+        public string region { get; set; } = "";
+
+        [DisplayFormat(ConvertEmptyStringToNull = false)]
+        public string postalCode { get; set; } = "";
+        
     }
 
     public class CompanyEditSettingsViewModel
@@ -281,19 +179,12 @@ namespace Api.Models
         
         public AuthenticationViewModel authentication { get; set; }
         
-        public Guid companyId { get; set; }
+        public Guid companyId { get; set; } = Guid.Empty;
+
+        public int terms { get; set; } = 0;
+
+        public int pin { get; set; } = 0;
         
-        public int terms { get; set; }
-
-        public int pin { get; set; }
-
-        public CompanyEditSettingsViewModel()
-        {
-            companyId       = Guid.Empty;
-            terms           = 0;
-            pin             = 0;
-        }
-
     }
 
     public class CompanyDeleteCardViewModel
@@ -301,16 +192,11 @@ namespace Api.Models
         
         public AuthenticationViewModel authentication { get; set; }
         
-        public Guid companyId { get; set; }
-        
-        public string cardId { get; set; }
-        
-        public CompanyDeleteCardViewModel()
-        {
-            companyId       = Guid.Empty;
-            cardId          = "";
-        }
+        public Guid companyId { get; set; } = Guid.Empty;
 
+        [DisplayFormat(ConvertEmptyStringToNull = false)]
+        public string cardId { get; set; } = "";
+        
     }
 
 }

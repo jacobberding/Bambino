@@ -1,109 +1,51 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Web;
 
 namespace Api.Models
 {
-    [Table("ACLayers")]
-    public class ACLayer
-    {
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public Guid acLayerId { get; set; }
-
-        [ForeignKey("acLayerCategory")]
-        public Guid acLayerCategoryId { get; set; }
-        public virtual ACLayerCategory acLayerCategory { get; set; }
-
-        public string name { get; set; }
-
-        public string color { get; set; }
-
-        public string lineWeight { get; set; }
-
-        public string lineType { get; set; }
-
-        public int transparency { get; set; }
-
-        public string measurement { get; set; }
-
-        public string code { get; set; }
-
-        public string keywords { get; set; }
-
-        public string description { get; set; }
-
-        public bool isPlottable { get; set; }
-
-        public bool isDeleted { get; set; }
-
-        public ACLayer()
-        {
-            acLayerCategoryId = Guid.Empty;
-            name = "";
-            color = "";
-            lineWeight = "";
-            lineType = "";
-            transparency = 0;
-            measurement = "";
-            code = "";
-            keywords = "";
-            description = "";
-            isPlottable = false;
-            isDeleted = false;
-        }
-
-    }
 
     public class ACLayerViewModel
     {
 
-        public Guid acLayerId { get; set; }
+        public Guid acLayerId { get; set; } = Guid.Empty;
+
+        public Guid acLayerCategoryId { get; set; } = Guid.Empty;
+        public ACLayerCategoryViewModel acLayerCategory { get; set; } = new ACLayerCategoryViewModel();
+
+        [DisplayFormat(ConvertEmptyStringToNull = false)]
+        public string name { get; set; } = "";
+
+        [DisplayFormat(ConvertEmptyStringToNull = false)]
+        public string color { get; set; } = "";
+
+        [DisplayFormat(ConvertEmptyStringToNull = false)]
+        public string lineWeight { get; set; } = "";
+
+        [DisplayFormat(ConvertEmptyStringToNull = false)]
+        public string lineType { get; set; } = "";
+
+        public int transparency { get; set; } = 0;
+
+        [DisplayFormat(ConvertEmptyStringToNull = false)]
+        public string measurement { get; set; } = "";
+
+        [DisplayFormat(ConvertEmptyStringToNull = false)]
+        public string code { get; set; } = "";
+
+        [DisplayFormat(ConvertEmptyStringToNull = false)]
+        public string keywords { get; set; } = "";
+
+        [DisplayFormat(ConvertEmptyStringToNull = false)]
+        public string description { get; set; } = "";
+
+        public bool isPlottable { get; set; } = false;
+
+        public bool isDeleted { get; set; } = false;
         
-        public Guid acLayerCategoryId { get; set; }
-        public ACLayerCategoryViewModel acLayerCategory { get; set; }
-
-        public string name { get; set; }
-
-        public string color { get; set; }
-
-        public string lineWeight { get; set; }
-
-        public string lineType { get; set; }
-
-        public int transparency { get; set; }
-
-        public string measurement { get; set; }
-
-        public string code { get; set; }
-
-        public string keywords { get; set; }
-
-        public string description { get; set; }
-
-        public bool isPlottable { get; set; }
-
-        public bool isDeleted { get; set; }
-
-        public ACLayerViewModel()
-        {
-            acLayerId = Guid.Empty;
-            acLayerCategoryId = Guid.Empty;
-            acLayerCategory = new ACLayerCategoryViewModel();
-            name = "";
-            color = "";
-            lineWeight = "";
-            lineType = "";
-            transparency = 0;
-            measurement = "";
-            code = "";
-            keywords = "";
-            description = "";
-            isPlottable = false;
-            isDeleted = false;
-        }
-
     }
 
     public class ACLayerAddEditDeleteViewModel
@@ -111,46 +53,37 @@ namespace Api.Models
 
         public AuthenticationViewModel authentication { get; set; }
 
-        public Guid acLayerId { get; set; }
+        public Guid acLayerId { get; set; } = Guid.Empty;
 
-        public Guid acLayerCategoryId { get; set; }
+        public Guid acLayerCategoryId { get; set; } = Guid.Empty;
+
+        [DisplayFormat(ConvertEmptyStringToNull = false)]
+        public string color { get; set; } = "";
+
+        [DisplayFormat(ConvertEmptyStringToNull = false)]
+        public string lineWeight { get; set; } = "";
+
+        [DisplayFormat(ConvertEmptyStringToNull = false)]
+        public string lineType { get; set; } = "";
+
+        public int transparency { get; set; } = 0;
+
+        [DisplayFormat(ConvertEmptyStringToNull = false)]
+        public string measurement { get; set; } = "";
+
+        [DisplayFormat(ConvertEmptyStringToNull = false)]
+        public string code { get; set; } = "";
+
+        [DisplayFormat(ConvertEmptyStringToNull = false)]
+        public string keywords { get; set; } = "";
+
+        [DisplayFormat(ConvertEmptyStringToNull = false)]
+        public string description { get; set; } = "";
+
+        public bool isPlottable { get; set; } = false;
+
+        public bool isDeleted { get; set; } = false;
         
-        public string color { get; set; }
-
-        public string lineWeight { get; set; }
-
-        public string lineType { get; set; }
-
-        public int transparency { get; set; }
-
-        public string measurement { get; set; }
-
-        public string code { get; set; }
-
-        public string keywords { get; set; }
-
-        public string description { get; set; }
-
-        public bool isPlottable { get; set; }
-
-        public bool isDeleted { get; set; }
-
-        public ACLayerAddEditDeleteViewModel()
-        {
-            acLayerId = Guid.Empty;
-            acLayerCategoryId = Guid.Empty;
-            color = "";
-            lineWeight = "";
-            lineType = "";
-            transparency = 0;
-            measurement = "";
-            code = "";
-            keywords = "";
-            description = "";
-            isPlottable = false;
-            isDeleted = false;
-        }
-
     }
 
     public class ACLayerAddManyViewModel
@@ -158,37 +91,31 @@ namespace Api.Models
 
         public AuthenticationViewModel authentication { get; set; }
 
-        public string categoryValue { get; set; }
+        [DisplayFormat(ConvertEmptyStringToNull = false)]
+        public string categoryValue { get; set; } = "";
 
-        public string color { get; set; }
+        [DisplayFormat(ConvertEmptyStringToNull = false)]
+        public string color { get; set; } = "";
 
-        public string lineWeight { get; set; }
+        [DisplayFormat(ConvertEmptyStringToNull = false)]
+        public string lineWeight { get; set; } = "";
 
-        public string lineType { get; set; }
+        [DisplayFormat(ConvertEmptyStringToNull = false)]
+        public string lineType { get; set; } = "";
 
-        public int transparency { get; set; }
+        public int transparency { get; set; } = 0;
 
-        public string measurement { get; set; }
+        [DisplayFormat(ConvertEmptyStringToNull = false)]
+        public string measurement { get; set; } = "";
 
-        public string code { get; set; }
+        [DisplayFormat(ConvertEmptyStringToNull = false)]
+        public string code { get; set; } = "";
+
+        [DisplayFormat(ConvertEmptyStringToNull = false)]
+        public string description { get; set; } = "";
+
+        public bool isPlottable { get; set; } = false;
         
-        public string description { get; set; }
-
-        public bool isPlottable { get; set; }
-        
-        public ACLayerAddManyViewModel()
-        {
-            categoryValue = "";
-            color = "";
-            lineWeight = "";
-            lineType = "";
-            transparency = 0;
-            measurement = "";
-            code = "";
-            description = "";
-            isPlottable = false;
-        }
-
     }
 
     public class ACLayerGetByKeywordViewModel
@@ -196,16 +123,12 @@ namespace Api.Models
 
         public AuthenticationViewModel authentication { get; set; }
 
-        public string keyword { get; set; }
+        [DisplayFormat(ConvertEmptyStringToNull = false)]
+        public string keyword { get; set; } = "";
 
-        public string measurement { get; set; }
-
-        public ACLayerGetByKeywordViewModel()
-        {
-            keyword = "";
-            measurement = "";
-        }
-
+        [DisplayFormat(ConvertEmptyStringToNull = false)]
+        public string measurement { get; set; } = "";
+        
     }
 
     public class ACLayerGetByCategoryViewModel
@@ -213,16 +136,12 @@ namespace Api.Models
 
         public AuthenticationViewModel authentication { get; set; }
 
-        public string category { get; set; }
+        [DisplayFormat(ConvertEmptyStringToNull = false)]
+        public string category { get; set; } = "";
 
-        public string measurement { get; set; }
-
-        public ACLayerGetByCategoryViewModel()
-        {
-            category = "";
-            measurement = "";
-        }
-
+        [DisplayFormat(ConvertEmptyStringToNull = false)]
+        public string measurement { get; set; } = "";
+        
     }
 
 }

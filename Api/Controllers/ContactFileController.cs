@@ -23,7 +23,7 @@ namespace Api.Controllers
                 try
                 {
 
-                    UnitOfWork unitOfWork = new UnitOfWork();
+                    BambinoDataContext context = new BambinoDataContext();
                     
                     foreach (var contactFileViewModel in data.contactFiles)
                     {
@@ -36,8 +36,8 @@ namespace Api.Controllers
                         contactFile.originalFileName = contactFileViewModel.originalFileName;
                         contactFile.isDeleted = contactFileViewModel.isDeleted;
                         
-                        unitOfWork.ContactFileRepository.Insert(contactFile);
-                        unitOfWork.Save();
+                        context.ContactFiles.InsertOnSubmit(contactFile);
+                        context.SubmitChanges();
 
                     }
                     

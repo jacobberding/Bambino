@@ -6,13 +6,13 @@ using System.Web;
 
 namespace Api.Models
 {
-    [Table("Reports")]
-    public class Report
-    {
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public Guid reportId { get; set; }
+    //[Table("Reports")]
+    //public class Report
+    //{
+    //    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+    //    public Guid reportId { get; set; }
 
-        public int projectCount { get; set; } = 0;
+    //    public int projectCount { get; set; } = 0;
         
-    }
+    //}
 }

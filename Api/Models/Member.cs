@@ -5,58 +5,6 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Api.Models
 {
-    [Table("Members")]
-    public class Member
-    {
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public Guid memberId { get; set; }
-
-        public Guid activeCompanyId { get; set; } = Guid.Empty;
-
-        public Guid token { get; set; } = Guid.Empty;
-
-        public Guid tokenApi { get; set; } = Guid.Empty;
-
-        public string stripeId { get; set; } = "";
-
-        public string firstName { get; set; } = "";
-
-        public string lastName { get; set; } = "";
-
-        public string email { get; set; } = "";
-
-        public string originalEmail { get; set; } = "";
-
-        public string phone { get; set; } = "";
-
-        public byte[] password { get; set; } = new byte[] { };
-
-        public byte[] keyValue { get; set; } = new byte[] { };
-
-        public byte[] iVValue { get; set; } = new byte[] { };
-
-        public Guid? forgotPasswordToken { get; set; } = null;
-
-        public DateTimeOffset? forgotPasswordDateTime { get; set; } = null;
-
-        public int? keyCode { get; set; } = null;
-
-        public DateTimeOffset? keyCodeDateTime { get; set; } = null;
-
-        public DateTimeOffset lastLoginDateTime { get; set; } = DateTimeOffset.UtcNow;
-
-        public bool isValidated { get; set; } = false;
-
-        public bool isDeleted { get; set; } = false;
-
-        public virtual ICollection<Company> companies { get; set; } = new List<Company>();
-        public virtual ICollection<MemberIpAddress> memberIpAddresss { get; set; } = new List<MemberIpAddress>();
-        public virtual ICollection<Log> logs { get; set; } = new List<Log>();
-        public virtual ICollection<Role> roles { get; set; } = new List<Role>();
-        public virtual ICollection<Project> projects { get; set; } = new List<Project>();
-        public virtual ICollection<TimeTracker> timeTrackers { get; set; } = new List<TimeTracker>();
-
-    }
 
     public class MemberViewModel
     {
@@ -69,16 +17,22 @@ namespace Api.Models
 
         public Guid tokenApi { get; set; } = Guid.Empty;
 
+        [DisplayFormat(ConvertEmptyStringToNull = false)]
         public string stripeId { get; set; } = "";
 
+        [DisplayFormat(ConvertEmptyStringToNull = false)]
         public string firstName { get; set; } = "";
 
+        [DisplayFormat(ConvertEmptyStringToNull = false)]
         public string lastName { get; set; } = "";
 
+        [DisplayFormat(ConvertEmptyStringToNull = false)]
         public string email { get; set; } = "";
 
+        [DisplayFormat(ConvertEmptyStringToNull = false)]
         public string originalEmail { get; set; } = "";
 
+        [DisplayFormat(ConvertEmptyStringToNull = false)]
         public string phone { get; set; } = "";
 
         public bool isActive { get; set; } = false;
@@ -96,7 +50,8 @@ namespace Api.Models
     {
         
         public AuthenticationViewModel authentication { get; set; }
-        
+
+        [DisplayFormat(ConvertEmptyStringToNull = false)]
         public string token { get; set; } = "";
         
     }
@@ -110,12 +65,16 @@ namespace Api.Models
 
         public Guid companyId { get; set; } = Guid.Empty;
 
+        [DisplayFormat(ConvertEmptyStringToNull = false)]
         public string firstName { get; set; } = "";
 
+        [DisplayFormat(ConvertEmptyStringToNull = false)]
         public string lastName { get; set; } = "";
 
+        [DisplayFormat(ConvertEmptyStringToNull = false)]
         public string email { get; set; } = "";
 
+        [DisplayFormat(ConvertEmptyStringToNull = false)]
         public string phone { get; set; } = "";
 
         public bool isDeleted { get; set; } = false;
@@ -244,6 +203,7 @@ namespace Api.Models
 
         public AuthenticationViewModel authentication { get; set; }
 
+        [DisplayFormat(ConvertEmptyStringToNull = false)]
         public string email { get; set; } = "";
         
     }

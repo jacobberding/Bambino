@@ -1,50 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Web;
 
 namespace Api.Models
 {
-    [Table("Projects")]
-    public class Project
-    {
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public Guid projectId { get; set; }
-
-        [ForeignKey("company")]
-        public Guid companyId { get; set; } = Guid.Empty;
-        public virtual Company company { get; set; }
-
-        public string code { get; set; } = "";
-
-        public string name { get; set; } = "";
-
-        public string addressLine1 { get; set; } = "";
-
-        public string addressLine2 { get; set; } = "";
-
-        public string city { get; set; } = "";
-
-        public string state { get; set; } = "";
-
-        public string zip { get; set; } = "";
-
-        public string country { get; set; } = "";
-
-        public string scale { get; set; } = "Imperial";
-
-        public bool isDefault { get; set; } = false;
-
-        public bool isDeleted { get; set; } = false;
-
-        public virtual ICollection<TimeTrackerProject> timeTrackerProjects { get; set; } = new List<TimeTrackerProject>();
-        public virtual ICollection<Tsk> tsks { get; set; } = new List<Tsk>();
-        public virtual ICollection<Member> members { get; set; } = new List<Member>();
-        public virtual ICollection<ProjectPhase> projectPhases { get; set; } = new List<ProjectPhase>();
-        public virtual ICollection<ProjectZone> projectZones { get; set; } = new List<ProjectZone>();
-
-    }
 
     public class ProjectViewModel
     {
@@ -56,22 +18,31 @@ namespace Api.Models
 
         public Guid projectPhaseId { get; set; }
 
+        [DisplayFormat(ConvertEmptyStringToNull = false)]
         public string code { get; set; } = "";
 
+        [DisplayFormat(ConvertEmptyStringToNull = false)]
         public string name { get; set; } = "";
 
+        [DisplayFormat(ConvertEmptyStringToNull = false)]
         public string addressLine1 { get; set; } = "";
 
+        [DisplayFormat(ConvertEmptyStringToNull = false)]
         public string addressLine2 { get; set; } = "";
 
+        [DisplayFormat(ConvertEmptyStringToNull = false)]
         public string city { get; set; } = "";
 
+        [DisplayFormat(ConvertEmptyStringToNull = false)]
         public string state { get; set; } = "";
 
+        [DisplayFormat(ConvertEmptyStringToNull = false)]
         public string zip { get; set; } = "";
 
+        [DisplayFormat(ConvertEmptyStringToNull = false)]
         public string country { get; set; } = "";
 
+        [DisplayFormat(ConvertEmptyStringToNull = false)]
         public string scale { get; set; } = "Imperial";
 
         public int numOfMembers { get; set; } = 0;
@@ -96,22 +67,31 @@ namespace Api.Models
 
         public Guid projectId { get; set; } = Guid.Empty;
 
+        [DisplayFormat(ConvertEmptyStringToNull = false)]
         public string code { get; set; } = "";
 
+        [DisplayFormat(ConvertEmptyStringToNull = false)]
         public string name { get; set; } = "";
 
+        [DisplayFormat(ConvertEmptyStringToNull = false)]
         public string addressLine1 { get; set; } = "";
 
+        [DisplayFormat(ConvertEmptyStringToNull = false)]
         public string addressLine2 { get; set; } = "";
 
+        [DisplayFormat(ConvertEmptyStringToNull = false)]
         public string city { get; set; } = "";
 
+        [DisplayFormat(ConvertEmptyStringToNull = false)]
         public string state { get; set; } = "";
 
+        [DisplayFormat(ConvertEmptyStringToNull = false)]
         public string zip { get; set; } = "";
 
+        [DisplayFormat(ConvertEmptyStringToNull = false)]
         public string country { get; set; } = "";
 
+        [DisplayFormat(ConvertEmptyStringToNull = false)]
         public string scale { get; set; } = "Imperial";
 
         public bool isDefault { get; set; } = false;
@@ -129,6 +109,7 @@ namespace Api.Models
 
         public Guid token { get; set; } = Guid.Empty;
 
+        [DisplayFormat(ConvertEmptyStringToNull = false)]
         public string email { get; set; } = "";
 
     }
@@ -138,6 +119,7 @@ namespace Api.Models
 
         public AuthenticationViewModel authentication { get; set; }
 
+        [DisplayFormat(ConvertEmptyStringToNull = false)]
         public string code { get; set; } = "";
         
     }

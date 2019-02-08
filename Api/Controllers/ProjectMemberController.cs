@@ -24,20 +24,20 @@ namespace Api.Controllers
                 try
                 {
 
-                    UnitOfWork unitOfWork = new UnitOfWork();
+                    BambinoDataContext context = new BambinoDataContext();
 
-                    bool isActive = unitOfWork.TimeTrackerRepository
-                        .GetBy(i => i.memberId == a.member.memberId
+                    bool isActive = context.TimeTrackers
+                        .Where(i => i.memberId == a.member.memberId
                             && i.isActive
                             && !i.isDeleted)
                         .ToList()
                         .Count() > 0 ? true : false;
 
-                    if (!isActive)
-                        throw new InvalidOperationException("Not Clocked In Yet");
-
-                    List<ProjectViewModel> projects = unitOfWork.ProjectRepository
-                        .GetBy(i => i.members.Any(x => x.memberId == a.member.memberId)
+                    //if (!isActive)
+                    //    throw new InvalidOperationException("Not Clocked In Yet");
+                    
+                    List<ProjectViewModel> projects = context.Projects
+                        .Where(i => i.ProjectMembers.Any(x => x.memberId == a.member.memberId)
                             && !i.isDeleted)
                         .Select(obj => new ProjectViewModel
                         {
@@ -54,8 +54,8 @@ namespace Api.Controllers
                     var vm = new
                     {
                         projects = projects,
-                        dateIn = unitOfWork.TimeTrackerRepository
-                            .GetBy(i => i.memberId == a.member.memberId
+                        dateIn = context.TimeTrackers
+                            .Where(i => i.memberId == a.member.memberId
                                 && i.isActive
                                 && !i.isDeleted)
                             .FirstOrDefault()
@@ -84,14 +84,14 @@ namespace Api.Controllers
                 try
                 {
 
-                    UnitOfWork unitOfWork = new UnitOfWork();
+                    BambinoDataContext context = new BambinoDataContext();
 
-                    var query = unitOfWork.MemberRepository
-                        .GetBy(i => !i.isDeleted 
+                    var query = context.Members
+                        .Where(i => !i.isDeleted 
                             && (i.email.Contains(data.search)
                             || String.Concat(i.firstName, " ", i.lastName).Contains(data.search)
                             || i.phone.Contains(data.search)
-                            || i.roles.Select(x => x.name).FirstOrDefault().Contains(data.search)));
+                            || i.MemberRoles.Select(x => x.Role.name).FirstOrDefault().Contains(data.search)));
 
                     int currentPage = data.page - 1;
                     int skip = currentPage * data.records;
@@ -104,7 +104,7 @@ namespace Api.Controllers
                             lastName = obj.lastName,
                             email = obj.email,
                             phone = obj.phone,
-                            isActive = obj.timeTrackers.Any(i => i.isActive),
+                            isActive = obj.TimeTrackers.Any(i => i.isActive),
                             isDeleted = obj.isDeleted
                         })
                         .OrderBy(data.sort)

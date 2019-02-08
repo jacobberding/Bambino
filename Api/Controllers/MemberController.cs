@@ -31,10 +31,10 @@ namespace Api.Controllers
         //        try
         //        {
 
-        //            UnitOfWork unitOfWork = new UnitOfWork();
+        //            BambinoDataContext context = new BambinoDataContext();
 
-        //            string stripeId = unitOfWork.MemberRepository
-        //                .GetBy(i => i.memberId == a.member.memberId
+        //            string stripeId = context.MemberRepository
+        //                .Where(i => i.memberId == a.member.memberId
         //                    && !i.isDeleted)
         //                .Select(str => str.stripeId)
         //                .FirstOrDefault();
@@ -66,27 +66,18 @@ namespace Api.Controllers
                 try
                 {
 
-                    UnitOfWork unitOfWork = new UnitOfWork();
+                    BambinoDataContext context = new BambinoDataContext();
 
-                    Member member = unitOfWork.MemberRepository
-                        .GetBy(i => i.memberId == data.tableId
-                            && !i.isDeleted)
-                        .FirstOrDefault();
+                    Member member = context.Members.Where(i => i.memberId == data.tableId).FirstOrDefault();
+                    Role role = context.Roles.Where(i => i.name == data.name).FirstOrDefault();
 
-                    if (member == null)
-                        throw new InvalidOperationException("Not Found");
+                    MemberRole memberRole = new MemberRole();
 
-                    Role role = unitOfWork.RoleRepository
-                        .GetBy(i => i.name == data.name)
-                        .FirstOrDefault();
+                    memberRole.memberId = member.memberId;
+                    memberRole.roleId = role.roleId;
 
-                    if (role == null)
-                        throw new InvalidOperationException("Not Found");
-
-                    member.roles.Add(role);
-
-                    unitOfWork.MemberRepository.Update(member);
-                    unitOfWork.Save();
+                    context.MemberRoles.InsertOnSubmit(memberRole);
+                    context.SubmitChanges();
 
                     LogController.Add(a.member.memberId, "Member " + member.email + " Added Role " + role.name, "Member", "AddRole", member.memberId, "Members");
 
@@ -122,27 +113,18 @@ namespace Api.Controllers
                 try
                 {
 
-                    UnitOfWork unitOfWork = new UnitOfWork();
+                    BambinoDataContext context = new BambinoDataContext();
 
-                    Member member = unitOfWork.MemberRepository
-                        .GetBy(i => i.memberId == data.tableId
-                            && !i.isDeleted)
-                        .FirstOrDefault();
+                    Member member = context.Members.Where(i => i.memberId == data.tableId && !i.isDeleted).FirstOrDefault();
+                    Company company = context.Companies.Where(i => i.name == data.name).FirstOrDefault();
 
-                    if (member == null)
-                        throw new InvalidOperationException("Not Found");
+                    MemberCompany memberCompany = new MemberCompany();
 
-                    Company company = unitOfWork.CompanyRepository
-                        .GetBy(i => i.name == data.name)
-                        .FirstOrDefault();
-
-                    if (company == null)
-                        throw new InvalidOperationException("Not Found");
-
-                    member.companies.Add(company);
-
-                    unitOfWork.MemberRepository.Update(member);
-                    unitOfWork.Save();
+                    memberCompany.memberId = member.memberId;
+                    memberCompany.companyId = company.companyId;
+                    
+                    context.MemberCompanies.InsertOnSubmit(memberCompany);
+                    context.SubmitChanges();
 
                     LogController.Add(a.member.memberId, "Member " + member.email + " Added Company " + company.name, "Member", "AddCompany", member.memberId, "Members");
 
@@ -174,11 +156,11 @@ namespace Api.Controllers
                 try
                 {
                     
-                    UnitOfWork unitOfWork = new UnitOfWork();
+                    BambinoDataContext context = new BambinoDataContext();
 
                     Guid id = (data.memberId == Guid.Empty) ? a.member.memberId : data.memberId;
-                    Member member = unitOfWork.MemberRepository
-                        .GetBy(i => i.memberId == id
+                    Member member = context.Members
+                        .Where(i => i.memberId == id
                             && !i.isDeleted)
                         .FirstOrDefault();
                     
@@ -191,8 +173,7 @@ namespace Api.Controllers
                     member.phone = data.phone;
                     member.isDeleted = data.isDeleted;
                     
-                    unitOfWork.MemberRepository.Update(member);
-                    unitOfWork.Save();
+                    context.SubmitChanges();
                     
                     var activity = (data.memberId == Guid.Empty) ? "Added" : (data.isDeleted) ? "Deleted" : "Edited"; 
                     LogController.Add(a.member.memberId, "Member " + member.email + " " + activity, "Member", "EditDelete", member.memberId, "Members");
@@ -224,14 +205,14 @@ namespace Api.Controllers
                 try
                 {
 
-                    UnitOfWork unitOfWork = new UnitOfWork();
+                    BambinoDataContext context = new BambinoDataContext();
 
                     AESGCM decrypt = new AESGCM();
-                    Member member = unitOfWork.MemberRepository
-                        .GetBy(i => i.memberId == a.member.memberId
+                    Member member = context.Members
+                        .Where(i => i.memberId == a.member.memberId
                             && !i.isDeleted)
                         .FirstOrDefault();
-                    string dbPassword = decrypt.DecryptStringFromBytes(member.password, member.keyValue, member.iVValue);
+                    string dbPassword = decrypt.DecryptStringFromBytes(member.password.ToArray(), member.keyValue.ToArray(), member.iVValue.ToArray());
 
                     if (member == null || !dbPassword.Equals(data.passwordOld)) //Check if old password matches one in DB
                         throw new InvalidOperationException("Current Password is incorrect.");
@@ -241,9 +222,8 @@ namespace Api.Controllers
                     member.password = encrypt.password;
                     member.keyValue = encrypt.keyBytes;
                     member.iVValue = encrypt.ivBytes;
-
-                    unitOfWork.MemberRepository.Update(member);
-                    unitOfWork.Save();
+                    
+                    context.SubmitChanges();
                     
                     LogController.Add(member.memberId, "Member " + member.email + " Edited Password", "Member", "EditPassword", member.memberId, "Members");
                     
@@ -271,11 +251,11 @@ namespace Api.Controllers
                 try
                 {
 
-                    UnitOfWork unitOfWork = new UnitOfWork();
+                    BambinoDataContext context = new BambinoDataContext();
 
                     AESGCM encrypt = new AESGCM(data.password);
-                    Member member = unitOfWork.MemberRepository
-                        .GetBy(i => i.email == data.email
+                    Member member = context.Members
+                        .Where(i => i.email == data.email
                             && i.forgotPasswordToken == data.forgotPasswordToken
                             && !i.isDeleted)
                         .FirstOrDefault();
@@ -291,9 +271,8 @@ namespace Api.Controllers
                     member.iVValue = encrypt.ivBytes;
                     member.forgotPasswordToken = null;
                     member.forgotPasswordDateTime = null;
-
-                    unitOfWork.MemberRepository.Update(member);
-                    unitOfWork.Save();
+                    
+                    context.SubmitChanges();
                     
                     LogController.Add(member.memberId, "Member " + member.email + " Reset Password", "Member", "EditResetPassword", member.memberId, "Members");
 
@@ -321,10 +300,10 @@ namespace Api.Controllers
                 try
                 {
 
-                    UnitOfWork unitOfWork = new UnitOfWork();
+                    BambinoDataContext context = new BambinoDataContext();
 
-                    Member member = unitOfWork.MemberRepository
-                        .GetBy(i => i.token == data.token
+                    Member member = context.Members
+                        .Where(i => i.token == data.token
                             && i.keyCode == data.keyCode
                             && !i.isDeleted)
                         .FirstOrDefault();
@@ -341,9 +320,8 @@ namespace Api.Controllers
                     member.isValidated = true;
                     member.keyCode = null;
                     member.keyCodeDateTime = null;
-
-                    unitOfWork.MemberRepository.Update(member);
-                    unitOfWork.Save();
+                    
+                    context.SubmitChanges();
                     
                     LogController.Add(member.memberId, "Member " + member.email + " Validated Account", "Member", "EditValidated", member.memberId, "Members");
 
@@ -351,11 +329,11 @@ namespace Api.Controllers
                     {
                         mT = member.token,
                         mCI = member.activeCompanyId,
-                        mIC = member.roles.Any(i => i.isContractor),
-                        mIE = member.roles.Any(i => i.isEmployee),
-                        mIM = member.roles.Any(i => i.isManager),
-                        mIA = member.roles.Any(i => i.isAdmin),
-                        mIS = member.roles.Any(i => i.isSuperAdmin),
+                        mIC = member.MemberRoles.Any(i => i.Role.isContractor),
+                        mIE = member.MemberRoles.Any(i => i.Role.isEmployee),
+                        mIM = member.MemberRoles.Any(i => i.Role.isManager),
+                        mIA = member.MemberRoles.Any(i => i.Role.isAdmin),
+                        mIS = member.MemberRoles.Any(i => i.Role.isSuperAdmin),
                         mE = member.email,
                         mFN = member.firstName,
                         mLN = member.lastName,
@@ -384,10 +362,10 @@ namespace Api.Controllers
                 try
                 {
                     
-                    UnitOfWork unitOfWork = new UnitOfWork();
+                    BambinoDataContext context = new BambinoDataContext();
                     
-                    Member member = unitOfWork.MemberRepository
-                        .GetBy(i => i.memberId == a.member.memberId
+                    Member member = context.Members
+                        .Where(i => i.memberId == a.member.memberId
                             && !i.isDeleted)
                         .FirstOrDefault();
                     
@@ -396,8 +374,7 @@ namespace Api.Controllers
                     
                     member.tokenApi = Guid.NewGuid();
                     
-                    unitOfWork.MemberRepository.Update(member);
-                    unitOfWork.Save();
+                    context.SubmitChanges();
                     
                     LogController.Add(a.member.memberId, "Member " + member.email + " Api Token Reset", "Member", "EditTokenApi", member.memberId, "Members");
                     
@@ -427,27 +404,15 @@ namespace Api.Controllers
                 try
                 {
 
-                    UnitOfWork unitOfWork = new UnitOfWork();
+                    BambinoDataContext context = new BambinoDataContext();
+
+                    Member member = context.Members.Where(i => i.memberId == data.tableId).FirstOrDefault();
+                    Role role = context.Roles.Where(i => i.roleId == data.manyId).FirstOrDefault();
+
+                    MemberRole memberRole = context.MemberRoles.Where(i => i.memberId == data.tableId && i.roleId == data.manyId).FirstOrDefault();
                     
-                    Member member = unitOfWork.MemberRepository
-                        .GetBy(i => i.memberId == data.tableId
-                            && !i.isDeleted)
-                        .FirstOrDefault();
-
-                    if (member == null)
-                        throw new InvalidOperationException("Not Found");
-
-                    Role role = unitOfWork.RoleRepository
-                        .GetBy(i => i.roleId == data.manyId)
-                        .FirstOrDefault();
-
-                    if (role == null)
-                        throw new InvalidOperationException("Not Found");
-
-                    member.roles.Remove(role);
-
-                    unitOfWork.MemberRepository.Update(member);
-                    unitOfWork.Save();
+                    context.MemberRoles.DeleteOnSubmit(memberRole);
+                    context.SubmitChanges();
                     
                     LogController.Add(a.member.memberId, "Member " + member.email + " Removed Role " + role.name, "Member", "DeleteRole", member.memberId, "Members");
 
@@ -483,27 +448,15 @@ namespace Api.Controllers
                 try
                 {
 
-                    UnitOfWork unitOfWork = new UnitOfWork();
+                    BambinoDataContext context = new BambinoDataContext();
 
-                    Member member = unitOfWork.MemberRepository
-                        .GetBy(i => i.memberId == data.tableId
-                            && !i.isDeleted)
-                        .FirstOrDefault();
+                    Member member = context.Members.Where(i => i.memberId == data.tableId && !i.isDeleted).FirstOrDefault();
+                    Company company = context.Companies.Where(i => i.companyId == data.manyId).FirstOrDefault();
 
-                    if (member == null)
-                        throw new InvalidOperationException("Not Found");
+                    MemberCompany memberCompany = context.MemberCompanies.Where(i => i.memberId == data.tableId && i.companyId == data.manyId).FirstOrDefault();
 
-                    Company company = unitOfWork.CompanyRepository
-                        .GetBy(i => i.companyId == data.manyId)
-                        .FirstOrDefault();
-
-                    if (company == null)
-                        throw new InvalidOperationException("Not Found");
-
-                    member.companies.Remove(company);
-
-                    unitOfWork.MemberRepository.Update(member);
-                    unitOfWork.Save();
+                    context.MemberCompanies.DeleteOnSubmit(memberCompany);
+                    context.SubmitChanges();
 
                     LogController.Add(a.member.memberId, "Member " + member.email + " Removed Company " + company.name, "Member", "DeleteCompany", member.memberId, "Members");
 
@@ -535,10 +488,10 @@ namespace Api.Controllers
         //        try
         //        {
 
-        //            UnitOfWork unitOfWork = new UnitOfWork();
+        //            BambinoDataContext context = new BambinoDataContext();
 
-        //            string customerId = unitOfWork.MemberRepository
-        //                .GetBy(i => i.memberId == a.member.memberId
+        //            string customerId = context.MemberRepository
+        //                .Where(i => i.memberId == a.member.memberId
         //                    && !i.isDeleted)
         //                .Select(str => str.customerId)
         //                .FirstOrDefault();
@@ -570,10 +523,10 @@ namespace Api.Controllers
                 try
                 {
                     
-                    UnitOfWork unitOfWork = new UnitOfWork();
+                    BambinoDataContext context = new BambinoDataContext();
                     
-                    Member member = unitOfWork.MemberRepository
-                        .GetBy(i => i.memberId == a.member.memberId
+                    Member member = context.Members
+                        .Where(i => i.memberId == a.member.memberId
                             && !i.isDeleted)
                         .FirstOrDefault();
                     
@@ -606,15 +559,15 @@ namespace Api.Controllers
                 try
                 {
                     
-                    UnitOfWork unitOfWork = new UnitOfWork();
+                    BambinoDataContext context = new BambinoDataContext();
 
-                    var query = unitOfWork.MemberRepository
-                        .GetBy(i => !i.isDeleted
-                            && (i.companies.Any(x => x.name.Contains(data.search))
+                    var query = context.Members
+                        .Where(i => !i.isDeleted
+                            && (i.MemberCompanies.Any(x => x.Company.name.Contains(data.search))
                             || i.email.Contains(data.search) 
                             || String.Concat(i.firstName, " ", i.lastName).Contains(data.search)
                             || i.phone.Contains(data.search)
-                            || i.roles.Select(x => x.name).FirstOrDefault().Contains(data.search)));
+                            || i.MemberRoles.Select(x => x.Role.name).FirstOrDefault().Contains(data.search)));
 
                     int currentPage = data.page - 1;
                     int skip = currentPage * data.records;
@@ -624,10 +577,10 @@ namespace Api.Controllers
                         {
                             memberId            = obj.memberId,
                             activeCompanyId     = obj.activeCompanyId,
-                            companies           = obj.companies.Select(company => new CompanyViewModel() 
+                            companies           = obj.MemberCompanies.Select(memberCompany => new CompanyViewModel() 
                             {
-                                companyId           = company.companyId,
-                                name                = company.name
+                                companyId           = memberCompany.companyId,
+                                name                = memberCompany.Company.name
                             }).ToList(),
                             firstName           = obj.firstName,
                             lastName            = obj.lastName,
@@ -673,19 +626,19 @@ namespace Api.Controllers
                 try
                 {
                     
-                    UnitOfWork unitOfWork = new UnitOfWork();
+                    BambinoDataContext context = new BambinoDataContext();
                     
-                    var vm = unitOfWork.MemberRepository
-                        .GetBy(i => i.memberId == data.id
+                    var vm = context.Members
+                        .Where(i => i.memberId == data.id
                             && !i.isDeleted)
                         .Select(obj => new MemberViewModel
                         {
                             memberId            = obj.memberId,
                             activeCompanyId     = obj.activeCompanyId,
-                            companies           = obj.companies.Select(company => new CompanyViewModel()
+                            companies           = obj.MemberCompanies.Select(memberCompany => new CompanyViewModel()
                             {
-                                companyId           = company.companyId,
-                                name                = company.name
+                                companyId           = memberCompany.companyId,
+                                name                = memberCompany.Company.name
                             }).ToList(),
                             firstName           = obj.firstName,
                             lastName            = obj.lastName,
@@ -694,13 +647,13 @@ namespace Api.Controllers
                             phone               = obj.phone,
                             isValidated         = obj.isValidated,
                             isDeleted           = obj.isDeleted,
-                            roles           = obj.roles.Select(role => new RoleViewModel() {
-                                roleId          = role.roleId,
-                                name            = role.name,
-                                isAdmin         = role.isAdmin,
-                                isContractor    = role.isContractor,
-                                isEmployee      = role.isEmployee,
-                                isSuperAdmin    = role.isSuperAdmin
+                            roles           = obj.MemberRoles.Select(memberRole => new RoleViewModel() {
+                                roleId          = memberRole.Role.roleId,
+                                name            = memberRole.Role.name,
+                                isAdmin         = memberRole.Role.isAdmin,
+                                isContractor    = memberRole.Role.isContractor,
+                                isEmployee      = memberRole.Role.isEmployee,
+                                isSuperAdmin    = memberRole.Role.isSuperAdmin
                             }).ToList()
                         })
                         .FirstOrDefault();
@@ -730,11 +683,11 @@ namespace Api.Controllers
                 try
                 {
                     
-                    UnitOfWork unitOfWork = new UnitOfWork();
+                    BambinoDataContext context = new BambinoDataContext();
 
                     int keyCode = new Random().Next(90000) + 10000;
-                    Member member = unitOfWork.MemberRepository
-                        .GetBy(i => i.token == data.token
+                    Member member = context.Members
+                        .Where(i => i.token == data.token
                             && !i.isDeleted)
                         .FirstOrDefault();
 
@@ -743,9 +696,8 @@ namespace Api.Controllers
 
                     member.keyCode = keyCode;
                     member.keyCodeDateTime = DateTimeOffset.UtcNow;
-
-                    unitOfWork.MemberRepository.Update(member);
-                    unitOfWork.Save();
+                    
+                    context.SubmitChanges();
                     
                     LogController.Add(member.memberId, "Member " + member.email + " Requested a New Key Code", "Member", "GetKeyCode", member.memberId, "Members");
 
@@ -787,10 +739,10 @@ namespace Api.Controllers
                 try
                 {
 
-                    UnitOfWork unitOfWork = new UnitOfWork();
+                    BambinoDataContext context = new BambinoDataContext();
 
-                    Member member = unitOfWork.MemberRepository
-                        .GetBy(i => i.memberId == a.member.memberId
+                    Member member = context.Members
+                        .Where(i => i.memberId == a.member.memberId
                             && i.email == data.email
                             && !i.isDeleted)
                         .FirstOrDefault();
@@ -802,16 +754,16 @@ namespace Api.Controllers
 
                     //    member.customerId = customer.Id;
 
-                    //    unitOfWork.MemberRepository.Update(member);
-                    //    unitOfWork.Save();
+                    //    context.MemberRepository.Update(member);
+                    //    context.SubmitChanges();
 
                     //}
 
                     if (member == null || data.email == "" || data.token == Guid.Empty)
                         return Request.CreateResponse(HttpStatusCode.OK, false);
-                    else if (member != null && data.isAdmin && member.roles.Any(i => i.isAdmin))
+                    else if (member != null && data.isAdmin && member.MemberRoles.Any(i => i.Role.isAdmin))
                         return Request.CreateResponse(HttpStatusCode.OK, true);
-                    else if (member != null && data.isAdmin && member.roles.Any(i => !i.isAdmin))
+                    else if (member != null && data.isAdmin && member.MemberRoles.Any(i => !i.Role.isAdmin))
                         return Request.CreateResponse(HttpStatusCode.OK, false);
                     else
                         return Request.CreateResponse(HttpStatusCode.OK, true);
@@ -851,10 +803,10 @@ namespace Api.Controllers
         //        try
         //        {
                     
-        //            UnitOfWork unitOfWork = new UnitOfWork();
+        //            BambinoDataContext context = new BambinoDataContext();
                     
-        //            string customerId = unitOfWork.MemberRepository
-        //                .GetBy(i => i.memberId == a.member.memberId
+        //            string customerId = context.MemberRepository
+        //                .Where(i => i.memberId == a.member.memberId
         //                    && !i.isDeleted)
         //                .Select(obj => obj.customerId)
         //                .FirstOrDefault();
@@ -884,7 +836,7 @@ namespace Api.Controllers
                 try
                 {
 
-                    UnitOfWork unitOfWork = new UnitOfWork();
+                    BambinoDataContext context = new BambinoDataContext();
                     
                     AESGCM encrypt = new AESGCM(data.password);
                     MemberIpAddress memberIpAddress = new MemberIpAddress();
@@ -892,14 +844,14 @@ namespace Api.Controllers
                     MailAddress address = new MailAddress(email);
                     string emailExtension = address.Host; // host contains yahoo.com
 
-                    Member member = unitOfWork.MemberRepository
-                        .GetBy(i => i.email == email
+                    Member member = context.Members
+                        .Where(i => i.email == email
                             && !i.isDeleted)
                         .FirstOrDefault();
 
                     var date = DateTimeOffset.UtcNow.AddHours(-1);
-                    var memberIpAddresses = unitOfWork.MemberIpAddressRepository
-                        .GetBy(i => i.email.ToLower() == data.email.ToLower()
+                    var memberIpAddresses = context.MemberIpAddresses
+                        .Where(i => i.email.ToLower() == data.email.ToLower()
                             && !i.isSuccess
                             && i.createdDate > date)
                         .ToList();
@@ -917,16 +869,15 @@ namespace Api.Controllers
                     memberIpAddress.keyValue = encrypt.keyBytes;
                     memberIpAddress.iVValue = encrypt.ivBytes;
                     
-                    string dbPassword = encrypt.DecryptStringFromBytes(member.password, member.keyValue, member.iVValue);
+                    string dbPassword = encrypt.DecryptStringFromBytes(member.password.ToArray(), member.keyValue.ToArray(), member.iVValue.ToArray());
                     if (dbPassword.Equals(data.password)) //Valid
                     {
                 
                         memberIpAddress.isSuccess = true;
 
                         member.lastLoginDateTime = DateTimeOffset.UtcNow;
-
-                        unitOfWork.MemberRepository.Update(member);
-                        unitOfWork.Save();
+                       
+                        context.SubmitChanges();
                 
                     }
                     else
@@ -934,8 +885,8 @@ namespace Api.Controllers
                         memberIpAddress.isSuccess = false;
                     }
             
-                    unitOfWork.MemberIpAddressRepository.Insert(memberIpAddress);
-                    unitOfWork.Save();
+                    context.MemberIpAddresses.InsertOnSubmit(memberIpAddress);
+                    context.SubmitChanges();
             
                     if (!dbPassword.Equals(data.password))
                         throw new InvalidOperationException("Invalid Password");
@@ -944,11 +895,11 @@ namespace Api.Controllers
                     {
                         mT = member.token,
                         mCI = member.activeCompanyId,
-                        mIC = member.roles.Any(i => i.isContractor),
-                        mIE = member.roles.Any(i => i.isEmployee),
-                        mIM = member.roles.Any(i => i.isManager),
-                        mIA = member.roles.Any(i => i.isAdmin),
-                        mIS = member.roles.Any(i => i.isSuperAdmin),
+                        mIC = member.MemberRoles.Any(i => i.Role.isContractor),
+                        mIE = member.MemberRoles.Any(i => i.Role.isEmployee),
+                        mIM = member.MemberRoles.Any(i => i.Role.isManager),
+                        mIA = member.MemberRoles.Any(i => i.Role.isAdmin),
+                        mIS = member.MemberRoles.Any(i => i.Role.isSuperAdmin),
                         mE = member.email,
                         mFN = member.firstName,
                         mLN = member.lastName,
@@ -979,29 +930,29 @@ namespace Api.Controllers
                 try
                 {
                     
-                    UnitOfWork unitOfWork = new UnitOfWork();
+                    BambinoDataContext context = new BambinoDataContext();
                     
                     Member member = new Member();
                     AESGCM encrypt = new AESGCM(data.password);
                     string email = data.email.ToLower();
                     int keyCode = new Random().Next(90000) + 10000;
-                    Member memberExist = unitOfWork.MemberRepository
-                        .GetBy(i => i.email == email
+                    Member memberExist = context.Members
+                        .Where(i => i.email == email
                             && !i.isDeleted)
                         .FirstOrDefault();
 
                     if (memberExist != null)
                         throw new InvalidOperationException("Email already exists.");
 
-                    Role memberRole = unitOfWork.RoleRepository
-                        .GetBy(i => i.isContractor)
+                    Role role = context.Roles
+                        .Where(i => i.isContractor)
                         .FirstOrDefault();
                     
-                    if (memberRole == null)
+                    if (role == null)
                         throw new InvalidOperationException("Role does not exist.");
                     
-                    Company company = unitOfWork.CompanyRepository
-                        .GetBy(i => i.companyId == data.companyId)
+                    Company company = context.Companies
+                        .Where(i => i.companyId == data.companyId)
                         .FirstOrDefault();
 
                     if (company == null)
@@ -1010,8 +961,21 @@ namespace Api.Controllers
                     if (company.pin != data.pin)
                         throw new InvalidOperationException("Company pin does not match.");
 
+                    MemberCompany memberCompany = new MemberCompany();
+
+                    memberCompany.companyId = company.companyId;
+                    memberCompany.memberId = member.memberId;
+
+                    context.MemberCompanies.InsertOnSubmit(memberCompany);
+
+                    MemberRole memberRole = new MemberRole();
+
+                    memberRole.roleId = role.roleId;
+                    memberRole.memberId = member.memberId;
+
+                    context.MemberRoles.InsertOnSubmit(memberRole);
+
                     member.activeCompanyId = data.companyId;
-                    member.companies.Add(company);
                     member.email = email;
                     member.originalEmail = email;
                     member.password = encrypt.password;
@@ -1021,10 +985,9 @@ namespace Api.Controllers
                     member.tokenApi = Guid.NewGuid();
                     member.keyCode = keyCode;
                     member.keyCodeDateTime = DateTimeOffset.UtcNow;
-                    member.roles.Add(memberRole);
                     
-                    unitOfWork.MemberRepository.Insert(member);
-                    unitOfWork.Save();
+                    context.Members.InsertOnSubmit(member);
+                    context.SubmitChanges();
 
                     LogController.Add(member.memberId, "Member " + member.email + " has signed up", "Member", "SignUp", member.memberId, "Members");
 
@@ -1075,10 +1038,10 @@ namespace Api.Controllers
                 try
                 {
 
-                    UnitOfWork unitOfWork = new UnitOfWork();
+                    BambinoDataContext context = new BambinoDataContext();
 
-                    Member member = unitOfWork.MemberRepository
-                        .GetBy(i => i.email == data.email.ToLower()
+                    Member member = context.Members
+                        .Where(i => i.email == data.email.ToLower()
                             && !i.isDeleted)
                         .FirstOrDefault();
 
@@ -1087,9 +1050,8 @@ namespace Api.Controllers
 
                     member.forgotPasswordToken = Guid.NewGuid();
                     member.forgotPasswordDateTime = DateTimeOffset.UtcNow;
-
-                    unitOfWork.MemberRepository.Update(member);
-                    unitOfWork.Save();
+                    
+                    context.SubmitChanges();
                     
                     LogController.Add(member.memberId, "Member " + member.email + " Requested a Forgot Password", "Member", "ForgotPassword", member.memberId, "Members");
 
@@ -1128,11 +1090,11 @@ namespace Api.Controllers
                 try
                 {
                     
-                    UnitOfWork unitOfWork = new UnitOfWork();
+                    BambinoDataContext context = new BambinoDataContext();
 
                     int keyCode = new Random().Next(90000) + 10000;
-                    Member member = unitOfWork.MemberRepository
-                        .GetBy(i => i.memberId == data.id
+                    Member member = context.Members
+                        .Where(i => i.memberId == data.id
                             && !i.isDeleted)
                         .FirstOrDefault();
 
@@ -1141,9 +1103,8 @@ namespace Api.Controllers
 
                     member.keyCode = keyCode;
                     member.keyCodeDateTime = DateTimeOffset.UtcNow;
-
-                    unitOfWork.MemberRepository.Update(member);
-                    unitOfWork.Save();
+                    
+                    context.SubmitChanges();
                     
                     LogController.Add(member.memberId, "Member " + member.email + " has been sent a Key Code", "Member", "SendKeyCode", member.memberId, "Members");
 
@@ -1185,7 +1146,7 @@ namespace Api.Controllers
                 try
                 {
 
-                    UnitOfWork unitOfWork = new UnitOfWork();
+                    BambinoDataContext context = new BambinoDataContext();
                     
                     new Thread(() =>
                     {

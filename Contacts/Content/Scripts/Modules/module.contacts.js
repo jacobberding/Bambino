@@ -14,7 +14,7 @@ const Contacts = (function () {
         name: `Contact`,
         constructor: function (contactId, name, title, companyName, phone1, phone2,
             skypeId, email, companyTemp, resume, portfolio, personalWebsite, skills,
-            isEdcFamily, isPotentialStaffing, isDeleted) {
+            isEdcFamily, isPotentialStaffing, isDeleted, contactFiles) {
             this.contactId = contactId;
             this.name = name;
             this.title = title;
@@ -27,12 +27,13 @@ const Contacts = (function () {
             this.resume = resume;
             this.portfolio = portfolio;
             this.personalWebsite = personalWebsite;
-            this.skills = skills
+            this.skills = skills;
             this.isEdcFamily = isEdcFamily;
             this.isPotentialStaffing = isPotentialStaffing;
             this.isDeleted = isDeleted;
+            this.contactFiles = contactFiles;
         }
-    }
+    };
 
     const _addEdit = function () {
         
@@ -148,8 +149,8 @@ const Contacts = (function () {
     }
 
     const _getEmptyVM = function () {
-        return new _self.constructor(Global.guidEmpty,``,``,``,``,``,``,``,``,``,``,``,``,false,false,false);
-    }
+        return new _self.constructor(Global.guidEmpty, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, false, false, false, []);
+    };
     const _getExport = function () {
         
         Global.post(`${_self.name}_GetReport`, {})
@@ -301,7 +302,7 @@ const Contacts = (function () {
             </m-body>
         
             `;
-    }
+    };
     const getHtmlModuleDetail = function (id) {
         _getById(id);
         return `
@@ -451,7 +452,7 @@ const Contacts = (function () {
 
             <m-flex data-type="col" class="form">
 
-                ${ContactFile.getHtmlBodyForm()}
+                ${_self.vm.contactId == Global.guidEmpty ? `` : ContactFile.getHtmlBodyForm()}
 
                 <m-flex data-type="row" class="n">
                     <m-input class="mR">

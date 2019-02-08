@@ -6,31 +6,6 @@ using System.Web;
 
 namespace Api.Models
 {
-    [Table("TimeTrackers")]
-    public class TimeTracker
-    {
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public Guid timeTrackerId { get; set; }
-        
-        [ForeignKey("member")]
-        public Guid memberId { get; set; } = Guid.Empty;
-        public virtual Member member { get; set; }
-
-        public DateTimeOffset dateCreated { get; set; } = DateTimeOffset.UtcNow;
-
-        public DateTimeOffset dateIn { get; set; } = DateTimeOffset.UtcNow;
-
-        public DateTimeOffset dateOut { get; set; } = DateTimeOffset.MinValue;
-
-        public decimal totalHours { get; set; } = 0.0000m;
-
-        public bool isActive { get; set; } = true;
-        
-        public bool isDeleted { get; set; } = false;
-
-        public virtual ICollection<TimeTrackerProject> timeTrackerProjects { get; set; } = new List<TimeTrackerProject>();
-
-    }
 
     public class TimeTrackerViewModel
     {

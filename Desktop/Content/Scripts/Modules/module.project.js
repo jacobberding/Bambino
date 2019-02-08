@@ -595,6 +595,28 @@ const ProjectZone = (function () {
         _getByPage(1);
 
     };
+    const _archive = function ($this, isArchived) {
+
+        const vm = {
+            projectZoneId: $this.attr(`data-id`),
+            isArchived: isArchived
+        };
+
+        Global.post(`${_self.name}_EditArchive`, vm)
+            .done(function (data) {
+
+                _self.arr = [];
+
+                _getByPage(1);
+
+                Validation.notification(1);
+                Module.closeModuleAll();
+            })
+            .fail(function (data) {
+                Validation.notification(2);
+            });
+
+    };
 
     //Public ------------------------------------------------
     const getSelf = function () {
@@ -706,13 +728,16 @@ const ProjectZone = (function () {
         return `
             <m-flex data-type="col" class="n s cards selectable" id="lst${_self.name}s">
 
-                <m-flex data-type="row" class="tableRow n pL pR mB sC sort" style="width: 100%;">
+                <m-flex data-type="row" class="tableRow n pL mB sC sort" style="width: 100%;">
                     <h2 class="${Global.getSort(_self.sort, `code`)}" data-sort="code">
                         Code
                     </h2>
                     <h2 class="${Global.getSort(_self.sort, `name`)}" data-sort="name">
                         Name
                     </h2>
+                    <m-flex data-type="row" class="n c sm sQ tertiary hidden">
+                        <i class="icon-"><svg><use xlink:href="/Content/Images/Bambino.min.svg#icon-"></use></svg></i>
+                    </m-flex>
                 </m-flex>
 
                 ${html}
@@ -786,7 +811,7 @@ const ProjectZone = (function () {
     const getHtmlCard = function (obj) {
         return `
 
-            <m-card class="tableRow mB nT btnOpenModule" data-function="${_self.name}.getHtmlModuleDetail" data-args="${obj.projectZoneId}">
+            <m-card class="tableRow mB nT btnOpenModule ${obj.isArchived ? `archive` : ``}" data-function="${_self.name}.getHtmlModuleDetail" data-args="${obj.projectZoneId}">
                 <m-flex data-type="row" class="n pL sC tE">
                     <h2 class="tE">
                         ${getCode(obj.code)}
@@ -794,9 +819,13 @@ const ProjectZone = (function () {
                     <h2 class="tE">
                         ${obj.name}
                     </h2>
-                    ${Global.jack.mIM ? `
-                    <m-flex data-type="row" class="n c sm sQ tertiary btnOpenModule" data-function="Module.getHtmlConfirmation" data-args="zone,btnDelete${_self.name}">
-                        <i class="icon-trash-can"><svg><use xlink:href="/Content/Images/Bambino.min.svg#icon-trash-can"></use></svg></i>
+                    ${Global.jack.mIM && !obj.isArchived ? `
+                    <m-flex data-type="row" class="n c sm sQ tertiary btnOpenModule" data-function="Module.getHtmlConfirmation" data-args="Are you sure you want to archive this zone?,btnArchive${_self.name},${obj.projectZoneId}">
+                        <i class="icon-downloads"><svg><use xlink:href="/Content/Images/Bambino.min.svg#icon-downloads"></use></svg></i>
+                    </m-flex>` : ``}
+                    ${Global.jack.mIM && obj.isArchived ? `
+                    <m-flex data-type="row" class="n c sm sQ tertiary btnOpenModule" data-function="Module.getHtmlConfirmation" data-args="Are you sure you want to unarchive this zone?,btnUnarchive${_self.name},${obj.projectZoneId}">
+                        <i class="icon-downloads"><svg><use xlink:href="/Content/Images/Bambino.min.svg#icon-downloads"></use></svg></i>
                     </m-flex>` : ``}
                 </m-flex>
             </m-card>
@@ -807,6 +836,8 @@ const ProjectZone = (function () {
     const _init = (function () {
         $(document).on(`tap`, `#lst${_self.name}s .sort h2`, function () { _sort($(this)); });
         $(document).on(`tap`, `#btnAdd${_self.name}, #btnEdit${_self.name}`, function () { _addEdit(); });
+        $(document).on(`tap`, `#btnArchive${_self.name}`, function () { _archive($(this), true); });
+        $(document).on(`tap`, `#btnUnarchive${_self.name}`, function () { _archive($(this), false); });
         $(document).on(`tap`, `#btnDelete${_self.name}`, function () { _delete(); });
         $(document).on(`tap`, `#btnShowMore${_self.name}`, function () { _self.page++; _getByPage(_self.page); });
         $(document).on(`keyup`, `#txtSearch${_self.name}`, function () { _search(); });
@@ -822,7 +853,7 @@ const ProjectZone = (function () {
         getHtmlBodyDetail: getHtmlBodyDetail,
         getHtmlBodyForm: getHtmlBodyForm,
         getHtmlCard: getHtmlCard
-    }
+    };
 
 })();
 const ProjectPhase = (function () {

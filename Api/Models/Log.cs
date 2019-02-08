@@ -4,74 +4,31 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Api.Models
 {
-    [Table("Logs")]
-    public class Log
-    {
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public Guid logId { get; set; }
-        
-        [ForeignKey("member")]
-        public Guid memberId { get; set; }
-        public virtual Member member { get; set; }
-        
-        public string activity { get; set; }
 
-        public string controllerName { get; set; }
-        
-        public string methodName { get; set; }
-
-        public string tableName { get; set; }
-
-        public Guid tableId { get; set; }
-        
-        public DateTimeOffset createdDate { get; set; }
-
-        public Log()
-        {
-            memberId            = Guid.Empty;
-            activity            = "";
-            controllerName      = "";
-            methodName          = "";
-            tableName           = "";
-            tableId             = Guid.Empty;
-            createdDate         = DateTimeOffset.UtcNow;
-        }
-
-    }
-    
     public class LogViewModel
     {
 
-        public Guid logId { get; set; }
+        public Guid logId { get; set; } = Guid.Empty;
+
+        public Guid memberId { get; set; } = Guid.Empty;
+        public MemberViewModel member { get; set; } = new MemberViewModel();
+
+        [DisplayFormat(ConvertEmptyStringToNull = false)]
+        public string activity { get; set; } = "";
+
+        [DisplayFormat(ConvertEmptyStringToNull = false)]
+        public string controllerName { get; set; } = "";
+
+        [DisplayFormat(ConvertEmptyStringToNull = false)]
+        public string methodName { get; set; } = "";
+
+        [DisplayFormat(ConvertEmptyStringToNull = false)]
+        public string tableName { get; set; } = "";
+
+        public Guid tableId { get; set; } = Guid.Empty;
+
+        public DateTimeOffset createdDate { get; set; } = DateTimeOffset.UtcNow;
         
-        public Guid memberId { get; set; }
-        public MemberViewModel member { get; set; }
-        
-        public string activity { get; set; }
-
-        public string controllerName { get; set; }
-        
-        public string methodName { get; set; }
-
-        public string tableName { get; set; }
-
-        public Guid tableId { get; set; }
-        
-        public DateTimeOffset createdDate { get; set; }
-
-        public LogViewModel()
-        {
-            logId               = Guid.Empty;
-            memberId            = Guid.Empty;
-            member              = new MemberViewModel();
-            activity            = "";
-            controllerName      = "";
-            methodName          = "";
-            tableName           = "";
-            tableId             = Guid.Empty;
-            createdDate         = DateTimeOffset.UtcNow;
-        }
-
     }
 
     public class LogGetByTableNameViewModel
@@ -79,22 +36,15 @@ namespace Api.Models
         
         public AuthenticationViewModel authentication { get; set; }
         
-        public int page { get; set; }
+        public int page { get; set; } = 0;
 
-        public int records { get; set; }
+        public int records { get; set; } = 0;
+
+        [DisplayFormat(ConvertEmptyStringToNull = false)]
+        public string search { get; set; } = "";
+
+        public string[] tableNames { get; set; } = new string[] { };
         
-        public string search { get; set; }
-
-        public string[] tableNames { get; set; }
-
-        public LogGetByTableNameViewModel()
-        {
-            page        = 0;
-            records     = 0;
-            search      = "";
-            tableNames  = new string[] { };
-        }
-
     }
 
 }

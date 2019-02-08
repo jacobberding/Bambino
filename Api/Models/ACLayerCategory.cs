@@ -1,60 +1,29 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Web;
 
 namespace Api.Models
 {
-    [Table("ACLayerCategories")]
-    public class ACLayerCategory
-    {
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public Guid acLayerCategoryId { get; set; }
-
-        public string name { get; set; }
-
-        public string value { get; set; }
-
-        public string description { get; set; }
-
-        public bool isDeleted { get; set; }
-
-        public virtual ICollection<ACLayer> layers { get; set; }
-
-        public ACLayerCategory()
-        {
-            name = "";
-            value = "";
-            description = "";
-            isDeleted = false;
-            layers = new List<ACLayer>();
-        }
-
-    }
 
     public class ACLayerCategoryViewModel
     {
 
-        public Guid acLayerCategoryId { get; set; }
+        public Guid acLayerCategoryId { get; set; } = Guid.Empty;
 
-        public string name { get; set; }
+        [DisplayFormat(ConvertEmptyStringToNull = false)]
+        public string name { get; set; } = "";
 
-        public string value { get; set; }
+        [DisplayFormat(ConvertEmptyStringToNull = false)]
+        public string value { get; set; } = "";
 
-        public string description { get; set; }
+        [DisplayFormat(ConvertEmptyStringToNull = false)]
+        public string description { get; set; } = "";
 
-        public bool isDeleted { get; set; }
+        public bool isDeleted { get; set; } = false;
         
-        public ACLayerCategoryViewModel()
-        {
-            acLayerCategoryId = new Guid();
-            name = "";
-            value = "";
-            description = "";
-            isDeleted = false;
-        }
-
     }
 
 }

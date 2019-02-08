@@ -24,10 +24,10 @@ namespace Api.Controllers
                 try
                 {
 
-                    UnitOfWork unitOfWork = new UnitOfWork();
+                    BambinoDataContext context = new BambinoDataContext();
 
-                    Material material = (data.materialId == Guid.Empty) ? new Material() : unitOfWork.MaterialRepository
-                        .GetBy(i => i.materialId == data.materialId
+                    Material material = (data.materialId == Guid.Empty) ? new Material() : context.Materials
+                        .Where(i => i.materialId == data.materialId
                             && !i.isDeleted)
                         .FirstOrDefault();
 
@@ -44,14 +44,13 @@ namespace Api.Controllers
                     material.manufacturer = data.manufacturer;
                     material.modelNumber = data.modelNumber;
                     material.notes = data.notes;
+                    material.tags = "";
                     material.isDeleted = data.isDeleted;
 
                     if (data.materialId == Guid.Empty)
-                        unitOfWork.MaterialRepository.Insert(material);
-                    else
-                        unitOfWork.MaterialRepository.Update(material);
+                        context.Materials.InsertOnSubmit(material);
 
-                    unitOfWork.Save();
+                    context.SubmitChanges();
 
                     var activity = (data.materialId == Guid.Empty) ? "Added" : (data.isDeleted) ? "Deleted" : "Edited";
                     LogController.Add(a.member.memberId, String.Format("Material {0} was {1}", material.name, activity), "Material", "AddEditDelete", material.materialId, "Materials");
@@ -84,32 +83,21 @@ namespace Api.Controllers
                 try
                 {
 
-                    UnitOfWork unitOfWork = new UnitOfWork();
-
-                    Material material = unitOfWork.MaterialRepository
-                        .GetBy(i => i.materialId == data.materialId
-                            && !i.isDeleted)
-                        .FirstOrDefault();
-
-                    if (material == null)
-                        throw new InvalidOperationException("Not Found");
-
-                    MaterialTag materialTag = unitOfWork.MaterialTagRepository
-                        .GetBy(i => i.name == data.name)
-                        .FirstOrDefault();
-
-                    if (materialTag == null)
-                        throw new InvalidOperationException("Not Found");
-
-                    material.materialTags.Add(materialTag);
-
-                    unitOfWork.MaterialRepository.Update(material);
-                    unitOfWork.Save();
+                    BambinoDataContext context = new BambinoDataContext();
                     
-                    var vm = new MaterialTagViewModel
+                    MaterialTagMaterial materialTagMaterial = new MaterialTagMaterial();
+
+                    materialTagMaterial.materialId = data.materialId;
+                    materialTagMaterial.materialTagId = context.MaterialTags.Where(i => i.name == data.name).FirstOrDefault().materialTagId;
+
+                    context.MaterialTagMaterials.InsertOnSubmit(materialTagMaterial);
+                    
+                    context.SubmitChanges();
+                    
+                    var vm = new 
                     {
-                        materialTagId = materialTag.materialTagId,
-                        name = materialTag.name
+                        materialTagId = materialTagMaterial.materialTagId,
+                        materialId = materialTagMaterial.materialId
                     };
 
                     return Request.CreateResponse(HttpStatusCode.OK, vm);
@@ -134,32 +122,21 @@ namespace Api.Controllers
                 try
                 {
 
-                    UnitOfWork unitOfWork = new UnitOfWork();
-
-                    Material material = unitOfWork.MaterialRepository
-                        .GetBy(i => i.materialId == data.materialId
-                            && !i.isDeleted)
+                    BambinoDataContext context = new BambinoDataContext();
+                    
+                    MaterialTagMaterial materialTagMaterial = context.MaterialTagMaterials
+                        .Where(i => i.materialId == data.materialId
+                            && i.materialTagId == data.materialTagId)
                         .FirstOrDefault();
+                    
+                    context.MaterialTagMaterials.DeleteOnSubmit(materialTagMaterial);
 
-                    if (material == null)
-                        throw new InvalidOperationException("Not Found");
+                    context.SubmitChanges();
 
-                    MaterialTag materialTag = unitOfWork.MaterialTagRepository
-                        .GetBy(i => i.materialTagId == data.materialTagId)
-                        .FirstOrDefault();
-
-                    if (materialTag == null)
-                        throw new InvalidOperationException("Not Found");
-
-                    material.materialTags.Remove(materialTag);
-
-                    unitOfWork.MaterialRepository.Update(material);
-                    unitOfWork.Save();
-
-                    var vm = new MaterialTagViewModel
+                    var vm = new 
                     {
-                        materialTagId = materialTag.materialTagId,
-                        name = materialTag.name
+                        materialTagId = data.materialTagId,
+                        materialId = data.materialId
                     };
 
                     return Request.CreateResponse(HttpStatusCode.OK, vm);
@@ -184,13 +161,13 @@ namespace Api.Controllers
                 try
                 {
 
-                    UnitOfWork unitOfWork = new UnitOfWork();
+                    BambinoDataContext context = new BambinoDataContext();
                     
-                    var query = unitOfWork.MaterialRepository
-                        .GetBy(i => (i.name.Contains(data.search)
+                    var query = context.Materials
+                        .Where(i => (i.name.Contains(data.search)
                             || i.manufacturer.Contains(data.search)
                             || i.modelNumber.Contains(data.search)
-                            || i.materialTags.Any(materialTag => materialTag.name.Contains(data.search)))
+                            || i.MaterialTagMaterials.Any(materialTagMaterial => materialTagMaterial.MaterialTag.name.Contains(data.search)))
                             && !i.isDeleted);
                     
                     int currentPage = data.page - 1;
@@ -203,10 +180,10 @@ namespace Api.Controllers
                             disciplineId = obj.disciplineId,
                             discipline = new DisciplineViewModel()
                             {
-                                disciplineId = obj.discipline.disciplineId,
-                                description = obj.discipline.description,
-                                name = obj.discipline.name,
-                                value = obj.discipline.value
+                                disciplineId = obj.Discipline.disciplineId,
+                                description = obj.Discipline.description,
+                                name = obj.Discipline.name,
+                                value = obj.Discipline.value
                             },
                             name = obj.name,
                             description = obj.description,
@@ -216,10 +193,10 @@ namespace Api.Controllers
                             materialPriceOptionKey = obj.materialPriceOptionKey,
                             materialPriceOption = new MaterialPriceOptionViewModel()
                             {
-                                materialPriceOptionKey = obj.materialPriceOption.materialPriceOptionKey,
-                                abbreviation = obj.materialPriceOption.abbreviation,
-                                description = obj.materialPriceOption.description,
-                                name = obj.materialPriceOption.name
+                                materialPriceOptionKey = obj.MaterialPriceOption.materialPriceOptionKey,
+                                abbreviation = obj.MaterialPriceOption.abbreviation,
+                                description = obj.MaterialPriceOption.description,
+                                name = obj.MaterialPriceOption.name
                             },
                             manufacturer = obj.manufacturer,
                             modelNumber = obj.modelNumber,
@@ -262,10 +239,10 @@ namespace Api.Controllers
                 try
                 {
 
-                    UnitOfWork unitOfWork = new UnitOfWork();
+                    BambinoDataContext context = new BambinoDataContext();
 
-                    var vm = unitOfWork.MaterialRepository
-                        .GetBy(i => i.materialId == data.id
+                    var vm = context.Materials
+                        .Where(i => i.materialId == data.id
                             && !i.isDeleted)
                         .Select(obj => new MaterialViewModel
                         {
@@ -273,10 +250,10 @@ namespace Api.Controllers
                             disciplineId = obj.disciplineId,
                             discipline = new DisciplineViewModel()
                             {
-                                disciplineId = obj.discipline.disciplineId,
-                                description = obj.discipline.description,
-                                name = obj.discipline.name,
-                                value = obj.discipline.value
+                                disciplineId = obj.Discipline.disciplineId,
+                                description = obj.Discipline.description,
+                                name = obj.Discipline.name,
+                                value = obj.Discipline.value
                             },
                             name = obj.name,
                             description = obj.description,
@@ -286,17 +263,17 @@ namespace Api.Controllers
                             materialPriceOptionKey = obj.materialPriceOptionKey,
                             materialPriceOption = new MaterialPriceOptionViewModel()
                             {
-                                materialPriceOptionKey = obj.materialPriceOption.materialPriceOptionKey,
-                                abbreviation = obj.materialPriceOption.abbreviation,
-                                description = obj.materialPriceOption.description,
-                                name = obj.materialPriceOption.name
+                                materialPriceOptionKey = obj.MaterialPriceOption.materialPriceOptionKey,
+                                abbreviation = obj.MaterialPriceOption.abbreviation,
+                                description = obj.MaterialPriceOption.description,
+                                name = obj.MaterialPriceOption.name
                             },
                             manufacturer = obj.manufacturer,
                             modelNumber = obj.modelNumber,
-                            materialTags = obj.materialTags.Where(i => !i.isDeleted).Select(materialTag => new MaterialTagViewModel()
+                            materialTags = obj.MaterialTagMaterials.Select(materialTagMaterial => new MaterialTagViewModel()
                             {
-                                materialTagId = materialTag.materialTagId,
-                                name = materialTag.name
+                                materialTagId = materialTagMaterial.materialTagId,
+                                name = materialTagMaterial.MaterialTag.name
                             })
                             .OrderBy(i => i.name)
                             .ToList(),

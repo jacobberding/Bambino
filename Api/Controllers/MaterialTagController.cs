@@ -23,10 +23,9 @@ namespace Api.Controllers
                 try
                 {
 
-                    UnitOfWork unitOfWork = new UnitOfWork();
+                    BambinoDataContext context = new BambinoDataContext();
 
-                    List<ListViewModel> vm = unitOfWork.MaterialTagRepository
-                        .Get()
+                    List<ListViewModel> vm = context.MaterialTags
                         .Select(obj => new ListViewModel()
                         {
                             value = obj.materialTagId.ToString(),

@@ -37,10 +37,10 @@ namespace Api.Controllers
         public static AddEditDeleteReturnViewModel _AddEditDelete(ACAreaCategoryAddEditDeleteViewModel data)
         {
 
-            UnitOfWork unitOfWork = new UnitOfWork();
+            BambinoDataContext context = new BambinoDataContext();
 
-            ACAreaCategory acAreaCategory = (data.acAreaCategoryId == Guid.Empty) ? new ACAreaCategory() : unitOfWork.ACAreaCategoryRepository
-                .GetBy(i => i.acAreaCategoryId == data.acAreaCategoryId
+            ACAreaCategory acAreaCategory = (data.acAreaCategoryId == Guid.Empty) ? new ACAreaCategory() : context.ACAreaCategories
+                .Where(i => i.acAreaCategoryId == data.acAreaCategoryId
                     && !i.isDeleted)
                 .FirstOrDefault();
 
@@ -51,11 +51,9 @@ namespace Api.Controllers
             acAreaCategory.isDeleted = data.isDeleted;
 
             if (data.acAreaCategoryId == Guid.Empty)
-                unitOfWork.ACAreaCategoryRepository.Insert(acAreaCategory);
-            else
-                unitOfWork.ACAreaCategoryRepository.Update(acAreaCategory);
+                context.ACAreaCategories.InsertOnSubmit(acAreaCategory);
 
-            unitOfWork.Save();
+            context.SubmitChanges();
 
             var activity = (data.acAreaCategoryId == Guid.Empty) ? "Added" : (data.isDeleted) ? "Deleted" : "Edited";
             //LogController.Add(a.member.memberId, "Template Category " + category.name + " " + activity, "Category", "AddEditDelete", category.acLayerCategoryId, "Categories");
@@ -96,10 +94,10 @@ namespace Api.Controllers
             //    new TagAreaTypeViewModel() { name = "BOH" }
             //};
 
-            UnitOfWork unitOfWork = new UnitOfWork();
+            BambinoDataContext context = new BambinoDataContext();
 
-            return unitOfWork.ACAreaCategoryRepository
-                .GetBy(i => !i.isDeleted)
+            return context.ACAreaCategories
+                .Where(i => !i.isDeleted)
                 .Select(obj => new ACAreaCategoryViewModel
                 {
                     acAreaCategoryId = obj.acAreaCategoryId,
@@ -140,10 +138,10 @@ namespace Api.Controllers
         public static GetByPageReturnViewModel _GetByPage(SearchViewModel data)
         {
 
-            UnitOfWork unitOfWork = new UnitOfWork();
+            BambinoDataContext context = new BambinoDataContext();
 
-            var query = unitOfWork.ACAreaCategoryRepository
-                .GetBy(i => !i.isDeleted
+            var query = context.ACAreaCategories
+                .Where(i => !i.isDeleted
                     && i.name.Contains(data.search));
 
             int currentPage = data.page - 1;
@@ -195,10 +193,10 @@ namespace Api.Controllers
         public static ACAreaCategoryViewModel _GetById(GetByIdViewModel data)
         {
 
-            UnitOfWork unitOfWork = new UnitOfWork();
+            BambinoDataContext context = new BambinoDataContext();
 
-            return unitOfWork.ACAreaCategoryRepository
-                .GetBy(i => i.acAreaCategoryId == data.id
+            return context.ACAreaCategories
+                .Where(i => i.acAreaCategoryId == data.id
                     && !i.isDeleted)
                 .Select(obj => new ACAreaCategoryViewModel
                 {

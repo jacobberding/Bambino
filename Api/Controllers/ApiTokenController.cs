@@ -26,10 +26,10 @@ namespace Api.Controllers
                 try
                 {
                     
-                    UnitOfWork unitOfWork = new UnitOfWork();
+                    BambinoDataContext context = new BambinoDataContext();
 
-                    ApiToken apiToken = (data.apiTokenId == Guid.Empty) ? new ApiToken() : unitOfWork.ApiTokenRepository
-                        .GetBy(i => i.apiTokenId == data.apiTokenId
+                    ApiToken apiToken = (data.apiTokenId == Guid.Empty) ? new ApiToken() : context.ApiTokens
+                        .Where(i => i.apiTokenId == data.apiTokenId
                             && !i.isDeleted)
                         .FirstOrDefault();
                     
@@ -45,7 +45,7 @@ namespace Api.Controllers
                     if (data.apiTokenId == Guid.Empty)
                     {
 
-                        unitOfWork.ApiTokenRepository.Insert(apiToken);
+                        context.ApiTokens.InsertOnSubmit(apiToken);
 
                         new Thread(() =>
                         {
@@ -57,11 +57,9 @@ namespace Api.Controllers
                                 "Company Name: " + apiToken.companyName + " Name: " + apiToken.adminName + " Email: " + apiToken.adminEmail + " Phone: " + apiToken.adminPhone);
                         }).Start();
 
-                    } else {
-                        unitOfWork.ApiTokenRepository.Update(apiToken);
                     }
 
-                    unitOfWork.Save();
+                    context.SubmitChanges();
                     
                     var vm = new {
                         apiTokenId = apiToken.apiTokenId,

@@ -24,14 +24,14 @@ namespace Api.Controllers
                 try
                 {
 
-                    UnitOfWork unitOfWork = new UnitOfWork();
+                    BambinoDataContext context = new BambinoDataContext();
 
-                    var query = unitOfWork.TimeTrackerProjectRepository
-                        .GetBy(i => i.projectId == data.id 
+                    var query = context.TimeTrackerProjects
+                        .Where(i => i.projectId == data.id 
                             && !i.isDeleted
-                            && (i.timeTracker.member.email.Contains(data.search)
-                            || i.timeTracker.member.firstName.Contains(data.search)
-                            || i.timeTracker.member.lastName.Contains(data.search)));
+                            && (i.TimeTracker.Member.email.Contains(data.search)
+                            || i.TimeTracker.Member.firstName.Contains(data.search)
+                            || i.TimeTracker.Member.lastName.Contains(data.search)));
 
                     int currentPage = data.page - 1;
                     int skip = currentPage * data.records;
@@ -44,25 +44,25 @@ namespace Api.Controllers
                             projectId = obj.projectId,
                             project = new ProjectViewModel()
                             {
-                                name = obj.project.name
+                                name = obj.Project.name
                             },
                             description = obj.description,
                             totalHours = obj.totalHours,
                             timeTrackerId = obj.timeTrackerId,
                             timeTracker = new TimeTrackerViewModel()
                             {
-                                dateCreated = obj.timeTracker.dateCreated,
-                                dateIn = obj.timeTracker.dateIn,
-                                dateOut = obj.timeTracker.dateOut,
-                                totalHours = obj.timeTracker.totalHours,
-                                isActive = obj.timeTracker.isActive,
+                                dateCreated = obj.TimeTracker.dateCreated,
+                                dateIn = obj.TimeTracker.dateIn,
+                                dateOut = obj.TimeTracker.dateOut,
+                                totalHours = obj.TimeTracker.totalHours,
+                                isActive = obj.TimeTracker.isActive,
                                 member = new MemberViewModel()
                                 {
-                                    token = obj.timeTracker.member.token,
-                                    email = obj.timeTracker.member.email,
-                                    firstName = obj.timeTracker.member.firstName,
-                                    lastName = obj.timeTracker.member.lastName,
-                                    isActive = obj.timeTracker.member.timeTrackers.Any(i => i.isActive)
+                                    token = obj.TimeTracker.Member.token,
+                                    email = obj.TimeTracker.Member.email,
+                                    firstName = obj.TimeTracker.Member.firstName,
+                                    lastName = obj.TimeTracker.Member.lastName,
+                                    isActive = obj.TimeTracker.Member.TimeTrackers.Any(i => i.isActive)
                                 },
                             }
                         })

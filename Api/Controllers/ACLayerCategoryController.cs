@@ -34,10 +34,10 @@ namespace Api.Controllers
         public static List<ACLayerCategoryViewModel> _Get()
         {
 
-            UnitOfWork unitOfWork = new UnitOfWork();
+            BambinoDataContext context = new BambinoDataContext();
             
-            return unitOfWork.ACLayerCategoryRepository
-                .GetBy(i => !i.isDeleted)
+            return context.ACLayerCategories
+                .Where(i => !i.isDeleted)
                 .Select(obj => new ACLayerCategoryViewModel()
                 {
                     acLayerCategoryId = obj.acLayerCategoryId,

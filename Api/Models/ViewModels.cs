@@ -103,8 +103,10 @@ namespace Api.Models
 
         public Guid id { get; set; }
 
+        [DisplayFormat(ConvertEmptyStringToNull = false)]
         public string path { get; set; } = "";
 
+        [DisplayFormat(ConvertEmptyStringToNull = false)]
         public string originalFileName { get; set; } = "";
 
         public int width { get; set; } = 0;

@@ -29,10 +29,10 @@ namespace Api.Controllers
                 try
                 {
 
-                    UnitOfWork unitOfWork = new UnitOfWork();
+                    BambinoDataContext context = new BambinoDataContext();
 
-                    TimeTracker timeTracker = unitOfWork.TimeTrackerRepository
-                        .GetBy(i => i.timeTrackerId == data.timeTrackerId
+                    TimeTracker timeTracker = context.TimeTrackers
+                        .Where(i => i.timeTrackerId == data.timeTrackerId
                             && !i.isDeleted)
                         .FirstOrDefault();
 
@@ -43,29 +43,28 @@ namespace Api.Controllers
                     timeTracker.dateOut = data.dateOut;
                     timeTracker.totalHours = data.totalHours;
                     timeTracker.isDeleted = data.isDeleted;
+                    
+                    context.TimeTrackerProjects.DeleteAllOnSubmit<TimeTrackerProject>(timeTracker.TimeTrackerProjects);
+                    context.SubmitChanges();
 
-                    timeTracker.timeTrackerProjects.ToList().ForEach(r => unitOfWork.TimeTrackerProjectRepository.Delete(r));
                     foreach (var project in data.projects)
                     {
 
                         TimeTrackerProject timeTrackerProject = new TimeTrackerProject();
 
-                        timeTrackerProject.projectId = (project.projectId == Guid.Empty) ? unitOfWork.ProjectRepository.GetBy(i => i.isDefault && i.companyId == a.member.activeCompanyId).FirstOrDefault().projectId : project.projectId;
+                        timeTrackerProject.projectId = (project.projectId == Guid.Empty) ? context.Projects.Where(i => i.isDefault && i.companyId == a.member.activeCompanyId).FirstOrDefault().projectId : project.projectId;
 
                         timeTrackerProject.timeTrackerId = timeTracker.timeTrackerId;
                         timeTrackerProject.totalHours = project.totalHours;
                         //add description eventually
 
-                        unitOfWork.TimeTrackerProjectRepository.Insert(timeTrackerProject);
-                        unitOfWork.Save();
+                        context.TimeTrackerProjects.InsertOnSubmit(timeTrackerProject);
+                        context.SubmitChanges();
 
                     }
-
-                    unitOfWork.TimeTrackerRepository.Update(timeTracker);
-                    unitOfWork.Save();
-
+                    
                     var activity = (data.isDeleted) ? "Deleted" : "Edited";
-                    LogController.Add(a.member.memberId, String.Format("{0} {1} {2} a time sheet record", timeTracker.member.firstName, timeTracker.member.lastName, activity), "TimeTracker", "EditDelete", timeTracker.timeTrackerId, "TimeTrackers");
+                    LogController.Add(a.member.memberId, String.Format("{0} {1} {2} a time sheet record", timeTracker.Member.firstName, timeTracker.Member.lastName, activity), "TimeTracker", "EditDelete", timeTracker.timeTrackerId, "TimeTrackers");
 
                     var vm = new AddEditDeleteReturnViewModel()
                     {
@@ -95,10 +94,10 @@ namespace Api.Controllers
                 try
                 {
 
-                    UnitOfWork unitOfWork = new UnitOfWork();
+                    BambinoDataContext context = new BambinoDataContext();
 
-                    bool isActive = unitOfWork.TimeTrackerRepository
-                        .GetBy(i => i.memberId == a.member.memberId
+                    bool isActive = context.TimeTrackers
+                        .Where(i => i.memberId == a.member.memberId
                             && i.isActive
                             && !i.isDeleted)
                         .ToList()
@@ -111,8 +110,8 @@ namespace Api.Controllers
 
                     timeTracker.memberId = a.member.memberId;
                     
-                    unitOfWork.TimeTrackerRepository.Insert(timeTracker);
-                    unitOfWork.Save();
+                    context.TimeTrackers.InsertOnSubmit(timeTracker);
+                    context.SubmitChanges();
 
                     LogController.Add(a.member.memberId, String.Format("{0} clocked in", a.member.email), "TimeTracker", "In", timeTracker.timeTrackerId, "TimeTrackers");
 
@@ -144,10 +143,10 @@ namespace Api.Controllers
                 try
                 {
 
-                    UnitOfWork unitOfWork = new UnitOfWork();
+                    BambinoDataContext context = new BambinoDataContext();
 
-                    bool isActive = unitOfWork.TimeTrackerRepository
-                        .GetBy(i => i.memberId == a.member.memberId
+                    bool isActive = context.TimeTrackers
+                        .Where(i => i.memberId == a.member.memberId
                             && i.isActive
                             && !i.isDeleted)
                         .ToList()
@@ -156,8 +155,8 @@ namespace Api.Controllers
                     if (!isActive)
                         throw new InvalidOperationException("Not Clocked In Yet");
 
-                    TimeTracker timeTracker = unitOfWork.TimeTrackerRepository
-                        .GetBy(i => i.memberId == a.member.memberId
+                    TimeTracker timeTracker = context.TimeTrackers
+                        .Where(i => i.memberId == a.member.memberId
                             && i.isActive
                             && !i.isDeleted)
                         .FirstOrDefault();
@@ -165,23 +164,22 @@ namespace Api.Controllers
                     timeTracker.totalHours = data.totalHours;
                     timeTracker.dateOut = DateTimeOffset.UtcNow;
                     timeTracker.isActive = false;
-
-                    unitOfWork.TimeTrackerRepository.Update(timeTracker);
-                    unitOfWork.Save();
+                    
+                    context.SubmitChanges();
 
                     foreach (var project in data.projects)
                     {
 
                         TimeTrackerProject timeTrackerProject = new TimeTrackerProject();
                         
-                        timeTrackerProject.projectId = (project.projectId == Guid.Empty) ? unitOfWork.ProjectRepository.GetBy(i => i.isDefault && i.companyId == a.member.activeCompanyId).FirstOrDefault().projectId : project.projectId;
+                        timeTrackerProject.projectId = (project.projectId == Guid.Empty) ? context.Projects.Where(i => i.isDefault && i.companyId == a.member.activeCompanyId).FirstOrDefault().projectId : project.projectId;
 
                         timeTrackerProject.timeTrackerId = timeTracker.timeTrackerId;
                         timeTrackerProject.totalHours = project.totalHours;
                         //add description eventually
 
-                        unitOfWork.TimeTrackerProjectRepository.Insert(timeTrackerProject);
-                        unitOfWork.Save();
+                        context.TimeTrackerProjects.InsertOnSubmit(timeTrackerProject);
+                        context.SubmitChanges();
 
                     }
 
@@ -215,20 +213,20 @@ namespace Api.Controllers
                 try
                 {
 
-                    UnitOfWork unitOfWork = new UnitOfWork();
+                    BambinoDataContext context = new BambinoDataContext();
 
-                    var query = data.id == Guid.Empty ? unitOfWork.TimeTrackerRepository
-                        .GetBy(i => !i.isDeleted
-                            && (i.member.email.Contains(data.search)
-                            || i.member.firstName.Contains(data.search)
-                            || i.member.lastName.Contains(data.search)))
+                    var query = data.id == Guid.Empty ? context.TimeTrackers
+                        .Where(i => !i.isDeleted
+                            && (i.Member.email.Contains(data.search)
+                            || i.Member.firstName.Contains(data.search)
+                            || i.Member.lastName.Contains(data.search)))
                         : 
-                        unitOfWork.TimeTrackerRepository
-                        .GetBy(i => i.member.token == data.id
+                        context.TimeTrackers
+                        .Where(i => i.Member.token == data.id
                             && !i.isDeleted
-                            && (i.member.email.Contains(data.search)
-                            || i.member.firstName.Contains(data.search)
-                            || i.member.lastName.Contains(data.search)));
+                            && (i.Member.email.Contains(data.search)
+                            || i.Member.firstName.Contains(data.search)
+                            || i.Member.lastName.Contains(data.search)));
 
                     int currentPage = data.page - 1;
                     int skip = currentPage * data.records;
@@ -240,23 +238,23 @@ namespace Api.Controllers
                             timeTrackerId = obj.timeTrackerId,
                             member = new MemberViewModel()
                             {
-                                token = obj.member.token,
-                                email = obj.member.email,
-                                firstName = obj.member.firstName,
-                                lastName = obj.member.lastName,
-                                isActive = obj.member.timeTrackers.Any(i => i.isActive)
+                                token = obj.Member.token,
+                                email = obj.Member.email,
+                                firstName = obj.Member.firstName,
+                                lastName = obj.Member.lastName,
+                                isActive = obj.Member.TimeTrackers.Any(i => i.isActive)
                             },
                             dateCreated = obj.dateCreated,
                             dateIn = obj.dateIn,
                             dateOut = obj.dateOut,
                             totalHours = obj.totalHours,
                             isActive = obj.isActive,
-                            timeTrackerProjects = obj.timeTrackerProjects.Select(timeTrackerProject => new TimeTrackerProjectViewModel()
+                            timeTrackerProjects = obj.TimeTrackerProjects.Select(timeTrackerProject => new TimeTrackerProjectViewModel()
                             {
                                 timeTrackerProjectId = timeTrackerProject.timeTrackerProjectId,
                                 projectId = timeTrackerProject.projectId,
                                 project = new ProjectViewModel() {
-                                    name = timeTrackerProject.project.name
+                                    name = timeTrackerProject.Project.name
                                 },
                                 description = timeTrackerProject.description,
                                 totalHours = timeTrackerProject.totalHours,
@@ -300,34 +298,34 @@ namespace Api.Controllers
                 try
                 {
 
-                    UnitOfWork unitOfWork = new UnitOfWork();
+                    BambinoDataContext context = new BambinoDataContext();
 
-                    var vm = unitOfWork.TimeTrackerRepository
-                        .GetBy(i => i.timeTrackerId == data.id
+                    var vm = context.TimeTrackers
+                        .Where(i => i.timeTrackerId == data.id
                             && !i.isDeleted)
                         .Select(obj => new TimeTrackerViewModel
                         {
                             timeTrackerId = obj.timeTrackerId,
                             member = new MemberViewModel()
                             {
-                                token = obj.member.token,
-                                email = obj.member.email,
-                                firstName = obj.member.firstName,
-                                lastName = obj.member.lastName,
-                                isActive = obj.member.timeTrackers.Any(i => i.isActive)
+                                token = obj.Member.token,
+                                email = obj.Member.email,
+                                firstName = obj.Member.firstName,
+                                lastName = obj.Member.lastName,
+                                isActive = obj.Member.TimeTrackers.Any(i => i.isActive)
                             },
                             dateCreated = obj.dateCreated,
                             dateIn = obj.dateIn,
                             dateOut = obj.dateOut,
                             totalHours = obj.totalHours,
                             isActive = obj.isActive,
-                            timeTrackerProjects = obj.timeTrackerProjects.Select(timeTrackerProject => new TimeTrackerProjectViewModel()
+                            timeTrackerProjects = obj.TimeTrackerProjects.Select(timeTrackerProject => new TimeTrackerProjectViewModel()
                             {
                                 timeTrackerProjectId = timeTrackerProject.timeTrackerProjectId,
                                 projectId = timeTrackerProject.projectId,
                                 project = new ProjectViewModel()
                                 {
-                                    name = timeTrackerProject.project.name
+                                    name = timeTrackerProject.Project.name
                                 },
                                 description = timeTrackerProject.description,
                                 totalHours = timeTrackerProject.totalHours,
@@ -360,10 +358,10 @@ namespace Api.Controllers
                 try
                 {
 
-                    UnitOfWork unitOfWork = new UnitOfWork();
+                    BambinoDataContext context = new BambinoDataContext();
 
-                    bool isActive = unitOfWork.TimeTrackerRepository
-                        .GetBy(i => i.memberId == a.member.memberId
+                    bool isActive = context.TimeTrackers
+                        .Where(i => i.memberId == a.member.memberId
                             && i.isActive
                             && !i.isDeleted)
                         .ToList()
@@ -391,13 +389,13 @@ namespace Api.Controllers
                 try
                 {
 
-                    UnitOfWork unitOfWork = new UnitOfWork();
+                    BambinoDataContext context = new BambinoDataContext();
 
                     DateTimeOffset min = data.startDate.Date.AddDays(-1);
                     DateTimeOffset max = data.endDate.Date.AddDays(1);
 
-                    var arr = unitOfWork.TimeTrackerRepository
-                        .GetBy(i => DbFunctions.TruncateTime(i.dateCreated) >= min
+                    var arr = context.TimeTrackers
+                        .Where(i => DbFunctions.TruncateTime(i.dateCreated) >= min
                             && DbFunctions.TruncateTime(i.dateCreated) <= max
                             && !i.isActive
                             && !i.isDeleted)
@@ -406,24 +404,24 @@ namespace Api.Controllers
                             timeTrackerId = obj.timeTrackerId,
                             member = new MemberViewModel()
                             {
-                                token = obj.member.token,
-                                email = obj.member.email,
-                                firstName = obj.member.firstName,
-                                lastName = obj.member.lastName,
-                                isActive = obj.member.timeTrackers.Any(i => i.isActive)
+                                token = obj.Member.token,
+                                email = obj.Member.email,
+                                firstName = obj.Member.firstName,
+                                lastName = obj.Member.lastName,
+                                isActive = obj.Member.TimeTrackers.Any(i => i.isActive)
                             },
                             dateCreated = obj.dateCreated,
                             dateIn = obj.dateIn,
                             dateOut = obj.dateOut,
                             totalHours = obj.totalHours,
                             isActive = obj.isActive,
-                            timeTrackerProjects = obj.timeTrackerProjects.Select(timeTrackerProject => new TimeTrackerProjectViewModel()
+                            timeTrackerProjects = obj.TimeTrackerProjects.Select(timeTrackerProject => new TimeTrackerProjectViewModel()
                             {
                                 timeTrackerProjectId = timeTrackerProject.timeTrackerProjectId,
                                 projectId = timeTrackerProject.projectId,
                                 project = new ProjectViewModel()
                                 {
-                                    name = timeTrackerProject.project.name
+                                    name = timeTrackerProject.Project.name
                                 },
                                 description = timeTrackerProject.description,
                                 totalHours = timeTrackerProject.totalHours,
@@ -456,7 +454,7 @@ namespace Api.Controllers
             try
             {
 
-                UnitOfWork unitOfWork = new UnitOfWork();
+                BambinoDataContext context = new BambinoDataContext();
 
                 if (!File.Exists(path))
                 {
@@ -467,15 +465,15 @@ namespace Api.Controllers
                     }
                 }
 
-                var timeTrackers = unitOfWork.TimeTrackerRepository
-                    .GetBy(i => i.isActive
+                var timeTrackers = context.TimeTrackers
+                    .Where(i => i.isActive
                         && !i.isDeleted)
                     .Select(obj => new 
                     {
                         member = new
                         {
-                            firstName = obj.member.firstName,
-                            email = obj.member.email
+                            firstName = obj.Member.firstName,
+                            email = obj.Member.email
                         }
                     })
                     .ToList();

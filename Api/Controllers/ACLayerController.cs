@@ -34,18 +34,18 @@ namespace Api.Controllers
         public static AddEditDeleteReturnViewModel _AddEditDelete(ACLayerAddEditDeleteViewModel data)
         {
 
-            UnitOfWork unitOfWork = new UnitOfWork();
+            BambinoDataContext context = new BambinoDataContext();
 
-            ACLayer acLayer = (data.acLayerId == Guid.Empty) ? new ACLayer() : unitOfWork.ACLayerRepository
-                .GetBy(i => i.acLayerId == data.acLayerId
+            ACLayer acLayer = (data.acLayerId == Guid.Empty) ? new ACLayer() : context.ACLayers
+                .Where(i => i.acLayerId == data.acLayerId
                     && !i.isDeleted)
                 .FirstOrDefault();
 
             if (acLayer == null)
                 throw new InvalidOperationException("Layer Not Found");
 
-            string value = unitOfWork.ACLayerCategoryRepository
-                .GetBy(i => i.acLayerCategoryId == data.acLayerCategoryId
+            string value = context.ACLayerCategories
+                .Where(i => i.acLayerCategoryId == data.acLayerCategoryId
                     && !i.isDeleted)
                 .Select(i => i.value)
                 .FirstOrDefault();
@@ -68,11 +68,9 @@ namespace Api.Controllers
             acLayer.isDeleted = data.isDeleted;
 
             if (data.acLayerId == Guid.Empty)
-                unitOfWork.ACLayerRepository.Insert(acLayer);
-            else
-                unitOfWork.ACLayerRepository.Update(acLayer);
+                context.ACLayers.InsertOnSubmit(acLayer);
 
-            unitOfWork.Save();
+            context.SubmitChanges();
 
             var activity = (data.acLayerId == Guid.Empty) ? "Added" : (data.isDeleted) ? "Deleted" : "Edited";
             //LogController.Add(a.member.memberId, "Template Category " + category.name + " " + activity, "Category", "AddEditDelete", category.acLayerCategoryId, "Categories");
@@ -88,15 +86,15 @@ namespace Api.Controllers
         public static void _AddMany(List<ACLayerAddManyViewModel> data)
         {
 
-            UnitOfWork unitOfWork = new UnitOfWork();
+            BambinoDataContext context = new BambinoDataContext();
 
             foreach (var l in data)
             {
 
                 ACLayer acLayer = new ACLayer();
                 
-                Guid acLayerCategoryId = unitOfWork.ACLayerCategoryRepository
-                    .GetBy(i => i.value == l.categoryValue
+                Guid acLayerCategoryId = context.ACLayerCategories
+                    .Where(i => i.value == l.categoryValue
                         && !i.isDeleted)
                     .Select(i => i.acLayerCategoryId)
                     .FirstOrDefault();
@@ -116,8 +114,8 @@ namespace Api.Controllers
                 acLayer.description = l.description;
                 acLayer.isPlottable = l.isPlottable;
                 
-                unitOfWork.ACLayerRepository.Insert(acLayer);
-                unitOfWork.Save();
+                context.ACLayers.InsertOnSubmit(acLayer);
+                context.SubmitChanges();
 
             }
 
@@ -146,12 +144,12 @@ namespace Api.Controllers
         public static List<ACLayerViewModel> _GetByKeyword(ACLayerGetByKeywordViewModel data)
         {
 
-            UnitOfWork unitOfWork = new UnitOfWork();
+            BambinoDataContext context = new BambinoDataContext();
 
             string m = (data.measurement == "English") ? "Imperical" : data.measurement;
 
-            return unitOfWork.ACLayerRepository
-                .GetBy(i => i.keywords.Contains(data.keyword)
+            return context.ACLayers
+                .Where(i => i.keywords.Contains(data.keyword)
                     && i.measurement == m
                     && !i.isDeleted)
                 .Select(obj => new ACLayerViewModel()
@@ -160,10 +158,10 @@ namespace Api.Controllers
                     acLayerCategoryId = obj.acLayerCategoryId,
                     acLayerCategory = new ACLayerCategoryViewModel()
                     {
-                        acLayerCategoryId = obj.acLayerCategory.acLayerCategoryId,
-                        name = obj.acLayerCategory.name,
-                        value = obj.acLayerCategory.value,
-                        description = obj.acLayerCategory.description
+                        acLayerCategoryId = obj.ACLayerCategory.acLayerCategoryId,
+                        name = obj.ACLayerCategory.name,
+                        value = obj.ACLayerCategory.value,
+                        description = obj.ACLayerCategory.description
                     },
                     code = obj.code,
                     name = obj.name,
@@ -185,12 +183,13 @@ namespace Api.Controllers
         public static List<ACLayerViewModel> _GetByCategory(ACLayerGetByCategoryViewModel data)
         {
 
-            UnitOfWork unitOfWork = new UnitOfWork();
+            BambinoDataContext context = new BambinoDataContext();
 
             string m = (data.measurement == "English") ? "Imperical" : data.measurement;
 
-            var query = (data.category == "All") ? unitOfWork.ACLayerRepository.GetBy(i => i.measurement == m && !i.isDeleted) : 
-                unitOfWork.ACLayerRepository.GetBy(i => i.acLayerCategory.name == data.category && i.measurement == m && !i.isDeleted);
+            var query = (data.category == "All") ? 
+                context.ACLayers.Where(i => i.measurement == m && !i.isDeleted) : 
+                context.ACLayers.Where(i => i.ACLayerCategory.name == data.category && i.measurement == m && !i.isDeleted);
 
             return query
                 .Select(obj => new ACLayerViewModel()
@@ -199,10 +198,10 @@ namespace Api.Controllers
                     acLayerCategoryId = obj.acLayerCategoryId,
                     acLayerCategory = new ACLayerCategoryViewModel()
                     {
-                        acLayerCategoryId = obj.acLayerCategory.acLayerCategoryId,
-                        name = obj.acLayerCategory.name,
-                        value = obj.acLayerCategory.value,
-                        description = obj.acLayerCategory.description
+                        acLayerCategoryId = obj.ACLayerCategory.acLayerCategoryId,
+                        name = obj.ACLayerCategory.name,
+                        value = obj.ACLayerCategory.value,
+                        description = obj.ACLayerCategory.description
                     },
                     code = obj.code,
                     name = obj.name,
@@ -224,11 +223,11 @@ namespace Api.Controllers
         public static List<ACLayerViewModel> _GetAreaTag(string measurement)
         {
 
-            UnitOfWork unitOfWork = new UnitOfWork();
+            BambinoDataContext context = new BambinoDataContext();
 
             string initial = measurement.Substring(0, 1);
-            var query = unitOfWork.ACLayerRepository
-                .GetBy(i => (i.name == "EDC-" + initial + "-G-AREA-NOTE"
+            var query = context.ACLayers
+                .Where(i => (i.name == "EDC-" + initial + "-G-AREA-NOTE"
                     || i.name == "EDC-" + initial + "-G-NOTE"
                     || i.name == "EDC-" + initial + "-G-AREA-GROS-NPLT"
                     || i.name == "EDC-" + initial + "-G-AREA-NET1-NPLT")
@@ -242,10 +241,10 @@ namespace Api.Controllers
                     acLayerCategoryId = obj.acLayerCategoryId,
                     acLayerCategory = new ACLayerCategoryViewModel()
                     {
-                        acLayerCategoryId = obj.acLayerCategory.acLayerCategoryId,
-                        name = obj.acLayerCategory.name,
-                        value = obj.acLayerCategory.value,
-                        description = obj.acLayerCategory.description
+                        acLayerCategoryId = obj.ACLayerCategory.acLayerCategoryId,
+                        name = obj.ACLayerCategory.name,
+                        value = obj.ACLayerCategory.value,
+                        description = obj.ACLayerCategory.description
                     },
                     code = obj.code,
                     name = obj.name,
@@ -267,10 +266,10 @@ namespace Api.Controllers
         public static string[] _GetByArea(string measurement)
         {
 
-            UnitOfWork unitOfWork = new UnitOfWork();
+            BambinoDataContext context = new BambinoDataContext();
             
-            var query = unitOfWork.ACLayerRepository
-                .GetBy(i => i.name.Contains("AREA")
+            var query = context.ACLayers
+                .Where(i => i.name.Contains("AREA")
                     && i.name.Contains("NPLT")
                     && i.measurement == measurement
                     && !i.isDeleted);

@@ -23,10 +23,9 @@ namespace Api.Controllers
                 try
                 {
 
-                    UnitOfWork unitOfWork = new UnitOfWork();
+                    BambinoDataContext context = new BambinoDataContext();
 
-                    List<ListViewModel> vm = unitOfWork.RoleRepository
-                        .Get()
+                    List<ListViewModel> vm = context.Roles
                         .Select(obj => new ListViewModel()
                         {
                             value = obj.roleId.ToString(),

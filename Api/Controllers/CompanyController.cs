@@ -24,12 +24,12 @@ namespace Api.Controllers
                 try
                 {
                     
-                    UnitOfWork unitOfWork = new UnitOfWork();
+                    BambinoDataContext context = new BambinoDataContext();
 
-                    Company company = (data.companyId == Guid.Empty) ? new Company() : unitOfWork.CompanyRepository
-                            .GetBy(i => i.companyId == data.companyId
-                                && !i.isDeleted)
-                            .FirstOrDefault();
+                    Company company = (data.companyId == Guid.Empty) ? new Company() : context.Companies
+                        .Where(i => i.companyId == data.companyId
+                            && !i.isDeleted)
+                        .FirstOrDefault();
                     
                     if (company == null)
                         throw new InvalidOperationException("Not Found");
@@ -55,11 +55,9 @@ namespace Api.Controllers
                     company.isDeleted               = data.isDeleted;
                     
                     if (data.companyId == Guid.Empty)
-                        unitOfWork.CompanyRepository.Insert(company);
-                    else
-                        unitOfWork.CompanyRepository.Update(company);
+                        context.Companies.InsertOnSubmit(company);
 
-                    unitOfWork.Save();
+                    context.SubmitChanges();
                     
                     var activity = (data.companyId == Guid.Empty) ? "Added" : (data.isDeleted) ? "Deleted" : "Edited"; 
                     LogController.Add(a.member.memberId, "Company " + company.name + " " + activity, "Company", "AddEditDelete", company.companyId, "Companies");
@@ -91,10 +89,10 @@ namespace Api.Controllers
                 try
                 {
                     
-                    UnitOfWork unitOfWork = new UnitOfWork();
+                    BambinoDataContext context = new BambinoDataContext();
 
-                    Company company = unitOfWork.CompanyRepository
-                        .GetBy(i => i.companyId == data.companyId
+                    Company company = context.Companies
+                        .Where(i => i.companyId == data.companyId
                             && !i.isDeleted)
                         .FirstOrDefault();
                     
@@ -103,9 +101,8 @@ namespace Api.Controllers
                     
                     company.terms = data.terms;
                     company.pin = data.pin;
-
-                    unitOfWork.CompanyRepository.Update(company);
-                    unitOfWork.Save();
+                    
+                    context.SubmitChanges();
                     
                     LogController.Add(a.member.memberId, "Company " + company.name + " Settings Edited", "Company", "EditSettings", company.companyId, "Companies");
 
@@ -136,10 +133,9 @@ namespace Api.Controllers
                 try
                 {
                     
-                    UnitOfWork unitOfWork = new UnitOfWork();
+                    BambinoDataContext context = new BambinoDataContext();
 
-                    List<ListViewModel> vm = unitOfWork.CompanyRepository
-                        .Get()
+                    List<ListViewModel> vm = context.Companies
                         .Select(obj => new ListViewModel()
                         {
                             value = obj.companyId.ToString(),
@@ -170,10 +166,10 @@ namespace Api.Controllers
                 try
                 {
                     
-                    UnitOfWork unitOfWork = new UnitOfWork();
+                    BambinoDataContext context = new BambinoDataContext();
 
-                    var query = unitOfWork.CompanyRepository
-                        .GetBy(i => !i.isDeleted
+                    var query = context.Companies
+                        .Where(i => !i.isDeleted
                             && (i.name.Contains(data.search)
                             || i.email.Contains(data.search)
                             //|| i.companyLocations.Select(x => x.name).FirstOrDefault().Contains(data.search)
@@ -244,11 +240,11 @@ namespace Api.Controllers
                 try
                 {
                     
-                    UnitOfWork unitOfWork = new UnitOfWork();
+                    BambinoDataContext context = new BambinoDataContext();
                     
-                    var vm = unitOfWork.CompanyRepository
-                        .GetBy(i => i.companyId == data.id
-                            && !i.isDeleted, i => i.members)
+                    var vm = context.Companies
+                        .Where(i => i.companyId == data.id
+                            && !i.isDeleted)
                         .Select(obj => new CompanyViewModel
                         {
                             companyId               = obj.companyId,
@@ -270,14 +266,14 @@ namespace Api.Controllers
                             shippingState           = obj.shippingState,
                             shippingZip             = obj.shippingZip,
                             isApproved              = obj.isApproved,
-                            members                 = obj.members.Where(i => !i.isDeleted).Select(member => new MemberViewModel()
+                            members                 = obj.MemberCompanies.Select(memberCompany => new MemberViewModel()
                             {
-                                memberId            = member.memberId,
-                                activeCompanyId     = member.activeCompanyId,
-                                firstName           = member.firstName,
-                                lastName            = member.lastName,
-                                email               = member.email,
-                                phone               = member.phone
+                                memberId            = memberCompany.Member.memberId,
+                                activeCompanyId     = memberCompany.Member.activeCompanyId,
+                                firstName           = memberCompany.Member.firstName,
+                                lastName            = memberCompany.Member.lastName,
+                                email               = memberCompany.Member.email,
+                                phone               = memberCompany.Member.phone
                             }).ToList()
                         })
                         .FirstOrDefault();
@@ -307,10 +303,10 @@ namespace Api.Controllers
                 try
                 {
                     
-                    UnitOfWork unitOfWork = new UnitOfWork();
+                    BambinoDataContext context = new BambinoDataContext();
 
-                    var vm = unitOfWork.CompanyRepository
-                        .GetBy(i => i.name.Contains(data.search)
+                    var vm = context.Companies
+                        .Where(i => i.name.Contains(data.search)
                             && !i.isDeleted)
                         .Select(obj => new
                         {

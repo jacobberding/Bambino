@@ -55,7 +55,7 @@ namespace Api.Controllers
             try
             {
                 
-                UnitOfWork unitOfWork = new UnitOfWork();
+                BambinoDataContext context = new BambinoDataContext();
 
                 EmailController.Send(new MailAddress(email),
                         "jpberding@gmail.com",
@@ -77,10 +77,10 @@ namespace Api.Controllers
         public static EmailViewModel GetEmail(Guid emailId)
         {
             
-            UnitOfWork unitOfWork = new UnitOfWork();
+            BambinoDataContext context = new BambinoDataContext();
                  
-            return unitOfWork.EmailRepository
-                .GetBy(i => i.emailId == emailId)
+            return context.Emails
+                .Where(i => i.emailId == emailId)
                 .Select(i => new EmailViewModel
                 {
                     emailId = i.emailId,

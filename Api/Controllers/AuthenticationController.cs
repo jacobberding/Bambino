@@ -16,11 +16,11 @@ namespace Api.Controllers
         public static Authentication GetMemberAuthenticated(Guid apiId, int accessLevel, Guid token)
         {
             
-            UnitOfWork unitOfWork = new UnitOfWork();
+            BambinoDataContext context = new BambinoDataContext();
             Authentication authentication = new Authentication();
             
-            var api = unitOfWork.ApiTokenRepository
-                .GetBy(i => i.apiTokenId == apiId
+            var api = context.ApiTokens
+                .Where(i => i.apiTokenId == apiId
                     && i.accessLevel >= accessLevel
                     && !i.isDeleted)
                 .Select(obj => new
@@ -29,20 +29,20 @@ namespace Api.Controllers
                 })
                 .FirstOrDefault();
 
-            var member = unitOfWork.MemberRepository
-                .GetBy(i => (i.token == token || (i.tokenApi == token && accessLevel == 0))
+            var member = context.Members
+                .Where(i => (i.token == token || (i.tokenApi == token && accessLevel == 0))
                     && !i.isDeleted)
                 .Select(obj => new MemberViewModel()
                 {
                     memberId            = obj.memberId,
                     activeCompanyId     = obj.activeCompanyId,
-                    roles               = obj.roles.Select(role => new RoleViewModel()
+                    roles               = obj.MemberRoles.Select(memberRole => new RoleViewModel()
                     {
-                        isContractor        = role.isContractor,
-                        isEmployee          = role.isEmployee,
-                        isManager           = role.isManager,
-                        isAdmin             = role.isAdmin,
-                        isSuperAdmin        = role.isSuperAdmin,
+                        isContractor        = memberRole.Role.isContractor,
+                        isEmployee          = memberRole.Role.isEmployee,
+                        isManager           = memberRole.Role.isManager,
+                        isAdmin             = memberRole.Role.isAdmin,
+                        isSuperAdmin        = memberRole.Role.isSuperAdmin,
                     }).ToList()
                 })
                 .FirstOrDefault();
@@ -56,12 +56,12 @@ namespace Api.Controllers
         
         public static Authentication GetApiAuthenticated(Guid apiId, int accessLevel)
         {
-            
-            UnitOfWork unitOfWork = new UnitOfWork();
+
+            BambinoDataContext context = new BambinoDataContext();
             Authentication authentication = new Authentication();
             
-            var api = unitOfWork.ApiTokenRepository
-                .GetBy(i => i.apiTokenId == apiId
+            var api = context.ApiTokens
+                .Where(i => i.apiTokenId == apiId
                     && i.accessLevel >= accessLevel
                     && !i.isDeleted)
                 .Select(obj => new

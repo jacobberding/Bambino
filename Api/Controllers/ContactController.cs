@@ -25,10 +25,10 @@ namespace Api.Controllers
                 try
                 {
 
-                    UnitOfWork unitOfWork = new UnitOfWork();
+                    BambinoDataContext context = new BambinoDataContext();
 
-                    Contact contact = (data.contactId == Guid.Empty) ? new Contact() : unitOfWork.ContactRepository
-                        .GetBy(i => i.contactId == data.contactId
+                    Contact contact = (data.contactId == Guid.Empty) ? new Contact() : context.Contacts
+                        .Where(i => i.contactId == data.contactId
                             && !i.isDeleted)
                         .FirstOrDefault();
 
@@ -52,11 +52,9 @@ namespace Api.Controllers
                     contact.isDeleted = data.isDeleted;
 
                     if (data.contactId == Guid.Empty)
-                        unitOfWork.ContactRepository.Insert(contact);
-                    else
-                        unitOfWork.ContactRepository.Update(contact);
+                        context.Contacts.InsertOnSubmit(contact);
 
-                    unitOfWork.Save();
+                    context.SubmitChanges();
 
                     var activity = (data.contactId == Guid.Empty) ? "Added" : (data.isDeleted) ? "Deleted" : "Edited";
                     LogController.Add(a.member.memberId, String.Format("Contact {0} was {1}", contact.name, activity), "Contact", "AddEditDelete", contact.contactId, "Contacts");
@@ -89,7 +87,7 @@ namespace Api.Controllers
                 try
                 {
 
-                    UnitOfWork unitOfWork = new UnitOfWork();
+                    BambinoDataContext context = new BambinoDataContext();
                 
                     foreach (var contactViewModel in data.contactViewModels)
                     {
@@ -112,8 +110,8 @@ namespace Api.Controllers
                         contact.isPotentialStaffing = contactViewModel.isPotentialStaffing;
                         //contact.dateCreated = contactViewModel.dateCreated;
 
-                        unitOfWork.ContactRepository.Insert(contact);
-                        unitOfWork.Save();
+                        context.Contacts.InsertOnSubmit(contact);
+                        context.SubmitChanges();
 
                     }
 
@@ -141,11 +139,11 @@ namespace Api.Controllers
                 try
                 {
 
-                    UnitOfWork unitOfWork = new UnitOfWork();
+                    BambinoDataContext context = new BambinoDataContext();
 
                     List<string> arrSearch = data.search.Split(',').ToList();
-                    var query = unitOfWork.ContactRepository
-                        .GetBy(i => !i.isDeleted);
+                    var query = context.Contacts
+                        .Where(i => !i.isDeleted);
 
                     if (arrSearch.Count > 1)
                     {
@@ -228,10 +226,10 @@ namespace Api.Controllers
                 try
                 {
 
-                    UnitOfWork unitOfWork = new UnitOfWork();
+                    BambinoDataContext context = new BambinoDataContext();
 
-                    var vm = unitOfWork.ContactRepository
-                        .GetBy(i => i.contactId == data.id
+                    var vm = context.Contacts
+                        .Where(i => i.contactId == data.id
                             && !i.isDeleted)
                         .Select(obj => new ContactViewModel
                         {
@@ -245,7 +243,7 @@ namespace Api.Controllers
                             isDeleted = obj.isDeleted,
                             isPotentialStaffing = obj.isPotentialStaffing,
                             personalWebsite = obj.personalWebsite,
-                            contactFiles = obj.contactFiles.Select(contactFile => new ContactFileViewModel() {
+                            contactFiles = obj.ContactFiles.Select(contactFile => new ContactFileViewModel() {
                                 contactFileId = contactFile.contactFileId,
                                 contactId = contactFile.contactId,
                                 name = contactFile.name,
@@ -288,10 +286,10 @@ namespace Api.Controllers
                 try
                 {
 
-                    UnitOfWork unitOfWork = new UnitOfWork();
+                    BambinoDataContext context = new BambinoDataContext();
                     
-                    var arr = unitOfWork.ContactRepository
-                        .GetBy(i => !i.isDeleted)
+                    var arr = context.Contacts
+                        .Where(i => !i.isDeleted)
                         .Select(obj => new ContactViewModel
                         {
                             contactId = obj.contactId,

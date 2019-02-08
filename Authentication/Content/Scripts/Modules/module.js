@@ -61,7 +61,7 @@ const Module = (function () {
                 <m-flex data-type="col">
 
                     <h1 style="font-weight: 800;margin-bottom: .5em;">Confirmation</h1>
-                    <p>Are you sure you want to DELETE this ${action}?</p>
+                    <p>${action}</p>
                 
                 </m-flex>
 
@@ -203,8 +203,8 @@ const Module = (function () {
     
     const _init = (function () {
         $(document).on(`tap`, `m-scrim`, function () { Module.closeModule(1); });
-        $(document).on(`tap`, `.btnCloseModule`, function () { Module.closeModule($(this).attr(`data-deleteCount`)); });
-        $(document).on(`tap`, `.btnOpenModule`, function () { Module.openModule($(this).attr(`data-function`), $(this).attr(`data-args`), $(this).attr(`data-class`)); });
+        $(document).on(`tap`, `.btnCloseModule`, function (e) { e.preventDefault(); e.stopImmediatePropagation(); Module.closeModule($(this).attr(`data-deleteCount`)); });
+        $(document).on(`tap`, `.btnOpenModule`, function (e) { e.preventDefault(); e.stopImmediatePropagation(); Module.openModule($(this).attr(`data-function`), $(this).attr(`data-args`), $(this).attr(`data-class`)); });
         $(document).on(`tap`, `.btnOpenBody`, function (e) { e.preventDefault(); e.stopImmediatePropagation(); Module.openBody($(this).attr(`data-label`), $(this).attr(`data-function`), $(this).attr(`data-args`)); });
         $(document).on(`tap`, `.btnEditCard`, function (e) { e.preventDefault(); e.stopImmediatePropagation(); Module.editCard($(this), $(this).attr(`data-function`), $(this).attr(`data-args`)); });
         $(document).on(`tap`, `.btnReplaceCard`, function (e) { e.preventDefault(); e.stopImmediatePropagation(); Module.replaceCard($(this).attr(`data-label`), $(this).attr(`data-function`), $(this).attr(`data-args`)); });

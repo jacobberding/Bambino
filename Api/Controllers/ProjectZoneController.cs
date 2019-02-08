@@ -24,10 +24,10 @@ namespace Api.Controllers
                 try
                 {
 
-                    UnitOfWork unitOfWork = new UnitOfWork();
+                    BambinoDataContext context = new BambinoDataContext();
 
-                    ProjectZone projectZone = (data.projectZoneId == Guid.Empty) ? new ProjectZone() : unitOfWork.ProjectZoneRepository
-                        .GetBy(i => i.projectZoneId == data.projectZoneId
+                    ProjectZone projectZone = (data.projectZoneId == Guid.Empty) ? new ProjectZone() : context.ProjectZones
+                        .Where(i => i.projectZoneId == data.projectZoneId
                             && !i.isDeleted)
                         .FirstOrDefault();
 
@@ -37,15 +37,13 @@ namespace Api.Controllers
                     projectZone.projectId = data.projectId;
                     projectZone.name = data.name;
                     projectZone.description = data.description;
-                    projectZone.code = unitOfWork.ProjectZoneRepository.GetBy(i => i.projectId == data.projectId && !i.isDeleted).Select(i => i.code).DefaultIfEmpty(-1).Max() + 1;
+                    projectZone.code = context.ProjectZones.Where(i => i.projectId == data.projectId && !i.isDeleted).Select(i => i.code).DefaultIfEmpty(-1).Max() + 1;
                     projectZone.isDeleted = data.isDeleted;
 
                     if (data.projectZoneId == Guid.Empty)
-                        unitOfWork.ProjectZoneRepository.Insert(projectZone);
-                    else
-                        unitOfWork.ProjectZoneRepository.Update(projectZone);
+                        context.ProjectZones.InsertOnSubmit(projectZone);
 
-                    unitOfWork.Save();
+                    context.SubmitChanges();
 
                     var activity = (data.projectZoneId == Guid.Empty) ? "Added" : (data.isDeleted) ? "Deleted" : "Edited";
                     LogController.Add(a.member.memberId, String.Format("Zone {0} was {1}", projectZone.name, activity), "ProjectZone", "AddEditDelete", projectZone.projectZoneId, "ProjectZones");
@@ -74,7 +72,7 @@ namespace Api.Controllers
             try
             {
 
-                UnitOfWork unitOfWork = new UnitOfWork();
+                BambinoDataContext context = new BambinoDataContext();
 
                 ProjectZone projectZone = new ProjectZone();
 
@@ -85,8 +83,8 @@ namespace Api.Controllers
                 projectZone.name = "Overall";
                 projectZone.code = 0;
                 
-                unitOfWork.ProjectZoneRepository.Insert(projectZone);
-                unitOfWork.Save();
+                context.ProjectZones.InsertOnSubmit(projectZone);
+                context.SubmitChanges();
                 
             }
             catch (Exception ex)
@@ -94,6 +92,77 @@ namespace Api.Controllers
 
             }
             
+        }
+
+        [HttpPost]
+        public HttpResponseMessage EditArchive([FromBody] ProjectZoneEditArchiveViewModel data)
+        {
+            Authentication a = AuthenticationController.GetMemberAuthenticated(data.authentication.apiId, 1, data.authentication.token);
+            if (a.isAuthenticated)
+            {
+
+                try
+                {
+
+                    BambinoDataContext context = new BambinoDataContext();
+
+                    ProjectZone projectZone = (data.projectZoneId == Guid.Empty) ? new ProjectZone() : context.ProjectZones
+                        .Where(i => i.projectZoneId == data.projectZoneId
+                            && !i.isDeleted)
+                        .FirstOrDefault();
+
+                    if (projectZone == null)
+                        throw new InvalidOperationException("Layer Not Found");
+
+                    projectZone.isArchived = data.isArchived;
+
+                    if (data.isArchived)
+                    {
+
+                        //Add Archive
+                        ProjectZoneArchive projectZoneArchive = new ProjectZoneArchive();
+
+                        projectZoneArchive.projectZoneId = data.projectZoneId;
+                        projectZoneArchive.memberStartId = a.member.memberId;
+
+                        context.ProjectZoneArchives.InsertOnSubmit(projectZoneArchive);
+
+                    }
+                    else
+                    {
+
+                        //Remove Archive
+                        ProjectZoneArchive projectZoneArchive = context.ProjectZoneArchives
+                            .Where(i => i.projectZoneId == data.projectZoneId
+                                && i.dateEnd == DateTimeOffset.MinValue)
+                            .FirstOrDefault();
+
+                        projectZoneArchive.dateEnd = DateTimeOffset.UtcNow;
+                        projectZoneArchive.memberEndId = a.member.memberId;
+                        
+                    }
+                    
+                    context.SubmitChanges();
+
+                    var activity = (data.isArchived) ? "Archived" : "Unarchvied";
+                    LogController.Add(a.member.memberId, String.Format("Zone {0} was {1}", projectZone.name, activity), "ProjectZone", "EditArchive", projectZone.projectZoneId, "ProjectZones");
+
+                    var vm = new AddEditDeleteReturnViewModel()
+                    {
+                        id = projectZone.projectZoneId,
+                        state = activity
+                    };
+
+                    return Request.CreateResponse(HttpStatusCode.OK, vm);
+
+                }
+                catch (Exception ex)
+                {
+                    return Request.CreateResponse(HttpStatusCode.InternalServerError, ex);
+                }
+
+            }
+            return Request.CreateResponse(HttpStatusCode.InternalServerError, new { Message = "Invalid Token" });
         }
 
         [HttpPost]
@@ -106,23 +175,23 @@ namespace Api.Controllers
                 try
                 {
 
-                    UnitOfWork unitOfWork = new UnitOfWork();
+                    BambinoDataContext context = new BambinoDataContext();
 
-                    var dateStart = unitOfWork.ProjectPhaseRepository
-                        .GetBy(i => i.projectPhaseId == data.projectPhaseId
+                    var dateStart = context.ProjectPhases
+                        .Where(i => i.projectPhaseId == data.projectPhaseId
                             && !i.isDeleted)
                         .Select(i => i.dateStart)
                         .FirstOrDefault();
                     
                     var query = data.id == Guid.Empty ? 
-                        unitOfWork.ProjectZoneRepository
-                            .GetBy(i => i.projectId == data.id
+                        context.ProjectZones
+                            .Where(i => i.projectId == data.id
                                 && !i.isDeleted
                                 && (i.name.Contains(data.search)
                                 || i.code.ToString().Contains(data.search)))
                         :
-                        unitOfWork.ProjectZoneRepository
-                            .GetBy(i => i.dateCreated >= dateStart
+                        context.ProjectZones
+                            .Where(i => i.dateCreated >= dateStart
                                 && i.projectId == data.id
                                 && !i.isDeleted
                                 && (i.name.Contains(data.search)
@@ -139,6 +208,7 @@ namespace Api.Controllers
                             name = obj.name,
                             description = obj.description,
                             code = obj.code,
+                            isArchived = obj.isArchived,
                             isDeleted = obj.isDeleted
                         })
                         .OrderBy(data.sort)
@@ -178,10 +248,10 @@ namespace Api.Controllers
                 try
                 {
 
-                    UnitOfWork unitOfWork = new UnitOfWork();
+                    BambinoDataContext context = new BambinoDataContext();
 
-                    var vm = unitOfWork.ProjectZoneRepository
-                        .GetBy(i => i.projectZoneId == data.id
+                    var vm = context.ProjectZones
+                        .Where(i => i.projectZoneId == data.id
                             && !i.isDeleted)
                         .Select(obj => new ProjectZoneViewModel
                         {
@@ -190,6 +260,7 @@ namespace Api.Controllers
                             name = obj.name,
                             description = obj.description,
                             code = obj.code,
+                            isArchived = obj.isArchived,
                             isDeleted = obj.isDeleted
                         })
                         .FirstOrDefault();

@@ -36,10 +36,10 @@ namespace Api.Controllers
         public static List<ListViewModel> _Get()
         {
 
-            UnitOfWork unitOfWork = new UnitOfWork();
+            BambinoDataContext context = new BambinoDataContext();
 
-            return unitOfWork.MaterialPriceOptionRepository
-                .GetBy(i => !i.isDeleted)
+            return context.MaterialPriceOptions
+                .Where(i => !i.isDeleted)
                 .Select(obj => new ListViewModel()
                 {
                     value = obj.materialPriceOptionKey.ToString(),

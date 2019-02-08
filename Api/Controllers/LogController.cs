@@ -18,7 +18,7 @@ namespace Api.Controllers
         public static void Add(Guid memberId, string activity, string controllerName, string methodName, Guid tableId, string tableName)
         {
             
-            UnitOfWork unitOfWork = new UnitOfWork();
+            BambinoDataContext context = new BambinoDataContext();
 
             Log log = new Log();
             
@@ -29,8 +29,8 @@ namespace Api.Controllers
             log.tableId = tableId;
             log.tableName = tableName;
 
-            unitOfWork.LogRepository.Insert(log);
-            unitOfWork.Save();
+            context.Logs.InsertOnSubmit(log);
+            context.SubmitChanges();
             
         }
         
@@ -44,15 +44,15 @@ namespace Api.Controllers
                 try
                 {
                     
-                    UnitOfWork unitOfWork = new UnitOfWork();
+                    BambinoDataContext context = new BambinoDataContext();
 
-                    var query = unitOfWork.LogRepository
-                        .GetBy(i => data.tableNames.Contains(i.tableName)
+                    var query = context.Logs
+                        .Where(i => data.tableNames.Contains(i.tableName)
                             && (i.tableName.Contains(data.search) 
                             || i.activity.Contains(data.search)
-                            || String.Concat(i.member.firstName, " ", i.member.lastName).Contains(data.search)
-                            || i.member.email.Contains(data.search)
-                            || i.member.companies.Any(x => x.name.Contains(data.search))));
+                            || String.Concat(i.Member.firstName, " ", i.Member.lastName).Contains(data.search)
+                            || i.Member.email.Contains(data.search)
+                            || i.Member.MemberCompanies.Any(x => x.Company.name.Contains(data.search))));
 
                     int currentPage = data.page - 1;
                     int skip = currentPage * data.records;
@@ -64,14 +64,14 @@ namespace Api.Controllers
                             memberId        = obj.memberId,
                             member          = new MemberViewModel()
                             {
-                                memberId        = obj.member.memberId,
-                                email           = obj.member.email,
-                                phone           = obj.member.phone,
-                                firstName       = obj.member.firstName,
-                                lastName        = obj.member.lastName,
-                                companies       = obj.member.companies.Select(company => new CompanyViewModel()
+                                memberId        = obj.Member.memberId,
+                                email           = obj.Member.email,
+                                phone           = obj.Member.phone,
+                                firstName       = obj.Member.firstName,
+                                lastName        = obj.Member.lastName,
+                                companies       = obj.Member.MemberCompanies.Select(memberCompany => new CompanyViewModel()
                                 {
-                                    name        = company.name
+                                    name        = memberCompany.Company.name
                                 }).ToList()
                             },
                             activity        = obj.activity,

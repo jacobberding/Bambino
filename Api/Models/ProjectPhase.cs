@@ -1,34 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Web;
 
 namespace Api.Models
 {
-    [Table("ProjectPhases")]
-    public class ProjectPhase
-    {
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public Guid projectPhaseId { get; set; }
-
-        [ForeignKey("project")]
-        public Guid projectId { get; set; } = Guid.Empty;
-        public virtual Project project { get; set; }
-        
-        public string name { get; set; } = "";
-
-        public string description { get; set; } = "";
-
-        public int sortOrder { get; set; } = 0;
-
-        public DateTimeOffset dateStart { get; set; } = DateTimeOffset.UtcNow;
-
-        public DateTimeOffset dateEnd { get; set; } = DateTimeOffset.UtcNow;
-
-        public bool isDeleted { get; set; } = false;
-        
-    }
 
     public class ProjectPhaseViewModel
     {
@@ -38,8 +16,10 @@ namespace Api.Models
         public Guid projectId { get; set; } = Guid.Empty;
         public ProjectViewModel project { get; set; } = new ProjectViewModel();
 
+        [DisplayFormat(ConvertEmptyStringToNull = false)]
         public string name { get; set; } = "";
 
+        [DisplayFormat(ConvertEmptyStringToNull = false)]
         public string description { get; set; } = "";
 
         public int sortOrder { get; set; } = 0;
@@ -61,8 +41,10 @@ namespace Api.Models
 
         public Guid projectId { get; set; } = Guid.Empty;
 
+        [DisplayFormat(ConvertEmptyStringToNull = false)]
         public string name { get; set; } = "";
 
+        [DisplayFormat(ConvertEmptyStringToNull = false)]
         public string description { get; set; } = "";
         
         public DateTimeOffset dateStart { get; set; } = DateTimeOffset.UtcNow;

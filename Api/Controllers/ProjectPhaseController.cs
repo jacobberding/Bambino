@@ -23,10 +23,10 @@ namespace Api.Controllers
                 try
                 {
 
-                    UnitOfWork unitOfWork = new UnitOfWork();
+                    BambinoDataContext context = new BambinoDataContext();
 
-                    ProjectPhase projectPhase = (data.projectPhaseId == Guid.Empty) ? new ProjectPhase() : unitOfWork.ProjectPhaseRepository
-                        .GetBy(i => i.projectPhaseId == data.projectPhaseId
+                    ProjectPhase projectPhase = (data.projectPhaseId == Guid.Empty) ? new ProjectPhase() : context.ProjectPhases
+                        .Where(i => i.projectPhaseId == data.projectPhaseId
                             && !i.isDeleted)
                         .FirstOrDefault();
 
@@ -41,11 +41,9 @@ namespace Api.Controllers
                     projectPhase.isDeleted = data.isDeleted;
 
                     if (data.projectPhaseId == Guid.Empty)
-                        unitOfWork.ProjectPhaseRepository.Insert(projectPhase);
-                    else
-                        unitOfWork.ProjectPhaseRepository.Update(projectPhase);
+                        context.ProjectPhases.InsertOnSubmit(projectPhase);
 
-                    unitOfWork.Save();
+                    context.SubmitChanges();
                     
                     var vm = new AddEditDeleteReturnViewModel()
                     {
@@ -71,8 +69,9 @@ namespace Api.Controllers
             try
             {
 
-                UnitOfWork unitOfWork = new UnitOfWork();
+                BambinoDataContext context = new BambinoDataContext();
 
+                List<ProjectPhase> projectPhases = new List<ProjectPhase>();
                 ProjectPhase projectPhase = new ProjectPhase();
 
                 projectPhase.projectId = projectId;
@@ -80,50 +79,46 @@ namespace Api.Controllers
                 projectPhase.dateStart = DateTimeOffset.UtcNow;
                 projectPhase.dateEnd = DateTimeOffset.UtcNow.AddMonths(1);
 
-                unitOfWork.ProjectPhaseRepository.Insert(projectPhase);
-                unitOfWork.Save();
+                projectPhases.Add(projectPhase);
                 
                 projectPhase.name = "Blue Sky";
                 projectPhase.dateStart = DateTimeOffset.UtcNow.AddMonths(1);
                 projectPhase.dateEnd = DateTimeOffset.UtcNow.AddMonths(2);
 
-                unitOfWork.ProjectPhaseRepository.Insert(projectPhase);
-                unitOfWork.Save();
-                
+                projectPhases.Add(projectPhase);
+
                 projectPhase.name = "Concept";
                 projectPhase.dateStart = DateTimeOffset.UtcNow.AddMonths(2);
                 projectPhase.dateEnd = DateTimeOffset.UtcNow.AddMonths(3);
 
-                unitOfWork.ProjectPhaseRepository.Insert(projectPhase);
-                unitOfWork.Save();
+                projectPhases.Add(projectPhase);
 
                 projectPhase.name = "Concept Refinement";
                 projectPhase.dateStart = DateTimeOffset.UtcNow.AddMonths(3);
                 projectPhase.dateEnd = DateTimeOffset.UtcNow.AddMonths(4);
 
-                unitOfWork.ProjectPhaseRepository.Insert(projectPhase);
-                unitOfWork.Save();
+                projectPhases.Add(projectPhase);
 
                 projectPhase.name = "Schematic Design";
                 projectPhase.dateStart = DateTimeOffset.UtcNow.AddMonths(4);
                 projectPhase.dateEnd = DateTimeOffset.UtcNow.AddMonths(5);
 
-                unitOfWork.ProjectPhaseRepository.Insert(projectPhase);
-                unitOfWork.Save();
+                projectPhases.Add(projectPhase);
 
                 projectPhase.name = "Design Development";
                 projectPhase.dateStart = DateTimeOffset.UtcNow.AddMonths(5);
                 projectPhase.dateEnd = DateTimeOffset.UtcNow.AddMonths(6);
 
-                unitOfWork.ProjectPhaseRepository.Insert(projectPhase);
-                unitOfWork.Save();
+                projectPhases.Add(projectPhase);
 
                 projectPhase.name = "Production Design";
                 projectPhase.dateStart = DateTimeOffset.UtcNow.AddMonths(6);
                 projectPhase.dateEnd = DateTimeOffset.UtcNow.AddMonths(7);
 
-                unitOfWork.ProjectPhaseRepository.Insert(projectPhase);
-                unitOfWork.Save();
+                projectPhases.Add(projectPhase);
+
+                context.ProjectPhases.InsertAllOnSubmit<ProjectPhase>(projectPhases);
+                context.SubmitChanges();
 
             }
             catch (Exception ex)
@@ -143,10 +138,10 @@ namespace Api.Controllers
         //        try
         //        {
 
-        //            UnitOfWork unitOfWork = new UnitOfWork();
+        //            BambinoDataContext context = new BambinoDataContext();
 
-        //            ProjectPhase projectPhase = (data.projectPhaseId == Guid.Empty) ? new ProjectPhase() : unitOfWork.ProjectPhaseRepository
-        //                .GetBy(i => i.projectPhaseId == data.projectPhaseId
+        //            ProjectPhase projectPhase = (data.projectPhaseId == Guid.Empty) ? new ProjectPhase() : context.ProjectPhaseRepository
+        //                .Where(i => i.projectPhaseId == data.projectPhaseId
         //                    && !i.isDeleted)
         //                .FirstOrDefault();
 
@@ -160,11 +155,11 @@ namespace Api.Controllers
         //            projectPhase.isDeleted = data.isDeleted;
 
         //            if (data.projectId == Guid.Empty)
-        //                unitOfWork.ProjectPhaseRepository.Insert(projectPhase);
+        //                context.ProjectPhaseRepository.InsertOnSubmit(projectPhase);
         //            else
-        //                unitOfWork.ProjectPhaseRepository.Update(projectPhase);
+        //                context.ProjectPhaseRepository.Update(projectPhase);
 
-        //            unitOfWork.Save();
+        //            context.SubmitChanges();
 
         //            var vm = new AddEditDeleteReturnViewModel()
         //            {
@@ -194,10 +189,10 @@ namespace Api.Controllers
                 try
                 {
 
-                    UnitOfWork unitOfWork = new UnitOfWork();
+                    BambinoDataContext context = new BambinoDataContext();
 
-                    var query = unitOfWork.ProjectPhaseRepository
-                        .GetBy(i => i.projectId == data.id
+                    var query = context.ProjectPhases
+                        .Where(i => i.projectId == data.id
                             && !i.isDeleted
                             && i.name.Contains(data.search));
 
@@ -253,10 +248,10 @@ namespace Api.Controllers
                 try
                 {
 
-                    UnitOfWork unitOfWork = new UnitOfWork();
+                    BambinoDataContext context = new BambinoDataContext();
 
-                    var vm = unitOfWork.ProjectPhaseRepository
-                        .GetBy(i => i.projectPhaseId == data.id
+                    var vm = context.ProjectPhases
+                        .Where(i => i.projectPhaseId == data.id
                             && !i.isDeleted)
                         .Select(obj => new ProjectPhaseViewModel
                         {
