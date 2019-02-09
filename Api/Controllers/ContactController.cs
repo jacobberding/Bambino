@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 using System.Linq.Dynamic;
+using System.Linq.Expressions;
 using System.Net;
 using System.Net.Http;
 using System.Web.Http;
@@ -142,8 +143,7 @@ namespace Api.Controllers
                     BambinoDataContext context = new BambinoDataContext();
 
                     List<string> arrSearch = data.search.Split(',').ToList();
-                    var query = context.Contacts
-                        .Where(i => !i.isDeleted);
+                    string query = "isDeleted = false";
 
                     if (arrSearch.Count > 1)
                     {
@@ -160,26 +160,27 @@ namespace Api.Controllers
 
                         }
 
-                        query = query.Where(String.Join(" OR ", q.ToArray()));
+                        query += " AND " + String.Join(" OR ", q.ToArray());
 
                     }
                     else
                     {
 
-                        query = query.Where(i => i.name.Contains(data.search)
-                            || i.companyName.Contains(data.search)
-                            || i.personalWebsite.Contains(data.search)
-                            || i.companyTemp.Contains(data.search)
-                            || i.title.Contains(data.search)
-                            || i.skills.Contains(data.search)
-                            || i.email.Contains(data.search));
+                        query += @" AND " + String.Format("name.Contains(\"{0}\")", data.search) + @"
+                            OR " + String.Format("companyName.Contains(\"{0}\")", data.search) + @"
+                            OR " + String.Format("personalWebsite.Contains(\"{0}\")", data.search) + @"
+                            OR " + String.Format("companyTemp.Contains(\"{0}\")", data.search) + @"
+                            OR " + String.Format("title.Contains(\"{0}\")", data.search) + @"
+                            OR " + String.Format("skills.Contains(\"{0}\")", data.search) + @"
+                            OR " + String.Format("email.Contains(\"{0}\")", data.search) + @"";
 
                     }
 
                     int currentPage = data.page - 1;
                     int skip = currentPage * data.records;
-                    int totalRecords = query.ToList().Count;
-                    var arr = query
+                    int totalRecords = context.Contacts.Where(query).Count();
+                    var arr = context.Contacts
+                        .Where(query)
                         .Select(obj => new ContactViewModel
                         {
                             contactId = obj.contactId,

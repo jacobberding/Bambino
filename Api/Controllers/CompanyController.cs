@@ -7,6 +7,7 @@ using System.Web.Http.Cors;
 using Api.Models;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using System.Linq.Expressions;
 
 namespace Api.Controllers
 {
@@ -168,20 +169,20 @@ namespace Api.Controllers
                     
                     BambinoDataContext context = new BambinoDataContext();
 
-                    var query = context.Companies
-                        .Where(i => !i.isDeleted
+                    Expression<Func<Company, bool>> query = i => !i.isDeleted
                             && (i.name.Contains(data.search)
                             || i.email.Contains(data.search)
                             //|| i.companyLocations.Select(x => x.name).FirstOrDefault().Contains(data.search)
                             //|| i.companyLocations.Select(x => x.state).FirstOrDefault().Contains(data.search)
                             //|| i.companyLocations.Select(x => x.city).FirstOrDefault().Contains(data.search)
                             //|| i.companyLocations.Select(x => x.zip).FirstOrDefault().Contains(data.search)
-                            ));
+                            );
 
                     int currentPage = data.page - 1;
                     int skip = currentPage * data.records;
-                    int totalRecords = query.ToList().Count;
-                    var arr = query
+                    int totalRecords = context.Companies.Where(query).Count();
+                    var arr = context.Companies
+                        .Where(query)
                         .Select(obj => new CompanyViewModel
                         {
                             companyId               = obj.companyId,

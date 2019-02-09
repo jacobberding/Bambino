@@ -156,7 +156,8 @@ const Members = (function () {
 
                 _self.vm = data;
 
-                $(`m-module m-body`).html(getHtmlBodyDetail());
+                if (id != Global.guidEmpty)
+                    $(`m-module m-body`).html(getHtmlBodyDetail());
 
             }).fail(function (data) {
                 Validation.notification(2);
@@ -215,7 +216,10 @@ const Members = (function () {
     //Public ------------------------------------------------
     const getSelf = function () {
         return _self;
-    };
+    }
+    const getById = function (id) {
+        _getById(id);
+    }
 
     const getHtmlModuleAdd = function () {
         _self.vm = _getEmptyVM();
@@ -495,6 +499,32 @@ const Members = (function () {
             `;
     }
 
+    const getHtmlIcon = function (obj, c = ``) {
+
+        let html = ``;
+        const isMember = obj.token == Global.jack.mT ? true : false;
+
+        if (obj.path == `` && obj.firstName != `` && obj.lastName != ``) {
+            html = `
+
+                <m-icon ${isMember ? `data-type="member"` : ``} class="${c}">
+                    ${obj.firstName[0]} ${obj.lastName[0]}
+                </m-icon>
+
+            `;
+        } else {
+            html = `
+
+                <m-icon ${isMember ? `data-type="member"` : ``} class="${c}" style="background-image: url('${obj.path}');">
+                </m-icon>
+
+                `;
+        };
+
+        return html;
+
+    }
+
     const _init = (function () {
         $(document).on(`tap`, `#lst${_self.name}s .sort h2`, function () { _sort($(this)); });
         $(document).on(`tap`, `#btnInvite${_self.name}`, function () { _invite(); });
@@ -508,13 +538,15 @@ const Members = (function () {
 
     return {
         getSelf: getSelf,
+        getById: getById,
         getHtmlModuleAdd: getHtmlModuleAdd,
         getHtmlModuleDetail: getHtmlModuleDetail,
         getHtmlBody: getHtmlBody,
         getHtmlBodyList: getHtmlBodyList,
         getHtmlBodyDetail: getHtmlBodyDetail,
         getHtmlBodyForm: getHtmlBodyForm,
-        getHtmlCard: getHtmlCard
+        getHtmlCard: getHtmlCard,
+        getHtmlIcon: getHtmlIcon
     }
 
 })();

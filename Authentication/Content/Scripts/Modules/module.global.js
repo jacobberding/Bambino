@@ -119,17 +119,23 @@ const Global = (function () {
         
         Global.jack.mT = Global.guidEmpty;
 
-        $.ajax({
-            type: "POST",
-            url: '/Methods/SetJackSparrow',
-            data: { value: JSON.stringify(Global.jack) },
-            dataType: "json",
-            success: function (data) {
-                Global.deleteCookie('_e');
-                Global.addCookie('_e', data, 365);
-                window.location = window.location.protocol + "//" + window.location.host;
-            }
-        });
+        //var auth2 = gapi.auth2.getAuthInstance();
+        //auth2.signOut().then(function () {
+        //    console.log('User signed out.');
+
+            $.ajax({
+                type: "POST",
+                url: '/Methods/SetJackSparrow',
+                data: { value: JSON.stringify(Global.jack) },
+                dataType: "json",
+                success: function (data) {
+                    Global.deleteCookie('_e');
+                    Global.addCookie('_e', data, 365);
+                    window.location = window.location.protocol + "//" + window.location.host;
+                }
+            });
+
+        //});
 
     }
 
@@ -294,7 +300,7 @@ const Global = (function () {
             });
             $(document).on('mouseleave', '.tooltip', function () { $(`m-tooltip`).remove(); });
         }
-
+        
     })();
 
     return {

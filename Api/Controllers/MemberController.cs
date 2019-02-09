@@ -13,6 +13,7 @@ using Newtonsoft.Json;
 using System.Text;
 using System.Web.Security;
 using System.Threading.Tasks;
+using System.Linq.Expressions;
 //using Stripe;
 
 namespace Api.Controllers
@@ -147,6 +148,48 @@ namespace Api.Controllers
         }
 
         [HttpPost]
+        public HttpResponseMessage EditPath([FromBody] MemberEditPathViewModel data)
+        {
+            Authentication a = AuthenticationController.GetMemberAuthenticated(data.authentication.apiId, 1, data.authentication.token);
+            if (a.isAuthenticated)
+            {
+
+                try
+                {
+
+                    BambinoDataContext context = new BambinoDataContext();
+
+                    Member member = context.Members
+                        .Where(i => i.memberId == a.member.memberId
+                            && !i.isDeleted)
+                        .FirstOrDefault();
+
+                    if (member == null)
+                        throw new InvalidOperationException("Not Found");
+
+                    member.path = data.path;
+                    member.originalFileName = data.originalFileName;
+
+                    context.SubmitChanges();
+
+                    var vm = new
+                    {
+
+                    };
+
+                    return Request.CreateResponse(HttpStatusCode.OK, vm);
+
+                }
+                catch (Exception ex)
+                {
+                    return Request.CreateResponse(HttpStatusCode.InternalServerError, ex);
+                }
+
+            }
+            return Request.CreateResponse(HttpStatusCode.InternalServerError, new { Message = "Invalid Token" });
+        }
+
+        [HttpPost]
         public HttpResponseMessage EditDelete([FromBody] MemberEditDeleteViewModel data)
         {
             Authentication a = AuthenticationController.GetMemberAuthenticated(data.authentication.apiId, 1, data.authentication.token);
@@ -194,7 +237,7 @@ namespace Api.Controllers
             }
             return Request.CreateResponse(HttpStatusCode.InternalServerError, new { Message = "Invalid Token" });
         }
-        
+
         [HttpPost]
         public HttpResponseMessage EditPassword([FromBody] MemberEditPasswordViewModel data)
         {
@@ -561,18 +604,18 @@ namespace Api.Controllers
                     
                     BambinoDataContext context = new BambinoDataContext();
 
-                    var query = context.Members
-                        .Where(i => !i.isDeleted
+                    Expression<Func<Member, bool>> query = i => !i.isDeleted
                             && (i.MemberCompanies.Any(x => x.Company.name.Contains(data.search))
                             || i.email.Contains(data.search) 
                             || String.Concat(i.firstName, " ", i.lastName).Contains(data.search)
                             || i.phone.Contains(data.search)
-                            || i.MemberRoles.Select(x => x.Role.name).FirstOrDefault().Contains(data.search)));
+                            || i.MemberRoles.Select(x => x.Role.name).FirstOrDefault().Contains(data.search));
 
                     int currentPage = data.page - 1;
                     int skip = currentPage * data.records;
-                    int totalRecords = query.ToList().Count;
-                    var arr = query
+                    int totalRecords = context.Members.Where(query).ToList().Count;
+                    var arr = context.Members
+                        .Where(query)
                         .Select(obj => new MemberViewModel
                         {
                             memberId            = obj.memberId,
@@ -627,26 +670,35 @@ namespace Api.Controllers
                 {
                     
                     BambinoDataContext context = new BambinoDataContext();
-                    
+
+                    Expression<Func<Member, bool>> query = i => i.memberId == data.id
+                            && !i.isDeleted;
+
+                    if (data.id == Guid.Empty)
+                        query = i => i.memberId == a.member.memberId
+                            && !i.isDeleted;
+
                     var vm = context.Members
-                        .Where(i => i.memberId == data.id
-                            && !i.isDeleted)
-                        .Select(obj => new MemberViewModel
+                        .Where(query)
+                        .Select(obj => new 
                         {
-                            memberId            = obj.memberId,
-                            activeCompanyId     = obj.activeCompanyId,
+                            obj.memberId,
+                            obj.token,
+                            obj.activeCompanyId,
                             companies           = obj.MemberCompanies.Select(memberCompany => new CompanyViewModel()
                             {
                                 companyId           = memberCompany.companyId,
                                 name                = memberCompany.Company.name
                             }).ToList(),
-                            firstName           = obj.firstName,
-                            lastName            = obj.lastName,
-                            email               = obj.email,
-                            originalEmail       = obj.originalEmail,
-                            phone               = obj.phone,
-                            isValidated         = obj.isValidated,
-                            isDeleted           = obj.isDeleted,
+                            obj.firstName,
+                            obj.lastName,
+                            obj.email,
+                            obj.originalEmail,
+                            obj.path,
+                            obj.originalFileName,
+                            obj.phone,
+                            obj.isValidated,
+                            obj.isDeleted,
                             roles           = obj.MemberRoles.Select(memberRole => new RoleViewModel() {
                                 roleId          = memberRole.Role.roleId,
                                 name            = memberRole.Role.name,
@@ -919,7 +971,139 @@ namespace Api.Controllers
             }
             return Request.CreateResponse(HttpStatusCode.InternalServerError, new { Message = "Invalid Token" });
         }
-        
+
+        [HttpPost]
+        public HttpResponseMessage SignInGoogle([FromBody] MemberSignInGoogleViewModel data)
+        {
+            Authentication a = AuthenticationController.GetApiAuthenticated(data.authentication.apiId, 1);
+            if (a.isAuthenticated)
+            {
+
+                try
+                {
+
+                    BambinoDataContext context = new BambinoDataContext();
+                    
+                    Member member = context.Members
+                        .Where(i => (i.googleId == data.token
+                            || i.email == data.email.ToLower())
+                            && !i.isDeleted)
+                        .FirstOrDefault();
+                    
+                    if (member == null)
+                    {
+                        //Create User go through Sign Up Process
+
+                        int keyCode = new Random().Next(90000) + 10000;
+                        member = new Member();
+
+                        Role role = context.Roles
+                            .Where(i => i.isContractor)
+                            .FirstOrDefault();
+
+                        Company company = context.Companies
+                            .Where(i => i.companyId == Guid.Empty)
+                            .FirstOrDefault();
+
+                        member.activeCompanyId = Guid.Empty;
+                        member.googleId = data.token;
+                        member.stripeId = "";
+                        member.email = data.email.ToLower();
+                        member.originalEmail = data.email.ToLower();
+                        member.firstName = data.firstName;
+                        member.lastName = data.lastName;
+                        member.phone = "";
+                        member.path = data.path;
+                        member.originalFileName = "";
+                        member.password = null;
+                        member.keyValue = null;
+                        member.iVValue = null;
+                        member.token = Guid.NewGuid();
+                        member.tokenApi = Guid.NewGuid();
+                        member.keyCode = keyCode;
+                        member.keyCodeDateTime = DateTimeOffset.UtcNow;
+
+                        context.Members.InsertOnSubmit(member);
+
+                        MemberCompany memberCompany = new MemberCompany();
+
+                        memberCompany.companyId = company.companyId;
+                        memberCompany.memberId = member.memberId;
+
+                        context.MemberCompanies.InsertOnSubmit(memberCompany);
+
+                        MemberRole memberRole = new MemberRole();
+
+                        memberRole.roleId = role.roleId;
+                        memberRole.memberId = member.memberId;
+
+                        context.MemberRoles.InsertOnSubmit(memberRole);
+
+                        LogController.Add(member.memberId, "Member " + member.email + " has signed up using google", "Member", "SignInGoogle", member.memberId, "Members");
+
+                        new Thread(() =>
+                        {
+                            EmailViewModel e = EmailController.GetEmail(new Guid("c1acbd9b-cb51-4a4f-8f76-a71789ac4863"));
+                            EmailController.Send(new MailAddress(EmailController.email),
+                                member.email,
+                                EmailController.email,
+                                EmailController.email,
+                                e.subject,
+                                EmailController.GetSignUpEmailText(e, member, keyCode));
+                        }).Start();
+
+                        new Thread(() =>
+                        {
+                            EmailController.Send(new MailAddress(EmailController.email),
+                                EmailController.email,
+                                EmailController.email,
+                                EmailController.email,
+                                "Bambino: Member Sign Up",
+                                String.Format("Email: {0} / Company: {1}", data.email, company.name));
+                        }).Start();
+
+                    }
+                    else
+                    {
+                        //Sign In User
+                        member.googleId = data.token;
+                        member.firstName = data.firstName;
+                        member.lastName = data.lastName;
+                        member.path = data.path;
+
+                    }
+
+                    context.SubmitChanges();
+
+                    var vm = new e()
+                    {
+                        mT = member.token,
+                        mCI = member.activeCompanyId,
+                        mIC = member.MemberRoles.Any(i => i.Role.isContractor),
+                        mIE = member.MemberRoles.Any(i => i.Role.isEmployee),
+                        mIM = member.MemberRoles.Any(i => i.Role.isManager),
+                        mIA = member.MemberRoles.Any(i => i.Role.isAdmin),
+                        mIS = member.MemberRoles.Any(i => i.Role.isSuperAdmin),
+                        mE = member.email,
+                        mFN = member.firstName,
+                        mLN = member.lastName,
+                        mP = member.phone,
+                        iV = member.isValidated,
+                        v = data.v
+                    };
+
+                    return Request.CreateResponse(HttpStatusCode.OK, vm);
+
+                }
+                catch (Exception ex)
+                {
+                    return Request.CreateResponse(HttpStatusCode.InternalServerError, ex);
+                }
+
+            }
+            return Request.CreateResponse(HttpStatusCode.InternalServerError, new { Message = "Invalid Token" });
+        }
+
         [HttpPost]
         public async Task<HttpResponseMessage> SignUp([FromBody] MemberSignUpViewModel data)
         {
@@ -961,6 +1145,26 @@ namespace Api.Controllers
                     if (company.pin != data.pin)
                         throw new InvalidOperationException("Company pin does not match.");
 
+                    member.activeCompanyId = data.companyId;
+                    member.email = email;
+                    member.originalEmail = email;
+                    member.googleId = "";
+                    member.stripeId = "";
+                    member.firstName = "";
+                    member.lastName = "";
+                    member.phone = "";
+                    member.path = "";
+                    member.originalFileName = "";
+                    member.password = encrypt.password;
+                    member.keyValue = encrypt.keyBytes;
+                    member.iVValue = encrypt.ivBytes;
+                    member.token = Guid.NewGuid();
+                    member.tokenApi = Guid.NewGuid();
+                    member.keyCode = keyCode;
+                    member.keyCodeDateTime = DateTimeOffset.UtcNow;
+                    
+                    context.Members.InsertOnSubmit(member);
+
                     MemberCompany memberCompany = new MemberCompany();
 
                     memberCompany.companyId = company.companyId;
@@ -975,18 +1179,6 @@ namespace Api.Controllers
 
                     context.MemberRoles.InsertOnSubmit(memberRole);
 
-                    member.activeCompanyId = data.companyId;
-                    member.email = email;
-                    member.originalEmail = email;
-                    member.password = encrypt.password;
-                    member.keyValue = encrypt.keyBytes;
-                    member.iVValue = encrypt.ivBytes;
-                    member.token = Guid.NewGuid();
-                    member.tokenApi = Guid.NewGuid();
-                    member.keyCode = keyCode;
-                    member.keyCodeDateTime = DateTimeOffset.UtcNow;
-                    
-                    context.Members.InsertOnSubmit(member);
                     context.SubmitChanges();
 
                     LogController.Add(member.memberId, "Member " + member.email + " has signed up", "Member", "SignUp", member.memberId, "Members");

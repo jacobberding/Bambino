@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Dynamic;
+using System.Linq.Expressions;
 using System.Net;
 using System.Net.Http;
 using System.Web.Http;
@@ -26,18 +27,18 @@ namespace Api.Controllers
 
                     BambinoDataContext context = new BambinoDataContext();
 
-                    var query = context.TimeTrackerProjects
-                        .Where(i => i.projectId == data.id 
+                    Expression<Func<TimeTrackerProject, bool>> query = i => i.projectId == data.id 
                             && !i.isDeleted
                             && (i.TimeTracker.Member.email.Contains(data.search)
                             || i.TimeTracker.Member.firstName.Contains(data.search)
-                            || i.TimeTracker.Member.lastName.Contains(data.search)));
+                            || i.TimeTracker.Member.lastName.Contains(data.search));
 
                     int currentPage = data.page - 1;
                     int skip = currentPage * data.records;
-                    int totalRecords = query.ToList().Count;
-                    decimal totalHours = query.ToList().Sum(i => i.totalHours);
-                    var arr = query
+                    int totalRecords = context.TimeTrackerProjects.Where(query).Count();
+                    decimal totalHours = context.TimeTrackerProjects.Where(query).Sum(i => i.totalHours);
+                    var arr = context.TimeTrackerProjects
+                        .Where(query)
                         .Select(obj => new TimeTrackerProjectViewModel
                         {
                             timeTrackerProjectId = obj.timeTrackerProjectId,

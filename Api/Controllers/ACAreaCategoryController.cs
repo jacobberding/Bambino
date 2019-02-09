@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Dynamic;
+using System.Linq.Expressions;
 using System.Net;
 using System.Net.Http;
 using System.Web.Http;
@@ -139,15 +140,15 @@ namespace Api.Controllers
         {
 
             BambinoDataContext context = new BambinoDataContext();
-
-            var query = context.ACAreaCategories
-                .Where(i => !i.isDeleted
-                    && i.name.Contains(data.search));
-
+            
+            Expression<Func<ACAreaCategory, bool>> query = i => !i.isDeleted
+                    && i.name.Contains(data.search);
+            
             int currentPage = data.page - 1;
             int skip = currentPage * data.records;
-            int totalRecords = query.ToList().Count;
-            var arr = query
+            int totalRecords = context.ACAreaCategories.Where(query).Count();
+            var arr = context.ACAreaCategories
+                .Where(query)
                 .Select(obj => new ACAreaCategoryViewModel
                 {
                     acAreaCategoryId = obj.acAreaCategoryId,

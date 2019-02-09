@@ -14,6 +14,7 @@ const Application = (function () {
         _openSub($(`#initOpenSub`));
 
         //Load Lists
+        Members.getById(Global.guidEmpty);
         MaterialTag.get();
         TimeTracker.getIsActive();
 
@@ -202,194 +203,19 @@ const Application = (function () {
 
 })();
 
-const Settings = (function () {
+function onSignIn(googleUser) {
 
-    //Private -------------------------------------------
-    let _self = {
-        name: `Settings`
-    };
+    // Useful data for your client-side scripts:
+    var profile = googleUser.getBasicProfile();
+    console.log("ID: " + profile.getId()); // Don't send this directly to your server!
+    console.log('Full Name: ' + profile.getName());
+    console.log('Given Name: ' + profile.getGivenName());
+    console.log('Family Name: ' + profile.getFamilyName());
+    console.log("Image URL: " + profile.getImageUrl());
+    console.log("Email: " + profile.getEmail());
 
-    //Public --------------------------------------------
-    const getHtmlBody = function () {
-        return `
-
-            <m-flex data-type="col" class="container" id="">
-
-                <m-flex data-type="col" class="n mB">
-
-                    <h1 class="lg">${_self.name}</h1>
-
-                </m-flex>
-
-                <m-flex data-type="row" class="s n">
-        
-                    <m-flex data-type="col" class="n cards selectable" style="min-width: 200px;">
-
-                        <m-card class="mB active btnOpenBody" data-label="Settings Body" data-function="Settings.getHtmlBodyAccount">
-                            <m-flex class="c" data-type="row">
-                                <h2>Account</h2>
-                            </m-flex>
-                        </m-card>
-
-                        <m-card class="mB btnOpenBody" data-label="Settings Body" data-function="TimeTracker.getHtmlBodyMember">
-                            <m-flex class="c" data-type="row">
-                                <h2>Time Sheet</h2>
-                            </m-flex>
-                        </m-card>
-
-                        <m-card class="mB btnOpenBody" data-label="Settings Body" data-function="Settings.getHtmlBodyPublishLog">
-                            <m-flex class="c" data-type="row">
-                                <h2>Publish Log</h2>
-                            </m-flex>
-                        </m-card>
-
-                    </m-flex>
-
-                    <m-flex data-type="row" class="n s w">
-                        <m-body data-label="Settings Body">
-                            ${Settings.getHtmlBodyAccount()}
-                        </m-body>
-                    </m-flex>
-
-                </m-flex>
-
-            </m-flex>
-
-            `;
-    }
-    const getHtmlBodyAccount = function () {
-        return `
-
-            <m-flex data-type="col" class="container-sm">
-
-                <m-flex data-type="col" class="n" id="flxEditMember">
-
-                    <m-flex data-type="col">
-
-                        <h1 class="w mB">Account</h1>
-                        
-                        <m-flex data-type="row" class="n">
-
-                            <m-input class="mR">
-                                <label for="txtFirstNameMember">First Name</label>
-                                <input type="text" id="txtFirstNameMember" placeholder="First Name" value="${Global.jack.mFN}" />
-                            </m-input>
-
-                            <m-input>
-                                <label for="txtLastNameMember">Last Name</label>
-                                <input type="text" id="txtLastNameMember" placeholder="Last Name" value="${Global.jack.mLN}" />
-                            </m-input>
-
-                        </m-flex>
-
-                        <m-flex data-type="row" class="n">
-
-                            <m-input class="mR">
-                                <label for="txtEmailMember">Email</label>
-                                <input type="email" id="txtEmailMember" placeholder="Email" value="${Global.jack.mE}" required />
-                            </m-input>
-
-                            <m-input>
-                                <label for="txtPhoneMember">Phone</label>
-                                <input type="text" id="txtPhoneMember" placeholder="Phone" value="${Global.jack.mP}" />
-                            </m-input>
-
-                        </m-flex>
-
-                    </m-flex>
-
-                    <m-flex data-type="row" class="footer mB">
-                
-                        <m-button data-type="primary" id="btnEditMember">
-                            Save
-                        </m-button>
-
-                    </m-flex>
-
-                </m-flex>
-
-                <m-flex data-type="col" class="n" id="flxEditPassword">
-
-                    <m-flex data-type="col">
-
-                        <h1 class="w mB">Update Password</h1>
-
-                        <m-input class="mR">
-                            <label for="txtCurrentPassword">Current Password</label>
-                            <input type="password" id="txtCurrentPassword" placeholder="Current Password" value="" required />
-                        </m-input>
-
-                        <m-flex data-type="row" class="n">
-
-                            <m-input class="mR">
-                                <label for="txtNewPassword">New Password</label>
-                                <input type="password" id="txtNewPassword" placeholder="New Password" value="" required />
-                            </m-input>
-
-                            <m-input>
-                                <label for="txtNewConfirmPassword">Confirm New Password</label>
-                                <input type="password" id="txtNewConfirmPassword" placeholder="Confirm New Password" value="" required />
-                            </m-input>
-
-                        </m-flex>
-
-                    </m-flex>
-
-                    <m-flex data-type="row" class="footer mB">
-                
-                        <m-button data-type="primary" id="btnEditPasswordMember">
-                            Update Password
-                        </m-button>
-
-                    </m-flex>
-
-                </m-flex>
-                
-            </m-flex>
-
-            `;
-    }
-    const getHtmlBodyPublishLog = function () {
-        return `
-
-            <m-flex data-type="col" class="container-sm">
-
-                <m-flex data-type="col" class="n mB">
-
-                    <h1>Publish Log</h1>
-
-                </m-flex>
-
-                <m-flex data-type="col" class="mB">
-                
-                    <h1>0.0.0</h1>
-                    <label class="mB">January 1st, 2019</label>
-
-                    <!--<h3>Bug Fixes</h3>
-                    <ul class="mB">
-                        <li>Published Authentication</li>
-                    </ul>-->
-
-                    <h3>Updates</h3>
-                    <ul class="mB">
-                        <li>Published Authentication</li>
-                    </ul>
-
-                </m-flex>
-
-            </m-flex>
-        
-            `;
-    }
-
-    const _init = (function () {
-
-    })();
-
-    return {
-        getHtmlBody: getHtmlBody,
-        getHtmlBodyAccount: getHtmlBodyAccount,
-        getHtmlBodyPublishLog: getHtmlBodyPublishLog
-    }
-
-})();
+    // The ID token you need to pass to your backend:
+    var id_token = googleUser.getAuthResponse().id_token;
+    console.log("ID Token: " + id_token);
+    
+}

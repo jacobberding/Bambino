@@ -484,9 +484,10 @@ const Application = (function () {
 const SignIn = (function () {
     
     //Private ----------------------------------------------------------
+    let _isGoogle = false;
     
     const _signIn = function () {
-        
+
         Application.getJackSparrow()
             .done(function (data) {
                 Global.jack = data; 
@@ -495,8 +496,6 @@ const SignIn = (function () {
                     email: $(`#txtEmail`).val(),
                     password: $(`#txtPassword`).val(),
                     cI: Global.jack.cI,
-                    oI: Global.jack.oI,
-                    oDN: Global.jack.oDN,
                     v: Global.jack.v
                 }
         
@@ -526,12 +525,76 @@ const SignIn = (function () {
             });
         
     }
+    const _signInGoogle = function (googleUser) {
+
+        if (!_isGoogle)
+            return;
+
+        // Useful data for your client-side scripts:
+        var profile = googleUser.getBasicProfile();
+        console.log("ID: " + profile.getId()); // Don't send this directly to your server!
+        console.log('Full Name: ' + profile.getName());
+        console.log('Given Name: ' + profile.getGivenName());
+        console.log('Family Name: ' + profile.getFamilyName());
+        console.log("Image URL: " + profile.getImageUrl());
+        console.log("Email: " + profile.getEmail());
+
+        // The ID token you need to pass to your backend:
+        var id_token = googleUser.getAuthResponse().id_token;
+        console.log("ID Token: " + id_token);
+
+        Application.getJackSparrow()
+            .done(function (data) {
+                Global.jack = data; 
+
+                const vm = {
+                    email: profile.getEmail(),
+                    path: profile.getImageUrl(),
+                    firstName: profile.getName().split(" ")[0],
+                    lastName: profile.getName().split(" ")[1],
+                    token: id_token,
+                    v: Global.jack.v
+                }
+
+                try {
+
+                    Validation.getIsValidForm($(`m-card`)); //pass in parent element
+
+                    console.log(vm);
+                    Global.post('Member_SignInGoogle', vm)
+                        .done(function (data) {
+                            Validation.done(data);
+                            if (data.iV) {
+                                Application.editJackSparrow(data);
+                            } else {
+                                SignUp.token = data.mT;
+                                Module.replaceCard(`Sign In`, `SignUp.getHtmlCardSuccess`, ``);
+                            }
+                        })
+                        .fail(function (data) {
+                            Validation.fail(data);
+                        });
+
+                } catch (ex) {
+                    Validation.fail(ex);
+                }
+
+            });
+
+    }
 
     //Public ----------------------------------------------------------
     let email = ``;
-    
+
+    const isGoogle = function () {
+        _isGoogle = true;
+    }
+
     const signIn = function () {
         _signIn();
+    }
+    const signInGoogle = function (googleUser) {
+        _signInGoogle(googleUser);
     }
 
     const getHtmlCard = function () {
@@ -552,6 +615,11 @@ const SignIn = (function () {
                 </m-flex>
                 <m-flex data-type="col" class="">
                 
+                    <div class="g-signin2 mB w" onclick="SignIn.isGoogle()" data-onsuccess="onSignIn" data-theme="light"></div>
+                    <!--<a href="#" onclick="signOut();">Sign out</a>-->
+
+                    <label class="mB c">or</label>
+
                     <m-input>
                         <label for="txtEmail">Email</label>
                         <input type="text" id="txtEmail" placeholder="Email" required value="${SignIn.email}" />
@@ -586,8 +654,10 @@ const SignIn = (function () {
     })();
 
     return {
+        isGoogle: isGoogle,
         email: email,
         signIn: signIn,
+        signInGoogle: signInGoogle,
         getHtmlCard: getHtmlCard
     }
 
@@ -1219,5 +1289,13 @@ const Company = (function () {
 function callBack(token) {
     SignUp.getReCaptcha(token);
 }
-
+function onSignIn(googleUser) {
+    SignIn.signInGoogle(googleUser);
+}
+function signOut() {
+    var auth2 = gapi.auth2.getAuthInstance();
+    auth2.signOut().then(function () {
+        console.log('User signed out.');
+    });
+}
 Application.init();

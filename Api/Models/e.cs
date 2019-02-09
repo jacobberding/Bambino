@@ -30,6 +30,8 @@ namespace Api.Models
 
         public string mP { get; set; } = ""; //memberPhone
 
+        public string mPA { get; set; } = ""; //memberPath
+
         public bool iV { get; set; } = false; //isValidated
 
         public string v { get; set; } = "icons";  //view

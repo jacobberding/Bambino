@@ -16,7 +16,7 @@ namespace Api.Models
         public Guid companyId { get; set; } = Guid.Empty;
         public CompanyViewModel company { get; set; }
 
-        public Guid projectPhaseId { get; set; }
+        public Guid? projectPhaseId { get; set; } = Guid.Empty;
 
         [DisplayFormat(ConvertEmptyStringToNull = false)]
         public string code { get; set; } = "";

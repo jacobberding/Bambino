@@ -555,7 +555,7 @@ const TimeTracker = (function () {
 
                 <m-flex data-type="row" class="c n pL pR">
 
-                    <h1 class="w">${_self.name}</h1>
+                    <h1 class="w">Time Sheets</h1>
 
                     <m-flex data-type="row" class="n eA">
 
@@ -585,6 +585,7 @@ const TimeTracker = (function () {
     }
     const getHtmlBodyList = function (arr) {
 
+        const isAll = _self.id == Global.guidEmpty ? true : false;
         let html = ``;
 
         for (let obj of arr)
@@ -601,9 +602,10 @@ const TimeTracker = (function () {
             <m-flex data-type="col" class="s cards selectable" id="lst${_self.name}s">
 
                 <m-flex data-type="row" class="tableRow n pL pR mB sC sort" style="width: 100%;">
+                    ${isAll ? `
                     <h2 class="${Global.getSort(_self.sort, `member.firstName`)}" data-sort="member.firstName">
                         Name
-                    </h2>
+                    </h2>` : ``}
                     <h2 class="${Global.getSort(_self.sort, `totalHours`)}" data-sort="totalHours">
                         Total Hours
                     </h2>
@@ -636,7 +638,7 @@ const TimeTracker = (function () {
 
                 <m-flex data-type="row" class="c n pL pR">
 
-                    <h1 class="w">${_self.name}</h1>
+                    <h1 class="w">Time Sheets</h1>
 
                 </m-flex>
             

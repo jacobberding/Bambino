@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Net;
 using System.Net.Http;
 using System.Web.Http;
@@ -115,9 +116,10 @@ namespace Api.Controllers
                 acLayer.isPlottable = l.isPlottable;
                 
                 context.ACLayers.InsertOnSubmit(acLayer);
-                context.SubmitChanges();
 
             }
+
+            context.SubmitChanges();
 
         }
 
@@ -187,11 +189,13 @@ namespace Api.Controllers
 
             string m = (data.measurement == "English") ? "Imperical" : data.measurement;
 
-            var query = (data.category == "All") ? 
-                context.ACLayers.Where(i => i.measurement == m && !i.isDeleted) : 
-                context.ACLayers.Where(i => i.ACLayerCategory.name == data.category && i.measurement == m && !i.isDeleted);
+            Expression<Func<ACLayer, bool>> query = i => i.ACLayerCategory.name == data.category && i.measurement == m && !i.isDeleted;
 
-            return query
+            if (data.category == "All")
+                query = i => i.measurement == m && !i.isDeleted;
+
+            return context.ACLayers
+                .Where(query)
                 .Select(obj => new ACLayerViewModel()
                 {
                     acLayerId = obj.acLayerId,
@@ -226,15 +230,15 @@ namespace Api.Controllers
             BambinoDataContext context = new BambinoDataContext();
 
             string initial = measurement.Substring(0, 1);
-            var query = context.ACLayers
-                .Where(i => (i.name == "EDC-" + initial + "-G-AREA-NOTE"
+            Expression<Func<ACLayer, bool>> query = i => (i.name == "EDC-" + initial + "-G-AREA-NOTE"
                     || i.name == "EDC-" + initial + "-G-NOTE"
                     || i.name == "EDC-" + initial + "-G-AREA-GROS-NPLT"
                     || i.name == "EDC-" + initial + "-G-AREA-NET1-NPLT")
                     && i.measurement == measurement
-                    && !i.isDeleted);
+                    && !i.isDeleted;
 
-            return query
+            return context.ACLayers
+                .Where(query)
                 .Select(obj => new ACLayerViewModel()
                 {
                     acLayerId = obj.acLayerId,
@@ -268,13 +272,13 @@ namespace Api.Controllers
 
             BambinoDataContext context = new BambinoDataContext();
             
-            var query = context.ACLayers
-                .Where(i => i.name.Contains("AREA")
+            Expression<Func<ACLayer, bool>> query = i => i.name.Contains("AREA")
                     && i.name.Contains("NPLT")
                     && i.measurement == measurement
-                    && !i.isDeleted);
+                    && !i.isDeleted;
 
-            return query
+            return context.ACLayers
+                .Where(query)
                 .Select(obj => obj.name)
                 .OrderBy(i => i)
                 .ToArray();

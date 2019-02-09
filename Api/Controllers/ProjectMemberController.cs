@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Dynamic;
+using System.Linq.Expressions;
 using System.Net;
 using System.Net.Http;
 using System.Web.Http;
@@ -86,17 +87,17 @@ namespace Api.Controllers
 
                     BambinoDataContext context = new BambinoDataContext();
 
-                    var query = context.Members
-                        .Where(i => !i.isDeleted 
+                    Expression<Func<Member, bool>> query = i => !i.isDeleted 
                             && (i.email.Contains(data.search)
                             || String.Concat(i.firstName, " ", i.lastName).Contains(data.search)
                             || i.phone.Contains(data.search)
-                            || i.MemberRoles.Select(x => x.Role.name).FirstOrDefault().Contains(data.search)));
+                            || i.MemberRoles.Select(x => x.Role.name).FirstOrDefault().Contains(data.search));
 
                     int currentPage = data.page - 1;
                     int skip = currentPage * data.records;
-                    int totalRecords = query.ToList().Count;
-                    var arr = query
+                    int totalRecords = context.Members.Where(query).Count();
+                    var arr = context.Members
+                        .Where(query)
                         .Select(obj => new MemberViewModel
                         {
                             memberId = obj.memberId,

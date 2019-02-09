@@ -21,6 +21,10 @@ h3 {
     display: none;
 }
 
+.abcRioButton {
+    margin: 0 auto !important;
+}
+
 /*--M-AUTHENTICATION-------------------------------------------------------------------------------*/
 m-authentication {
     display: flex;

@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Net;
 using System.Net.Http;
 using System.Web.Http;
@@ -198,22 +199,21 @@ namespace Api.Controllers
 
                     BambinoDataContext context = new BambinoDataContext();
 
-                    var query = a.member.roles.Any(i => i.isAdmin) ? 
-                        context.Projects
-                            .Where(i => !i.isDeleted
+                    Expression<Func<Project, bool>> query = i => i.ProjectMembers.Any(x => x.memberId == a.member.memberId)
+                        && !i.isDeleted
+                        && (i.name.Contains(data.search)
+                        || i.code.Contains(data.search));
+
+                    if (a.member.roles.Any(i => i.isAdmin))
+                        query = i => !i.isDeleted
                                 && (i.name.Contains(data.search)
-                                || i.code.Contains(data.search)))
-                        : 
-                        context.Projects
-                            .Where(i => i.ProjectMembers.Any(x => x.memberId == a.member.memberId)
-                                && !i.isDeleted
-                                && (i.name.Contains(data.search)
-                                || i.code.Contains(data.search)));
+                                || i.code.Contains(data.search));
 
                     int currentPage = data.page - 1;
                     int skip = currentPage * data.records;
-                    int totalRecords = query.ToList().Count;
-                    var arr = query
+                    int totalRecords = context.Projects.Where(query).Count();
+                    var arr = context.Projects
+                        .Where(query)
                         .Select(obj => new ProjectViewModel
                         {
                             projectId = obj.projectId,
@@ -275,7 +275,12 @@ namespace Api.Controllers
                         .Select(obj => new ProjectViewModel
                         {
                             projectId = obj.projectId,
-                            projectPhaseId = obj.ProjectPhases.Select(i => new { dateStart = i.dateStart, dateEnd = i.dateEnd, projectPhaseId = i.projectPhaseId }).Where(x => x.dateStart <= today && x.dateEnd >= today).DefaultIfEmpty(new { dateStart = DateTimeOffset.UtcNow, dateEnd = DateTimeOffset.UtcNow, projectPhaseId = Guid.Empty }).FirstOrDefault().projectPhaseId,
+                            projectPhaseId = obj.ProjectPhases
+                                .Select(i => new { dateStart = i.dateStart, dateEnd = i.dateEnd, projectPhaseId = i.projectPhaseId, isDeleted = i.isDeleted })
+                                .Where(x => x.dateStart <= today && x.dateEnd >= today && !x.isDeleted)
+                                //.DefaultIfEmpty(new { dateStart = DateTimeOffset.UtcNow, dateEnd = DateTimeOffset.UtcNow, projectPhaseId = Guid.Empty })
+                                .FirstOrDefault()
+                                .projectPhaseId,
                             code = obj.code,
                             name = obj.name,
                             addressLine1 = obj.addressLine1,
@@ -285,9 +290,13 @@ namespace Api.Controllers
                             zip = obj.zip,
                             country = obj.country,
                             scale = obj.scale,
-                            numOfHours = obj.TimeTrackerProjects.Select(i => i.totalHours).DefaultIfEmpty(0).ToList().Sum(x => x),
+                            numOfHours = obj.TimeTrackerProjects
+                                .Where(i => !i.isDeleted)
+                                .Select(i => i.totalHours)
+                                //.DefaultIfEmpty(0)
+                                .Sum(x => x),
                             numOfMembers = obj.ProjectMembers.Count(),
-                            projectPhases = obj.ProjectPhases.Select(projectPhase => new ProjectPhaseViewModel() {
+                            projectPhases = obj.ProjectPhases.Where(i => !i.isDeleted).Select(projectPhase => new ProjectPhaseViewModel() {
                                 projectPhaseId = projectPhase.projectPhaseId,
                                 name = projectPhase.name
                             }).ToList(),
@@ -296,6 +305,7 @@ namespace Api.Controllers
                                 firstName = projectMember.Member.firstName,
                                 lastName = projectMember.Member.lastName,
                                 email = projectMember.Member.email,
+                                path = projectMember.Member.path,
                                 phone = projectMember.Member.phone,
                                 isActive = projectMember.Member.TimeTrackers.Any(i => i.isActive)
                             })

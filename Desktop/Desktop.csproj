@@ -163,6 +163,7 @@
     <Content Include="Content\Scripts\Modules\module.materials.js" />
     <Content Include="Content\Scripts\Modules\module.log.js" />
     <Content Include="Content\Scripts\Modules\module.project.js" />
+    <Content Include="Content\Scripts\Modules\module.settings.js" />
     <Content Include="Content\Scripts\Modules\module.timeTracker.js" />
     <Content Include="Content\Styles\site.css" />
     <Content Include="favicon.ico" />

@@ -76,8 +76,8 @@
       <Column Name="isApproved" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
       <Column Name="isDeleted" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
       <Association Name="Company_MemberCompany" Member="MemberCompanies" ThisKey="companyId" OtherKey="companyId" Type="MemberCompany" />
-      <Association Name="Company_Member" Member="Members" ThisKey="companyId" OtherKey="activeCompanyId" Type="Member" />
       <Association Name="Company_Project" Member="Projects" ThisKey="companyId" OtherKey="companyId" Type="Project" />
+      <Association Name="Company_Member" Member="Members" ThisKey="companyId" OtherKey="activeCompanyId" Type="Member" />
     </Type>
   </Table>
   <Table Name="dbo.ContactFiles" Member="ContactFiles">
@@ -187,45 +187,8 @@
     <Type Name="MemberRole">
       <Column Name="memberId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
       <Column Name="roleId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
-      <Association Name="Member_MemberRole" Member="Member" ThisKey="memberId" OtherKey="memberId" Type="Member" IsForeignKey="true" />
       <Association Name="Role_MemberRole" Member="Role" ThisKey="roleId" OtherKey="roleId" Type="Role" IsForeignKey="true" />
-    </Type>
-  </Table>
-  <Table Name="dbo.Members" Member="Members">
-    <Type Name="Member">
-      <Column Name="memberId" AutoSync="Never" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
-      <Column Name="activeCompanyId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" CanBeNull="false" />
-      <Column Name="token" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" CanBeNull="false" />
-      <Column Name="tokenApi" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" CanBeNull="false" />
-      <Column Name="stripeId" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
-      <Column Name="firstName" Type="System.String" DbType="NVarChar(50) NOT NULL" CanBeNull="false" />
-      <Column Name="lastName" Type="System.String" DbType="NVarChar(50) NOT NULL" CanBeNull="false" />
-      <Column Name="email" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
-      <Column Name="originalEmail" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
-      <Column Name="phone" Type="System.String" DbType="NVarChar(50) NOT NULL" CanBeNull="false" />
-      <Column Name="password" Type="System.Data.Linq.Binary" DbType="VarBinary(MAX)" CanBeNull="true" UpdateCheck="Never" />
-      <Column Name="keyValue" Type="System.Data.Linq.Binary" DbType="VarBinary(MAX)" CanBeNull="true" UpdateCheck="Never" />
-      <Column Name="iVValue" Type="System.Data.Linq.Binary" DbType="VarBinary(MAX)" CanBeNull="true" UpdateCheck="Never" />
-      <Column Name="forgotPasswordToken" Type="System.Guid" DbType="UniqueIdentifier" CanBeNull="true" />
-      <Column Name="forgotPasswordDateTime" Type="System.DateTimeOffset" DbType="DateTimeOffset" CanBeNull="true" />
-      <Column Name="keyCode" Type="System.Int32" DbType="Int" CanBeNull="true" />
-      <Column Name="keyCodeDateTime" Type="System.DateTimeOffset" DbType="DateTimeOffset" CanBeNull="true" />
-      <Column Name="lastLoginDateTime" Type="System.DateTimeOffset" DbType="DateTimeOffset NOT NULL" CanBeNull="false" />
-      <Column Name="isValidated" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
-      <Column Name="isDeleted" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
-      <Association Name="Member_Log" Member="Logs" ThisKey="memberId" OtherKey="memberId" Type="Log" />
-      <Association Name="Member_MemberCompany" Member="MemberCompanies" ThisKey="memberId" OtherKey="memberId" Type="MemberCompany" />
-      <Association Name="Member_MemberIpAddress" Member="MemberIpAddresses" ThisKey="memberId" OtherKey="memberId" Type="MemberIpAddress" />
-      <Association Name="Member_MemberRole" Member="MemberRoles" ThisKey="memberId" OtherKey="memberId" Type="MemberRole" />
-      <Association Name="Member_ProjectMember" Member="ProjectMembers" ThisKey="memberId" OtherKey="memberId" Type="ProjectMember" />
-      <Association Name="Member_ProjectZoneArchive" Member="ProjectZoneArchives" ThisKey="memberId" OtherKey="memberStartId" Type="ProjectZoneArchive" />
-      <Association Name="Member_ProjectZoneArchive1" Member="ProjectZoneArchives1" ThisKey="memberId" OtherKey="memberEndId" Type="ProjectZoneArchive" />
-      <Association Name="Member_SubTsk" Member="SubTsks" ThisKey="memberId" OtherKey="memberId" Type="SubTsk" />
-      <Association Name="Member_SubTsk1" Member="SubTsks1" ThisKey="memberId" OtherKey="memberIdCreated" Type="SubTsk" />
-      <Association Name="Member_TimeTracker" Member="TimeTrackers" ThisKey="memberId" OtherKey="memberId" Type="TimeTracker" />
-      <Association Name="Member_Tsk" Member="Tsks" ThisKey="memberId" OtherKey="memberId" Type="Tsk" />
-      <Association Name="Member_Tsk1" Member="Tsks1" ThisKey="memberId" OtherKey="memberIdCreated" Type="Tsk" />
-      <Association Name="Company_Member" Member="Company" ThisKey="activeCompanyId" OtherKey="companyId" Type="Company" IsForeignKey="true" />
+      <Association Name="Member_MemberRole" Member="Member" ThisKey="memberId" OtherKey="memberId" Type="Member" IsForeignKey="true" />
     </Type>
   </Table>
   <Table Name="dbo.ProjectAttractions" Member="ProjectAttractions">
@@ -263,8 +226,8 @@
     <Type Name="ProjectMember">
       <Column Name="projectId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
       <Column Name="memberId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
-      <Association Name="Member_ProjectMember" Member="Member" ThisKey="memberId" OtherKey="memberId" Type="Member" IsForeignKey="true" />
       <Association Name="Project_ProjectMember" Member="Project" ThisKey="projectId" OtherKey="projectId" Type="Project" IsForeignKey="true" />
+      <Association Name="Member_ProjectMember" Member="Member" ThisKey="memberId" OtherKey="memberId" Type="Member" IsForeignKey="true" />
     </Type>
   </Table>
   <Table Name="dbo.ProjectPhases" Member="ProjectPhases">
@@ -323,9 +286,9 @@
       <Column Name="dateEnd" Type="System.DateTimeOffset" DbType="DateTimeOffset NOT NULL" CanBeNull="false" />
       <Column Name="memberStartId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" CanBeNull="false" />
       <Column Name="memberEndId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" CanBeNull="false" />
+      <Association Name="ProjectZone_ProjectZoneArchive" Member="ProjectZone" ThisKey="projectZoneId" OtherKey="projectZoneId" Type="ProjectZone" IsForeignKey="true" />
       <Association Name="Member_ProjectZoneArchive" Member="Member" ThisKey="memberStartId" OtherKey="memberId" Type="Member" IsForeignKey="true" />
       <Association Name="Member_ProjectZoneArchive1" Member="Member1" ThisKey="memberEndId" OtherKey="memberId" Type="Member" IsForeignKey="true" />
-      <Association Name="ProjectZone_ProjectZoneArchive" Member="ProjectZone" ThisKey="projectZoneId" OtherKey="projectZoneId" Type="ProjectZone" IsForeignKey="true" />
     </Type>
   </Table>
   <Table Name="dbo.ProjectZones" Member="ProjectZones">
@@ -423,9 +386,9 @@
       <Column Name="isInOffice" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
       <Column Name="isProject" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
       <Column Name="isDeleted" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
+      <Association Name="Project_Tsk" Member="Project" ThisKey="projectId" OtherKey="projectId" Type="Project" IsForeignKey="true" />
       <Association Name="Member_Tsk" Member="Member" ThisKey="memberId" OtherKey="memberId" Type="Member" IsForeignKey="true" />
       <Association Name="Member_Tsk1" Member="Member1" ThisKey="memberIdCreated" OtherKey="memberId" Type="Member" IsForeignKey="true" />
-      <Association Name="Project_Tsk" Member="Project" ThisKey="projectId" OtherKey="projectId" Type="Project" IsForeignKey="true" />
     </Type>
   </Table>
   <Table Name="dbo.MaterialPriceOptions" Member="MaterialPriceOptions">
@@ -456,6 +419,46 @@
       <Association Name="Material_MaterialTagMaterial" Member="MaterialTagMaterials" ThisKey="materialId" OtherKey="materialId" Type="MaterialTagMaterial" />
       <Association Name="Discipline_Material" Member="Discipline" ThisKey="disciplineId" OtherKey="disciplineId" Type="Discipline" IsForeignKey="true" />
       <Association Name="MaterialPriceOption_Material" Member="MaterialPriceOption" ThisKey="materialPriceOptionKey" OtherKey="materialPriceOptionKey" Type="MaterialPriceOption" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.Members" Member="Members">
+    <Type Name="Member">
+      <Column Name="memberId" AutoSync="Never" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="activeCompanyId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" CanBeNull="false" />
+      <Column Name="token" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" CanBeNull="false" />
+      <Column Name="tokenApi" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" CanBeNull="false" />
+      <Column Name="googleId" Type="System.String" DbType="NVarChar(MAX) NOT NULL" CanBeNull="false" />
+      <Column Name="stripeId" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
+      <Column Name="firstName" Type="System.String" DbType="NVarChar(50) NOT NULL" CanBeNull="false" />
+      <Column Name="lastName" Type="System.String" DbType="NVarChar(50) NOT NULL" CanBeNull="false" />
+      <Column Name="email" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
+      <Column Name="originalEmail" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
+      <Column Name="phone" Type="System.String" DbType="NVarChar(50) NOT NULL" CanBeNull="false" />
+      <Column Name="path" Type="System.String" DbType="NVarChar(1000) NOT NULL" CanBeNull="false" />
+      <Column Name="originalFileName" Type="System.String" DbType="NVarChar(1000) NOT NULL" CanBeNull="false" />
+      <Column Name="password" Type="System.Data.Linq.Binary" DbType="VarBinary(MAX)" CanBeNull="true" UpdateCheck="Never" />
+      <Column Name="keyValue" Type="System.Data.Linq.Binary" DbType="VarBinary(MAX)" CanBeNull="true" UpdateCheck="Never" />
+      <Column Name="iVValue" Type="System.Data.Linq.Binary" DbType="VarBinary(MAX)" CanBeNull="true" UpdateCheck="Never" />
+      <Column Name="forgotPasswordToken" Type="System.Guid" DbType="UniqueIdentifier" CanBeNull="true" />
+      <Column Name="forgotPasswordDateTime" Type="System.DateTimeOffset" DbType="DateTimeOffset" CanBeNull="true" />
+      <Column Name="keyCode" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="keyCodeDateTime" Type="System.DateTimeOffset" DbType="DateTimeOffset" CanBeNull="true" />
+      <Column Name="lastLoginDateTime" Type="System.DateTimeOffset" DbType="DateTimeOffset NOT NULL" CanBeNull="false" />
+      <Column Name="isValidated" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
+      <Column Name="isDeleted" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
+      <Association Name="Member_Log" Member="Logs" ThisKey="memberId" OtherKey="memberId" Type="Log" />
+      <Association Name="Member_MemberCompany" Member="MemberCompanies" ThisKey="memberId" OtherKey="memberId" Type="MemberCompany" />
+      <Association Name="Member_MemberIpAddress" Member="MemberIpAddresses" ThisKey="memberId" OtherKey="memberId" Type="MemberIpAddress" />
+      <Association Name="Member_MemberRole" Member="MemberRoles" ThisKey="memberId" OtherKey="memberId" Type="MemberRole" />
+      <Association Name="Member_ProjectMember" Member="ProjectMembers" ThisKey="memberId" OtherKey="memberId" Type="ProjectMember" />
+      <Association Name="Member_ProjectZoneArchive" Member="ProjectZoneArchives" ThisKey="memberId" OtherKey="memberStartId" Type="ProjectZoneArchive" />
+      <Association Name="Member_ProjectZoneArchive1" Member="ProjectZoneArchives1" ThisKey="memberId" OtherKey="memberEndId" Type="ProjectZoneArchive" />
+      <Association Name="Member_SubTsk" Member="SubTsks" ThisKey="memberId" OtherKey="memberId" Type="SubTsk" />
+      <Association Name="Member_SubTsk1" Member="SubTsks1" ThisKey="memberId" OtherKey="memberIdCreated" Type="SubTsk" />
+      <Association Name="Member_TimeTracker" Member="TimeTrackers" ThisKey="memberId" OtherKey="memberId" Type="TimeTracker" />
+      <Association Name="Member_Tsk" Member="Tsks" ThisKey="memberId" OtherKey="memberId" Type="Tsk" />
+      <Association Name="Member_Tsk1" Member="Tsks1" ThisKey="memberId" OtherKey="memberIdCreated" Type="Tsk" />
+      <Association Name="Company_Member" Member="Company" ThisKey="activeCompanyId" OtherKey="companyId" Type="Company" IsForeignKey="true" />
     </Type>
   </Table>
 </Database>

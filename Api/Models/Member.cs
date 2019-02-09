@@ -27,6 +27,9 @@ namespace Api.Models
         public string lastName { get; set; } = "";
 
         [DisplayFormat(ConvertEmptyStringToNull = false)]
+        public string path { get; set; } = "";
+
+        [DisplayFormat(ConvertEmptyStringToNull = false)]
         public string email { get; set; } = "";
 
         [DisplayFormat(ConvertEmptyStringToNull = false)]
@@ -54,6 +57,19 @@ namespace Api.Models
         [DisplayFormat(ConvertEmptyStringToNull = false)]
         public string token { get; set; } = "";
         
+    }
+
+    public class MemberEditPathViewModel
+    {
+
+        public AuthenticationViewModel authentication { get; set; }
+
+        [DisplayFormat(ConvertEmptyStringToNull = false)]
+        public string path { get; set; } = "";
+
+        [DisplayFormat(ConvertEmptyStringToNull = false)]
+        public string originalFileName { get; set; } = "";
+
     }
 
     public class MemberEditDeleteViewModel
@@ -206,6 +222,31 @@ namespace Api.Models
         [DisplayFormat(ConvertEmptyStringToNull = false)]
         public string email { get; set; } = "";
         
+    }
+
+    public class MemberSignInGoogleViewModel
+    {
+
+        public AuthenticationViewModel authentication { get; set; }
+
+        [DisplayFormat(ConvertEmptyStringToNull = false)]
+        public string email { get; set; } = "";
+
+        [DisplayFormat(ConvertEmptyStringToNull = false)]
+        public string path { get; set; } = "";
+
+        [DisplayFormat(ConvertEmptyStringToNull = false)]
+        public string firstName { get; set; } = "";
+
+        [DisplayFormat(ConvertEmptyStringToNull = false)]
+        public string lastName { get; set; } = "";
+
+        [DisplayFormat(ConvertEmptyStringToNull = false)]
+        public string token { get; set; } = "";
+
+        [DisplayFormat(ConvertEmptyStringToNull = false)]
+        public string v { get; set; } = "";
+
     }
 
 }

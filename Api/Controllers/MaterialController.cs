@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Dynamic;
+using System.Linq.Expressions;
 using System.Net;
 using System.Net.Http;
 using System.Web.Http;
@@ -163,17 +164,17 @@ namespace Api.Controllers
 
                     BambinoDataContext context = new BambinoDataContext();
                     
-                    var query = context.Materials
-                        .Where(i => (i.name.Contains(data.search)
+                    Expression<Func<Material, bool>> query = i => (i.name.Contains(data.search)
                             || i.manufacturer.Contains(data.search)
                             || i.modelNumber.Contains(data.search)
                             || i.MaterialTagMaterials.Any(materialTagMaterial => materialTagMaterial.MaterialTag.name.Contains(data.search)))
-                            && !i.isDeleted);
+                            && !i.isDeleted;
                     
                     int currentPage = data.page - 1;
                     int skip = currentPage * data.records;
-                    int totalRecords = query.ToList().Count;
-                    var arr = query
+                    int totalRecords = context.Materials.Where(query).ToList().Count;
+                    var arr = context.Materials
+                        .Where(query)
                         .Select(obj => new MaterialViewModel
                         {
                             materialId = obj.materialId,

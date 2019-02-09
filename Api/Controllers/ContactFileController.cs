@@ -32,6 +32,7 @@ namespace Api.Controllers
 
                         contactFile.contactFileId = contactFileViewModel.contactFileId;
                         contactFile.contactId = contactFileViewModel.contactId;
+                        contactFile.name = "";
                         contactFile.path = contactFileViewModel.path;
                         contactFile.originalFileName = contactFileViewModel.originalFileName;
                         contactFile.isDeleted = contactFileViewModel.isDeleted;

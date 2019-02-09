@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Dynamic;
+using System.Linq.Expressions;
 using System.Net;
 using System.Net.Http;
 using System.Web.Http;
@@ -183,24 +184,23 @@ namespace Api.Controllers
                         .Select(i => i.dateStart)
                         .FirstOrDefault();
                     
-                    var query = data.id == Guid.Empty ? 
-                        context.ProjectZones
-                            .Where(i => i.projectId == data.id
-                                && !i.isDeleted
-                                && (i.name.Contains(data.search)
-                                || i.code.ToString().Contains(data.search)))
-                        :
-                        context.ProjectZones
-                            .Where(i => i.dateCreated >= dateStart
+                    Expression<Func<ProjectZone, bool>> query = i => i.dateCreated >= dateStart
                                 && i.projectId == data.id
                                 && !i.isDeleted
                                 && (i.name.Contains(data.search)
-                                || i.code.ToString().Contains(data.search)));
+                                || i.code.ToString().Contains(data.search));
+
+                    if (data.id == Guid.Empty)
+                        query = i => i.projectId == data.id
+                            && !i.isDeleted
+                            && (i.name.Contains(data.search)
+                            || i.code.ToString().Contains(data.search));
 
                     int currentPage = data.page - 1;
                     int skip = currentPage * data.records;
-                    int totalRecords = query.ToList().Count;
-                    var arr = query
+                    int totalRecords = context.ProjectZones.Where(query).Count();
+                    var arr = context.ProjectZones
+                        .Where(query)
                         .Select(obj => new ProjectZoneViewModel
                         {
                             projectZoneId = obj.projectZoneId,

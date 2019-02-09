@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Net;
 using System.Net.Http;
 using System.Web.Http;
@@ -117,7 +118,7 @@ namespace Api.Controllers
 
                 projectPhases.Add(projectPhase);
 
-                context.ProjectPhases.InsertAllOnSubmit<ProjectPhase>(projectPhases);
+                context.ProjectPhases.InsertAllOnSubmit(projectPhases);
                 context.SubmitChanges();
 
             }
@@ -191,15 +192,15 @@ namespace Api.Controllers
 
                     BambinoDataContext context = new BambinoDataContext();
 
-                    var query = context.ProjectPhases
-                        .Where(i => i.projectId == data.id
+                    Expression<Func<ProjectPhase, bool>> query = i => i.projectId == data.id
                             && !i.isDeleted
-                            && i.name.Contains(data.search));
+                            && i.name.Contains(data.search);
 
                     int currentPage = data.page - 1;
                     int skip = currentPage * data.records;
-                    int totalRecords = query.ToList().Count;
-                    var arr = query
+                    int totalRecords = context.ProjectPhases.Where(query).Count();
+                    var arr = context.ProjectPhases
+                        .Where(query)
                         .Select(obj => new ProjectPhaseViewModel
                         {
                             projectPhaseId = obj.projectPhaseId,

@@ -5,6 +5,7 @@ using System.Data.Entity;
 using System.IO;
 using System.Linq;
 using System.Linq.Dynamic;
+using System.Linq.Expressions;
 using System.Net;
 using System.Net.Http;
 using System.Net.Mail;
@@ -100,7 +101,6 @@ namespace Api.Controllers
                         .Where(i => i.memberId == a.member.memberId
                             && i.isActive
                             && !i.isDeleted)
-                        .ToList()
                         .Count() > 0 ? true : false;
                         
                     if (isActive)
@@ -109,7 +109,11 @@ namespace Api.Controllers
                     TimeTracker timeTracker = new TimeTracker();
 
                     timeTracker.memberId = a.member.memberId;
-                    
+                    timeTracker.dateCreated = DateTimeOffset.UtcNow;
+                    timeTracker.dateIn = DateTimeOffset.UtcNow;
+                    timeTracker.dateOut = DateTimeOffset.MinValue;
+                    timeTracker.isActive = true;
+
                     context.TimeTrackers.InsertOnSubmit(timeTracker);
                     context.SubmitChanges();
 
@@ -149,12 +153,12 @@ namespace Api.Controllers
                         .Where(i => i.memberId == a.member.memberId
                             && i.isActive
                             && !i.isDeleted)
-                        .ToList()
                         .Count() > 0 ? true : false;
 
                     if (!isActive)
                         throw new InvalidOperationException("Not Clocked In Yet");
 
+                    List<TimeTrackerProject> timeTrackerProjects = new List<TimeTrackerProject>();
                     TimeTracker timeTracker = context.TimeTrackers
                         .Where(i => i.memberId == a.member.memberId
                             && i.isActive
@@ -165,23 +169,22 @@ namespace Api.Controllers
                     timeTracker.dateOut = DateTimeOffset.UtcNow;
                     timeTracker.isActive = false;
                     
-                    context.SubmitChanges();
-
                     foreach (var project in data.projects)
                     {
 
                         TimeTrackerProject timeTrackerProject = new TimeTrackerProject();
-                        
-                        timeTrackerProject.projectId = (project.projectId == Guid.Empty) ? context.Projects.Where(i => i.isDefault && i.companyId == a.member.activeCompanyId).FirstOrDefault().projectId : project.projectId;
 
                         timeTrackerProject.timeTrackerId = timeTracker.timeTrackerId;
+                        timeTrackerProject.projectId = (project.projectId == Guid.Empty) ? context.Projects.Where(i => i.isDefault && i.companyId == a.member.activeCompanyId).FirstOrDefault().projectId : project.projectId;
+                        timeTrackerProject.description = "";
                         timeTrackerProject.totalHours = project.totalHours;
                         //add description eventually
-
-                        context.TimeTrackerProjects.InsertOnSubmit(timeTrackerProject);
-                        context.SubmitChanges();
+                        timeTrackerProjects.Add(timeTrackerProject);
 
                     }
+
+                    context.TimeTrackerProjects.InsertAllOnSubmit(timeTrackerProjects);
+                    context.SubmitChanges();
 
                     LogController.Add(a.member.memberId, String.Format("{0} clocked out", a.member.email), "TimeTracker", "Out", timeTracker.timeTrackerId, "TimeTrackers");
 
@@ -215,24 +218,24 @@ namespace Api.Controllers
 
                     BambinoDataContext context = new BambinoDataContext();
 
-                    var query = data.id == Guid.Empty ? context.TimeTrackers
-                        .Where(i => !i.isDeleted
-                            && (i.Member.email.Contains(data.search)
-                            || i.Member.firstName.Contains(data.search)
-                            || i.Member.lastName.Contains(data.search)))
-                        : 
-                        context.TimeTrackers
-                        .Where(i => i.Member.token == data.id
+                    Expression<Func<TimeTracker, bool>> query = i => i.Member.token == data.id
                             && !i.isDeleted
                             && (i.Member.email.Contains(data.search)
                             || i.Member.firstName.Contains(data.search)
-                            || i.Member.lastName.Contains(data.search)));
+                            || i.Member.lastName.Contains(data.search));
+
+                    if (data.id == Guid.Empty)
+                        query = i => !i.isDeleted
+                            && (i.Member.email.Contains(data.search)
+                            || i.Member.firstName.Contains(data.search)
+                            || i.Member.lastName.Contains(data.search));
 
                     int currentPage = data.page - 1;
                     int skip = currentPage * data.records;
-                    int totalRecords = query.ToList().Count;
-                    decimal totalHours = query.ToList().Sum(i => i.totalHours);
-                    var arr = query
+                    int totalRecords = context.TimeTrackers.Where(query).Count();
+                    decimal totalHours = context.TimeTrackers.Where(query).Sum(i => i.totalHours);
+                    var arr = context.TimeTrackers
+                        .Where(query)
                         .Select(obj => new TimeTrackerViewModel
                         {
                             timeTrackerId = obj.timeTrackerId,
@@ -364,7 +367,6 @@ namespace Api.Controllers
                         .Where(i => i.memberId == a.member.memberId
                             && i.isActive
                             && !i.isDeleted)
-                        .ToList()
                         .Count() > 0 ? true : false;
 
                     return Request.CreateResponse(HttpStatusCode.OK, isActive);

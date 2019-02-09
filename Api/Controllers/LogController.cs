@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Net;
 using System.Net.Http;
 using System.Net.Mail;
@@ -46,18 +47,18 @@ namespace Api.Controllers
                     
                     BambinoDataContext context = new BambinoDataContext();
 
-                    var query = context.Logs
-                        .Where(i => data.tableNames.Contains(i.tableName)
+                    Expression<Func<Log, bool>> query = i => data.tableNames.Contains(i.tableName)
                             && (i.tableName.Contains(data.search) 
                             || i.activity.Contains(data.search)
                             || String.Concat(i.Member.firstName, " ", i.Member.lastName).Contains(data.search)
                             || i.Member.email.Contains(data.search)
-                            || i.Member.MemberCompanies.Any(x => x.Company.name.Contains(data.search))));
+                            || i.Member.MemberCompanies.Any(x => x.Company.name.Contains(data.search)));
 
                     int currentPage = data.page - 1;
                     int skip = currentPage * data.records;
-                    int totalRecords = query.ToList().Count;
-                    var arr = query
+                    int totalRecords = context.Logs.Where(query).Count();
+                    var arr = context.Logs
+                        .Where(query)
                         .Select(obj => new LogViewModel()
                         {
                             logId           = obj.logId,

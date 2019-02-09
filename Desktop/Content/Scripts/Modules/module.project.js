@@ -1423,7 +1423,8 @@ const ProjectMember = (function () {
             <m-card class="tableRow mB nT" data-id="${obj.token}">
                 <m-flex data-type="row" class="n pL sC tE">
                     <m-dot class="${obj.isActive ? `g` : `r`}"></m-dot>
-                    <h2 class="tE">
+                    ${Members.getHtmlIcon(obj)}
+                    <h2 class="tE mL">
                         ${obj.email}
                     </h2>
                     ${Global.jack.mIM ? `
