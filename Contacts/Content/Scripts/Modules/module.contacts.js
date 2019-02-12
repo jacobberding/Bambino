@@ -639,6 +639,26 @@ const ContactFile = (function () {
 
     };
 
+    const _delete = function (id) {
+
+        const vm = {
+            contactFileId: id,
+            isDeleted: true
+        }
+
+        Global.post(`${_self.name}_Delete`, vm)
+            .done(function (data) {
+                Validation.notification(1);
+
+                $(`m-card[data-id="${id}"]`).remove();
+
+            })
+            .fail(function (data) {
+                Validation.notification(2);
+            });
+
+    };
+
     const _upload = function (files) {
 
         if (files.length == 0 || $(`#btnUpload${_self.name}`).hasClass('disabled')) { _uploadReset(); return; }
@@ -707,13 +727,18 @@ const ContactFile = (function () {
     const getHtmlCard = function (obj) {
         return `
 
-            <m-card class="">
-                <m-flex data-type="row" class="n">
+            <m-card class="mT" data-id="${obj.contactFileId}">
+                <m-flex data-type="row" class="n pL">
                     <h6>
                         ${obj.originalFileName}
                     </h6>
-                    <m-flex data-type="row" class="n c sm sQ secondary" id="btnDownload${_self.name}" data-path="${obj.path}">
-                        <i class="icon-download"><svg><use xlink:href="/Content/Images/Bambino.min.svg#icon-download"></use></svg></i>
+                    <m-flex data-type="row" class="n">
+                        <m-flex data-type="row" class="n c sm mR sQ secondary" id="btnDownload${_self.name}" data-path="${obj.path}">
+                            <i class="icon-download"><svg><use xlink:href="/Content/Images/Bambino.min.svg#icon-download"></use></svg></i>
+                        </m-flex>
+                        <m-flex data-type="row" class="n c sm sQ secondary" id="btnDelete${_self.name}" data-id="${obj.contactFileId}">
+                            <i class="icon-delete"><svg><use xlink:href="/Content/Images/Bambino.min.svg#icon-delete"></use></svg></i>
+                        </m-flex>
                     </m-flex>
                 </m-flex>
             </m-card>
@@ -735,6 +760,7 @@ const ContactFile = (function () {
         $(document).on(`tap`, `#btnUpload${_self.name}`, function (e) { e.stopPropagation(); e.preventDefault(); $(`#upl${_self.name}`).click(); });
         $(document).on(`change`, `#upl${_self.name}`, function () { _upload($(this).prop(`files`)); });
         $(document).on(`tap`, `#btnDownload${_self.name}`, function () { _download($(this)); });
+        $(document).on(`tap`, `#btnDelete${_self.name}`, function () { _delete($(this).attr(`data-id`)); });
     })();
 
     return {

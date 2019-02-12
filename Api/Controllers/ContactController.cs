@@ -244,7 +244,7 @@ namespace Api.Controllers
                             isDeleted = obj.isDeleted,
                             isPotentialStaffing = obj.isPotentialStaffing,
                             personalWebsite = obj.personalWebsite,
-                            contactFiles = obj.ContactFiles.Select(contactFile => new ContactFileViewModel() {
+                            contactFiles = obj.ContactFiles.Where(i => !i.isDeleted).Select(contactFile => new ContactFileViewModel() {
                                 contactFileId = contactFile.contactFileId,
                                 contactId = contactFile.contactId,
                                 name = contactFile.name,

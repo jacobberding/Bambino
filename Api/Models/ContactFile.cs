@@ -38,4 +38,15 @@ namespace Api.Models
         
     }
 
+    public class ContactFileDeleteViewModel
+    {
+
+        public AuthenticationViewModel authentication { get; set; }
+
+        public Guid contactFileId { get; set; } = Guid.Empty;
+
+        public bool isDeleted { get; set; } = false;
+
+    }
+
 }

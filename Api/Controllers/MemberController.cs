@@ -1164,6 +1164,7 @@ namespace Api.Controllers
                     member.keyCodeDateTime = DateTimeOffset.UtcNow;
                     
                     context.Members.InsertOnSubmit(member);
+                    context.SubmitChanges();
 
                     MemberCompany memberCompany = new MemberCompany();
 
@@ -1171,6 +1172,7 @@ namespace Api.Controllers
                     memberCompany.memberId = member.memberId;
 
                     context.MemberCompanies.InsertOnSubmit(memberCompany);
+                    context.SubmitChanges();
 
                     MemberRole memberRole = new MemberRole();
 
@@ -1178,7 +1180,6 @@ namespace Api.Controllers
                     memberRole.memberId = member.memberId;
 
                     context.MemberRoles.InsertOnSubmit(memberRole);
-
                     context.SubmitChanges();
 
                     LogController.Add(member.memberId, "Member " + member.email + " has signed up", "Member", "SignUp", member.memberId, "Members");
