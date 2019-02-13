@@ -13,7 +13,7 @@ namespace Api.Models
 
         public Guid acAreaCategoryId { get; set; } = Guid.Empty;
 
-        [DisplayFormat(ConvertEmptyStringToNull = false)]
+        
         public string name { get; set; } = "";
 
         public bool isDeleted { get; set; } = false;
@@ -27,7 +27,7 @@ namespace Api.Models
 
         public Guid acAreaCategoryId { get; set; } = Guid.Empty;
 
-        [DisplayFormat(ConvertEmptyStringToNull = false)]
+        
         public string name { get; set; } = "";
 
         public bool isDeleted { get; set; } = false;

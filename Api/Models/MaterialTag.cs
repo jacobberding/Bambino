@@ -13,7 +13,7 @@ namespace Api.Models
 
         public Guid materialTagId { get; set; } = Guid.Empty;
 
-        [DisplayFormat(ConvertEmptyStringToNull = false)]
+        
         public string name { get; set; } = "";
 
         public bool isDeleted { get; set; } = false;

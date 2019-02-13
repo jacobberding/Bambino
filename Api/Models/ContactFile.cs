@@ -16,13 +16,13 @@ namespace Api.Models
         public Guid contactId { get; set; } = Guid.Empty;
         public ContactViewModel contact { get; set; } = new ContactViewModel();
 
-        [DisplayFormat(ConvertEmptyStringToNull = false)]
+        
         public string name { get; set; } = "";
 
-        [DisplayFormat(ConvertEmptyStringToNull = false)]
+        
         public string path { get; set; } = "";
 
-        [DisplayFormat(ConvertEmptyStringToNull = false)]
+        
         public string originalFileName { get; set; } = "";
 
         public bool isDeleted { get; set; } = false;

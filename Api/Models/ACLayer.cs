@@ -16,30 +16,30 @@ namespace Api.Models
         public Guid acLayerCategoryId { get; set; } = Guid.Empty;
         public ACLayerCategoryViewModel acLayerCategory { get; set; } = new ACLayerCategoryViewModel();
 
-        [DisplayFormat(ConvertEmptyStringToNull = false)]
+        
         public string name { get; set; } = "";
 
-        [DisplayFormat(ConvertEmptyStringToNull = false)]
+        
         public string color { get; set; } = "";
 
-        [DisplayFormat(ConvertEmptyStringToNull = false)]
+        
         public string lineWeight { get; set; } = "";
 
-        [DisplayFormat(ConvertEmptyStringToNull = false)]
+        
         public string lineType { get; set; } = "";
 
         public int transparency { get; set; } = 0;
 
-        [DisplayFormat(ConvertEmptyStringToNull = false)]
+        
         public string measurement { get; set; } = "";
 
-        [DisplayFormat(ConvertEmptyStringToNull = false)]
+        
         public string code { get; set; } = "";
 
-        [DisplayFormat(ConvertEmptyStringToNull = false)]
+        
         public string keywords { get; set; } = "";
 
-        [DisplayFormat(ConvertEmptyStringToNull = false)]
+        
         public string description { get; set; } = "";
 
         public bool isPlottable { get; set; } = false;
@@ -57,27 +57,27 @@ namespace Api.Models
 
         public Guid acLayerCategoryId { get; set; } = Guid.Empty;
 
-        [DisplayFormat(ConvertEmptyStringToNull = false)]
+        
         public string color { get; set; } = "";
 
-        [DisplayFormat(ConvertEmptyStringToNull = false)]
+        
         public string lineWeight { get; set; } = "";
 
-        [DisplayFormat(ConvertEmptyStringToNull = false)]
+        
         public string lineType { get; set; } = "";
 
         public int transparency { get; set; } = 0;
 
-        [DisplayFormat(ConvertEmptyStringToNull = false)]
+        
         public string measurement { get; set; } = "";
 
-        [DisplayFormat(ConvertEmptyStringToNull = false)]
+        
         public string code { get; set; } = "";
 
-        [DisplayFormat(ConvertEmptyStringToNull = false)]
+        
         public string keywords { get; set; } = "";
 
-        [DisplayFormat(ConvertEmptyStringToNull = false)]
+        
         public string description { get; set; } = "";
 
         public bool isPlottable { get; set; } = false;
@@ -91,27 +91,27 @@ namespace Api.Models
 
         public AuthenticationViewModel authentication { get; set; }
 
-        [DisplayFormat(ConvertEmptyStringToNull = false)]
+        
         public string categoryValue { get; set; } = "";
 
-        [DisplayFormat(ConvertEmptyStringToNull = false)]
+        
         public string color { get; set; } = "";
 
-        [DisplayFormat(ConvertEmptyStringToNull = false)]
+        
         public string lineWeight { get; set; } = "";
 
-        [DisplayFormat(ConvertEmptyStringToNull = false)]
+        
         public string lineType { get; set; } = "";
 
         public int transparency { get; set; } = 0;
 
-        [DisplayFormat(ConvertEmptyStringToNull = false)]
+        
         public string measurement { get; set; } = "";
 
-        [DisplayFormat(ConvertEmptyStringToNull = false)]
+        
         public string code { get; set; } = "";
 
-        [DisplayFormat(ConvertEmptyStringToNull = false)]
+        
         public string description { get; set; } = "";
 
         public bool isPlottable { get; set; } = false;
@@ -123,10 +123,10 @@ namespace Api.Models
 
         public AuthenticationViewModel authentication { get; set; }
 
-        [DisplayFormat(ConvertEmptyStringToNull = false)]
+        
         public string keyword { get; set; } = "";
 
-        [DisplayFormat(ConvertEmptyStringToNull = false)]
+        
         public string measurement { get; set; } = "";
         
     }
@@ -136,10 +136,10 @@ namespace Api.Models
 
         public AuthenticationViewModel authentication { get; set; }
 
-        [DisplayFormat(ConvertEmptyStringToNull = false)]
+        
         public string category { get; set; } = "";
 
-        [DisplayFormat(ConvertEmptyStringToNull = false)]
+        
         public string measurement { get; set; } = "";
         
     }

@@ -17,25 +17,25 @@ namespace Api.Models
 
         public Guid tokenApi { get; set; } = Guid.Empty;
 
-        [DisplayFormat(ConvertEmptyStringToNull = false)]
+        
         public string stripeId { get; set; } = "";
 
-        [DisplayFormat(ConvertEmptyStringToNull = false)]
+        
         public string firstName { get; set; } = "";
 
-        [DisplayFormat(ConvertEmptyStringToNull = false)]
+        
         public string lastName { get; set; } = "";
 
-        [DisplayFormat(ConvertEmptyStringToNull = false)]
+        
         public string path { get; set; } = "";
 
-        [DisplayFormat(ConvertEmptyStringToNull = false)]
+        
         public string email { get; set; } = "";
 
-        [DisplayFormat(ConvertEmptyStringToNull = false)]
+        
         public string originalEmail { get; set; } = "";
 
-        [DisplayFormat(ConvertEmptyStringToNull = false)]
+        
         public string phone { get; set; } = "";
 
         public bool isActive { get; set; } = false;
@@ -54,7 +54,7 @@ namespace Api.Models
         
         public AuthenticationViewModel authentication { get; set; }
 
-        [DisplayFormat(ConvertEmptyStringToNull = false)]
+        
         public string token { get; set; } = "";
         
     }
@@ -64,10 +64,10 @@ namespace Api.Models
 
         public AuthenticationViewModel authentication { get; set; }
 
-        [DisplayFormat(ConvertEmptyStringToNull = false)]
+        
         public string path { get; set; } = "";
 
-        [DisplayFormat(ConvertEmptyStringToNull = false)]
+        
         public string originalFileName { get; set; } = "";
 
     }
@@ -81,16 +81,16 @@ namespace Api.Models
 
         public Guid companyId { get; set; } = Guid.Empty;
 
-        [DisplayFormat(ConvertEmptyStringToNull = false)]
+        
         public string firstName { get; set; } = "";
 
-        [DisplayFormat(ConvertEmptyStringToNull = false)]
+        
         public string lastName { get; set; } = "";
 
-        [DisplayFormat(ConvertEmptyStringToNull = false)]
+        
         public string email { get; set; } = "";
 
-        [DisplayFormat(ConvertEmptyStringToNull = false)]
+        
         public string phone { get; set; } = "";
 
         public bool isDeleted { get; set; } = false;
@@ -219,7 +219,7 @@ namespace Api.Models
 
         public AuthenticationViewModel authentication { get; set; }
 
-        [DisplayFormat(ConvertEmptyStringToNull = false)]
+        
         public string email { get; set; } = "";
         
     }
@@ -229,22 +229,22 @@ namespace Api.Models
 
         public AuthenticationViewModel authentication { get; set; }
 
-        [DisplayFormat(ConvertEmptyStringToNull = false)]
+        
         public string email { get; set; } = "";
 
-        [DisplayFormat(ConvertEmptyStringToNull = false)]
+        
         public string path { get; set; } = "";
 
-        [DisplayFormat(ConvertEmptyStringToNull = false)]
+        
         public string firstName { get; set; } = "";
 
-        [DisplayFormat(ConvertEmptyStringToNull = false)]
+        
         public string lastName { get; set; } = "";
 
-        [DisplayFormat(ConvertEmptyStringToNull = false)]
+        
         public string token { get; set; } = "";
 
-        [DisplayFormat(ConvertEmptyStringToNull = false)]
+        
         public string v { get; set; } = "";
 
     }

@@ -16,10 +16,10 @@ namespace Api.Models
         public Guid projectZoneId { get; set; } = Guid.Empty;
         public ProjectZoneViewModel projectZone { get; set; } = new ProjectZoneViewModel();
 
-        [DisplayFormat(ConvertEmptyStringToNull = false)]
+        
         public string name { get; set; } = "";
 
-        [DisplayFormat(ConvertEmptyStringToNull = false)]
+        
         public string description { get; set; } = "";
 
         public int code { get; set; } = 0;

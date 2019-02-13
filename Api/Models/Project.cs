@@ -17,37 +17,28 @@ namespace Api.Models
         public CompanyViewModel company { get; set; }
 
         public Guid? projectPhaseId { get; set; } = Guid.Empty;
-
-        [DisplayFormat(ConvertEmptyStringToNull = false)]
+        
         public string code { get; set; } = "";
-
-        [DisplayFormat(ConvertEmptyStringToNull = false)]
+        
         public string name { get; set; } = "";
-
-        [DisplayFormat(ConvertEmptyStringToNull = false)]
+        
         public string addressLine1 { get; set; } = "";
-
-        [DisplayFormat(ConvertEmptyStringToNull = false)]
+        
         public string addressLine2 { get; set; } = "";
-
-        [DisplayFormat(ConvertEmptyStringToNull = false)]
+        
         public string city { get; set; } = "";
-
-        [DisplayFormat(ConvertEmptyStringToNull = false)]
+        
         public string state { get; set; } = "";
-
-        [DisplayFormat(ConvertEmptyStringToNull = false)]
+        
         public string zip { get; set; } = "";
-
-        [DisplayFormat(ConvertEmptyStringToNull = false)]
+        
         public string country { get; set; } = "";
-
-        [DisplayFormat(ConvertEmptyStringToNull = false)]
+        
         public string scale { get; set; } = "Imperial";
 
         public int numOfMembers { get; set; } = 0;
 
-        public decimal numOfHours { get; set; } = 0;
+        public decimal? numOfHours { get; set; } = 0;
 
         public bool isDefault { get; set; } = false;
 
@@ -66,32 +57,23 @@ namespace Api.Models
         public AuthenticationViewModel authentication { get; set; }
 
         public Guid projectId { get; set; } = Guid.Empty;
-
-        [DisplayFormat(ConvertEmptyStringToNull = false)]
+        
         public string code { get; set; } = "";
-
-        [DisplayFormat(ConvertEmptyStringToNull = false)]
+        
         public string name { get; set; } = "";
-
-        [DisplayFormat(ConvertEmptyStringToNull = false)]
+        
         public string addressLine1 { get; set; } = "";
-
-        [DisplayFormat(ConvertEmptyStringToNull = false)]
+        
         public string addressLine2 { get; set; } = "";
-
-        [DisplayFormat(ConvertEmptyStringToNull = false)]
+        
         public string city { get; set; } = "";
-
-        [DisplayFormat(ConvertEmptyStringToNull = false)]
+        
         public string state { get; set; } = "";
-
-        [DisplayFormat(ConvertEmptyStringToNull = false)]
+        
         public string zip { get; set; } = "";
-
-        [DisplayFormat(ConvertEmptyStringToNull = false)]
+        
         public string country { get; set; } = "";
-
-        [DisplayFormat(ConvertEmptyStringToNull = false)]
+        
         public string scale { get; set; } = "Imperial";
 
         public bool isDefault { get; set; } = false;
@@ -108,8 +90,7 @@ namespace Api.Models
         public Guid projectId { get; set; } = Guid.Empty;
 
         public Guid token { get; set; } = Guid.Empty;
-
-        [DisplayFormat(ConvertEmptyStringToNull = false)]
+        
         public string email { get; set; } = "";
 
     }
@@ -118,8 +99,7 @@ namespace Api.Models
     {
 
         public AuthenticationViewModel authentication { get; set; }
-
-        [DisplayFormat(ConvertEmptyStringToNull = false)]
+        
         public string code { get; set; } = "";
         
     }

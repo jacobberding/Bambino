@@ -16,10 +16,10 @@ namespace Api.Models
         public Guid projectAttractionId { get; set; } = Guid.Empty;
         public ProjectAttractionViewModel projectAttraction { get; set; } = new ProjectAttractionViewModel();
 
-        [DisplayFormat(ConvertEmptyStringToNull = false)]
+        
         public string name { get; set; } = "";
 
-        [DisplayFormat(ConvertEmptyStringToNull = false)]
+        
         public string description { get; set; } = "";
 
         public int code { get; set; } = 0;

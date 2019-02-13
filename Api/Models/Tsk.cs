@@ -22,10 +22,10 @@ namespace Api.Models
         public Guid memberIdCreated { get; set; } = Guid.Empty;
         public MemberViewModel memberCreated { get; set; } = new MemberViewModel();
 
-        [DisplayFormat(ConvertEmptyStringToNull = false)]
+        
         public string name { get; set; } = "";
 
-        [DisplayFormat(ConvertEmptyStringToNull = false)]
+        
         public string description { get; set; } = "";
 
         public int numOfSubTsks { get; set; } = 0;

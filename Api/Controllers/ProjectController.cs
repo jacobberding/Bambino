@@ -131,6 +131,8 @@ namespace Api.Controllers
                     {
                         token = member.token,
                         email = member.email,
+                        firstName = member.firstName,
+                        lastName = member.lastName,
                         isActive = member.TimeTrackers.Any(i => i.isActive)
                     };
 

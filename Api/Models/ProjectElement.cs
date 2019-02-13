@@ -19,20 +19,20 @@ namespace Api.Models
         public Guid disciplineId { get; set; } = Guid.Empty;
         public DisciplineViewModel discipline { get; set; } = new DisciplineViewModel();
 
-        [DisplayFormat(ConvertEmptyStringToNull = false)]
+        
         public string name { get; set; } = "";
 
-        [DisplayFormat(ConvertEmptyStringToNull = false)]
+        
         public string description { get; set; } = "";
 
         public int code { get; set; } = 0;
 
         public int quantity { get; set; } = 0;
 
-        [DisplayFormat(ConvertEmptyStringToNull = false)]
+        
         public string unit { get; set; } = "";
 
-        [DisplayFormat(ConvertEmptyStringToNull = false)]
+        
         public string notes { get; set; } = "";
 
         public DateTimeOffset dateCreated { get; set; } = DateTimeOffset.UtcNow;

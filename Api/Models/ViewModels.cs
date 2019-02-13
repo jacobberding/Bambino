@@ -59,10 +59,10 @@ namespace Api.Models
 
         public int records { get; set; } = 0;
 
-        [DisplayFormat(ConvertEmptyStringToNull = false)]
+        
         public string search { get; set; } = "";
 
-        [DisplayFormat(ConvertEmptyStringToNull = false)]
+        
         public string sort { get; set; } = "";
 
         public Guid id { get; set; } = Guid.Empty;
@@ -103,10 +103,10 @@ namespace Api.Models
 
         public Guid id { get; set; }
 
-        [DisplayFormat(ConvertEmptyStringToNull = false)]
+        
         public string path { get; set; } = "";
 
-        [DisplayFormat(ConvertEmptyStringToNull = false)]
+        
         public string originalFileName { get; set; } = "";
 
         public int width { get; set; } = 0;

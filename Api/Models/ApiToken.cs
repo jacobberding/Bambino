@@ -12,16 +12,16 @@ namespace Api.Models
 
         public int accessLevel { get; set; } = 0; //0 User - 1 Admin
 
-        [DisplayFormat(ConvertEmptyStringToNull = false)]
+        
         public string companyName { get; set; } = "";
 
-        [DisplayFormat(ConvertEmptyStringToNull = false)]
+        
         public string adminName { get; set; } = "";
 
-        [DisplayFormat(ConvertEmptyStringToNull = false)]
+        
         public string adminEmail { get; set; } = "";
 
-        [DisplayFormat(ConvertEmptyStringToNull = false)]
+        
         public string adminPhone { get; set; } = "";
 
         public bool isDeleted { get; set; } = false;
@@ -35,16 +35,16 @@ namespace Api.Models
         
         public Guid apiTokenId { get; set; } = Guid.Empty;
 
-        [DisplayFormat(ConvertEmptyStringToNull = false)]
+        
         public string companyName { get; set; } = "";
 
-        [DisplayFormat(ConvertEmptyStringToNull = false)]
+        
         public string adminName { get; set; } = "";
 
-        [DisplayFormat(ConvertEmptyStringToNull = false)]
+        
         public string adminEmail { get; set; } = "";
 
-        [DisplayFormat(ConvertEmptyStringToNull = false)]
+        
         public string adminPhone { get; set; } = "";
 
         public bool isDeleted { get; set; } = false;

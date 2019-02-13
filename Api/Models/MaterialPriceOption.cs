@@ -13,13 +13,13 @@ namespace Api.Models
 
         public int materialPriceOptionKey { get; set; } = 0;
 
-        [DisplayFormat(ConvertEmptyStringToNull = false)]
+        
         public string name { get; set; } = "";
 
-        [DisplayFormat(ConvertEmptyStringToNull = false)]
+        
         public string abbreviation { get; set; } = "";
 
-        [DisplayFormat(ConvertEmptyStringToNull = false)]
+        
         public string description { get; set; } = "";
 
         public bool isDeleted { get; set; } = false;

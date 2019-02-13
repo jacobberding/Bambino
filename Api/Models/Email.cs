@@ -10,10 +10,10 @@ namespace Api.Models
 
         public Guid emailId { get; set; } = Guid.Empty;
 
-        [DisplayFormat(ConvertEmptyStringToNull = false)]
+        
         public string subject { get; set; } = "";
 
-        [DisplayFormat(ConvertEmptyStringToNull = false)]
+        
         public string body { get; set; } = "";
 
     }

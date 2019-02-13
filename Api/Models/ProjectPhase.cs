@@ -16,10 +16,10 @@ namespace Api.Models
         public Guid projectId { get; set; } = Guid.Empty;
         public ProjectViewModel project { get; set; } = new ProjectViewModel();
 
-        [DisplayFormat(ConvertEmptyStringToNull = false)]
+        
         public string name { get; set; } = "";
 
-        [DisplayFormat(ConvertEmptyStringToNull = false)]
+        
         public string description { get; set; } = "";
 
         public int sortOrder { get; set; } = 0;
@@ -41,10 +41,10 @@ namespace Api.Models
 
         public Guid projectId { get; set; } = Guid.Empty;
 
-        [DisplayFormat(ConvertEmptyStringToNull = false)]
+        
         public string name { get; set; } = "";
 
-        [DisplayFormat(ConvertEmptyStringToNull = false)]
+        
         public string description { get; set; } = "";
         
         public DateTimeOffset dateStart { get; set; } = DateTimeOffset.UtcNow;

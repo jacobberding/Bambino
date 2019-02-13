@@ -28,15 +28,15 @@ namespace Api.Controllers
                     BambinoDataContext context = new BambinoDataContext();
 
                     Expression<Func<TimeTrackerProject, bool>> query = i => i.projectId == data.id 
-                            && !i.isDeleted
-                            && (i.TimeTracker.Member.email.Contains(data.search)
-                            || i.TimeTracker.Member.firstName.Contains(data.search)
-                            || i.TimeTracker.Member.lastName.Contains(data.search));
+                        && !i.isDeleted
+                        && (i.TimeTracker.Member.email.Contains(data.search)
+                        || i.TimeTracker.Member.firstName.Contains(data.search)
+                        || i.TimeTracker.Member.lastName.Contains(data.search));
 
                     int currentPage = data.page - 1;
                     int skip = currentPage * data.records;
                     int totalRecords = context.TimeTrackerProjects.Where(query).Count();
-                    decimal totalHours = context.TimeTrackerProjects.Where(query).Sum(i => i.totalHours);
+                    decimal totalHours = context.TimeTrackerProjects.Where(query).Select(i => i.totalHours).AsEnumerable().DefaultIfEmpty(0).Sum(i => i);
                     var arr = context.TimeTrackerProjects
                         .Where(query)
                         .Select(obj => new TimeTrackerProjectViewModel

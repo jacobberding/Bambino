@@ -13,16 +13,16 @@ namespace Api.Models
         public Guid memberId { get; set; } = Guid.Empty;
         public MemberViewModel member { get; set; } = new MemberViewModel();
 
-        [DisplayFormat(ConvertEmptyStringToNull = false)]
+        
         public string activity { get; set; } = "";
 
-        [DisplayFormat(ConvertEmptyStringToNull = false)]
+        
         public string controllerName { get; set; } = "";
 
-        [DisplayFormat(ConvertEmptyStringToNull = false)]
+        
         public string methodName { get; set; } = "";
 
-        [DisplayFormat(ConvertEmptyStringToNull = false)]
+        
         public string tableName { get; set; } = "";
 
         public Guid tableId { get; set; } = Guid.Empty;
@@ -40,7 +40,7 @@ namespace Api.Models
 
         public int records { get; set; } = 0;
 
-        [DisplayFormat(ConvertEmptyStringToNull = false)]
+        
         public string search { get; set; } = "";
 
         public string[] tableNames { get; set; } = new string[] { };
