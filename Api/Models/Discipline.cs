@@ -11,14 +11,11 @@ namespace Api.Models
     public class DisciplineViewModel
     {
 
-        public Guid disciplineId { get; set; } = Guid.Empty;
-
+        public long disciplineKey { get; set; } = 0;
         
         public string name { get; set; } = "";
-
         
         public string value { get; set; } = "";
-
         
         public string description { get; set; } = "";
 

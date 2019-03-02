@@ -55,12 +55,12 @@ namespace Api.Controllers
                     var vm = new
                     {
                         projects = projects,
-                        dateIn = context.TimeTrackers
+                        dateIn = isActive ? context.TimeTrackers
                             .Where(i => i.memberId == a.member.memberId
                                 && i.isActive
                                 && !i.isDeleted)
                             .FirstOrDefault()
-                            .dateIn
+                            .dateIn : DateTimeOffset.UtcNow
                     };
 
                     return Request.CreateResponse(HttpStatusCode.OK, vm);

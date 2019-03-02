@@ -12,8 +12,8 @@ const TimeTracker = (function () {
         name: `TimeTracker`,
         arr: [],
         vm: {},
-        constructor: function (materialId, name, isDeleted) {
-            this.materialId = materialId;
+        constructor: function (materialKey, name, isDeleted) {
+            this.materialKey = materialKey;
             this.name = name;
             this.isDeleted = isDeleted;
         },
@@ -805,8 +805,8 @@ const TimeTrackerProject = (function () {
         name: `TimeTrackerProject`,
         arr: [],
         vm: {},
-        constructor: function (materialId, name, isDeleted) {
-            this.materialId = materialId;
+        constructor: function (materialKey, name, isDeleted) {
+            this.materialKey = materialKey;
             this.name = name;
             this.isDeleted = isDeleted;
         }

@@ -1,0 +1,62 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>LMB.PredicateBuilderExtension</name>
+    </assembly>
+    <members>
+        <member name="T:LMB.PredicateBuilderExtension.PredicateBuilderExtension">
+            <summary>
+            Enables the efficient, dynamic composition of query predicates.
+            </summary>
+        </member>
+        <member name="T:LMB.PredicateBuilderExtension.PredicateBuilderExtension.ReplaceExpressionVisitor">
+            <summary>
+            Combines the first expression with the second using the specified merge function.
+            </summary>
+        </member>
+        <member name="M:LMB.PredicateBuilderExtension.PredicateBuilderExtension.True``1">
+            <summary>
+            Creates a predicate that evaluates to true.
+            </summary>
+        </member>
+        <member name="M:LMB.PredicateBuilderExtension.PredicateBuilderExtension.False``1">
+            <summary>
+            Creates a predicate that evaluates to false.
+            </summary>
+        </member>
+        <member name="M:LMB.PredicateBuilderExtension.PredicateBuilderExtension.And``1(System.Linq.Expressions.Expression{System.Func{``0,System.Boolean}},System.Linq.Expressions.Expression{System.Func{``0,System.Boolean}})">
+            <summary>
+            Combines the first predicate with the second using the logical "and".
+            </summary>
+            <typeparam name="T">
+            The type of the parameter of the method that this delegate encapsulates.
+            </typeparam>
+            <param name="expr1">Represents a strongly typed lambda expression as a data structure in the form of an expression tree.</param>
+            <param name="expr2">Represents a strongly typed lambda expression as a data structure in the form of an expression tree.</param>
+            <returns>
+            The strongly typed lambda expression that combines the first predicate with the second using the logical "and".
+            </returns>
+        </member>
+        <member name="M:LMB.PredicateBuilderExtension.PredicateBuilderExtension.Or``1(System.Linq.Expressions.Expression{System.Func{``0,System.Boolean}},System.Linq.Expressions.Expression{System.Func{``0,System.Boolean}})">
+            <summary>
+            Combines the first predicate with the second using the logical "or".
+            </summary>
+            <typeparam name="T">The type of the parameter of the method that this delegate encapsulates.</typeparam>
+            <param name="expr1">Represents a strongly typed lambda expression as a data structure in the form of an expression tree.</param>
+            <param name="expr2">Represents a strongly typed lambda expression as a data structure in the form of an expression tree.</param>
+            <returns>
+            The strongly typed lambda expression that combines the first predicate with the second using the logical "or".
+            </returns>
+        </member>
+        <member name="M:LMB.PredicateBuilderExtension.PredicateBuilderExtension.Not``1(System.Linq.Expressions.Expression{System.Func{``0,System.Boolean}})">
+            <summary>
+            Negates the predicate.
+            </summary>
+            <typeparam name="T">The type of the parameter of the method that this delegate encapsulates.</typeparam>
+            <param name="expression">Represents a strongly typed lambda expression as a data structure in the form of an expression tree.</param>
+            <returns>
+            The strongly typed lambda expression that negates the predicate.
+            </returns>
+        </member>
+    </members>
+</doc>

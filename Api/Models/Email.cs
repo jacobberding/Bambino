@@ -8,11 +8,9 @@ namespace Api.Models
     public class EmailViewModel
     {
 
-        public Guid emailId { get; set; } = Guid.Empty;
-
+        public long emailKey { get; set; } = 0;
         
         public string subject { get; set; } = "";
-
         
         public string body { get; set; } = "";
 

@@ -27,15 +27,15 @@ namespace Api.Controllers
 
                     BambinoDataContext context = new BambinoDataContext();
 
-                    Material material = (data.materialId == Guid.Empty) ? new Material() : context.Materials
-                        .Where(i => i.materialId == data.materialId
+                    Material material = (data.materialKey == 0) ? new Material() : context.Materials
+                        .Where(i => i.materialKey == data.materialKey
                             && !i.isDeleted)
                         .FirstOrDefault();
 
                     if (material == null)
                         throw new InvalidOperationException("Layer Not Found");
 
-                    material.disciplineId = data.disciplineId;
+                    material.disciplineKey = data.disciplineKey;
                     material.name = data.name;
                     material.description = data.description;
                     material.website = data.website;
@@ -48,18 +48,18 @@ namespace Api.Controllers
                     material.tags = "";
                     material.isDeleted = data.isDeleted;
 
-                    if (data.materialId == Guid.Empty)
+                    if (data.materialKey == 0)
                         context.Materials.InsertOnSubmit(material);
 
                     context.SubmitChanges();
 
-                    var activity = (data.materialId == Guid.Empty) ? "Added" : (data.isDeleted) ? "Deleted" : "Edited";
-                    LogController.Add(a.member.memberId, String.Format("Material {0} was {1}", material.name, activity), "Material", "AddEditDelete", material.materialId, "Materials");
+                    var activity = (data.materialKey == 0) ? "Added" : (data.isDeleted) ? "Deleted" : "Edited";
+                    LogController.Add(a.member.memberId, String.Format("Material {0} was {1}", material.name, activity), "Material", "AddEditDelete", Guid.Empty, "Materials", material.materialKey);
 
-                    var vm = new AddEditDeleteReturnViewModel()
+                    var vm = new 
                     {
-                        id = material.materialId,
-                        state = (data.materialId == Guid.Empty) ? "add" : (data.isDeleted) ? "delete" : "edit"
+                        material.materialKey,
+                        state = (data.materialKey == 0) ? "add" : (data.isDeleted) ? "delete" : "edit"
                     };
 
                     return Request.CreateResponse(HttpStatusCode.OK, vm);
@@ -75,7 +75,7 @@ namespace Api.Controllers
         }
 
         [HttpPost]
-        public HttpResponseMessage AddMaterialTag([FromBody] MaterialAddDeleteMaterialTagViewModel data)
+        public HttpResponseMessage AddTag([FromBody] AddDeleteManyToManyViewModel data)
         {
             Authentication a = AuthenticationController.GetMemberAuthenticated(data.authentication.apiId, 1, data.authentication.token);
             if (a.isAuthenticated)
@@ -88,8 +88,8 @@ namespace Api.Controllers
                     
                     MaterialTagMaterial materialTagMaterial = new MaterialTagMaterial();
 
-                    materialTagMaterial.materialId = data.materialId;
-                    materialTagMaterial.materialTagId = context.MaterialTags.Where(i => i.name == data.name).FirstOrDefault().materialTagId;
+                    materialTagMaterial.materialKey = data.tableKey;
+                    materialTagMaterial.materialTagKey = context.MaterialTags.Where(i => i.name == data.name).FirstOrDefault().materialTagKey;
 
                     context.MaterialTagMaterials.InsertOnSubmit(materialTagMaterial);
                     
@@ -97,8 +97,8 @@ namespace Api.Controllers
                     
                     var vm = new 
                     {
-                        materialTagId = materialTagMaterial.materialTagId,
-                        materialId = materialTagMaterial.materialId
+                        materialTagMaterial.materialTagKey,
+                        data.name
                     };
 
                     return Request.CreateResponse(HttpStatusCode.OK, vm);
@@ -114,7 +114,7 @@ namespace Api.Controllers
         }
 
         [HttpPost]
-        public HttpResponseMessage DeleteMaterialTag([FromBody] MaterialAddDeleteMaterialTagViewModel data)
+        public HttpResponseMessage DeleteTag([FromBody] AddDeleteManyToManyViewModel data)
         {
             Authentication a = AuthenticationController.GetMemberAuthenticated(data.authentication.apiId, 1, data.authentication.token);
             if (a.isAuthenticated)
@@ -126,8 +126,8 @@ namespace Api.Controllers
                     BambinoDataContext context = new BambinoDataContext();
                     
                     MaterialTagMaterial materialTagMaterial = context.MaterialTagMaterials
-                        .Where(i => i.materialId == data.materialId
-                            && i.materialTagId == data.materialTagId)
+                        .Where(i => i.materialKey == data.tableKey
+                            && i.materialTagKey == data.manyKey)
                         .FirstOrDefault();
                     
                     context.MaterialTagMaterials.DeleteOnSubmit(materialTagMaterial);
@@ -136,8 +136,8 @@ namespace Api.Controllers
 
                     var vm = new 
                     {
-                        materialTagId = data.materialTagId,
-                        materialId = data.materialId
+                        materialTagMaterial.materialKey,
+                        materialTagMaterial.materialTagKey
                     };
 
                     return Request.CreateResponse(HttpStatusCode.OK, vm);
@@ -177,11 +177,11 @@ namespace Api.Controllers
                         .Where(query)
                         .Select(obj => new MaterialViewModel
                         {
-                            materialId = obj.materialId,
-                            disciplineId = obj.disciplineId,
+                            materialKey = obj.materialKey,
+                            disciplineKey = obj.disciplineKey,
                             discipline = new DisciplineViewModel()
                             {
-                                disciplineId = obj.Discipline.disciplineId,
+                                disciplineKey = obj.Discipline.disciplineKey,
                                 description = obj.Discipline.description,
                                 name = obj.Discipline.name,
                                 value = obj.Discipline.value
@@ -243,15 +243,15 @@ namespace Api.Controllers
                     BambinoDataContext context = new BambinoDataContext();
 
                     var vm = context.Materials
-                        .Where(i => i.materialId == data.id
+                        .Where(i => i.materialKey == data.key
                             && !i.isDeleted)
                         .Select(obj => new MaterialViewModel
                         {
-                            materialId = obj.materialId,
-                            disciplineId = obj.disciplineId,
+                            materialKey = obj.materialKey,
+                            disciplineKey = obj.disciplineKey,
                             discipline = new DisciplineViewModel()
                             {
-                                disciplineId = obj.Discipline.disciplineId,
+                                disciplineKey = obj.Discipline.disciplineKey,
                                 description = obj.Discipline.description,
                                 name = obj.Discipline.name,
                                 value = obj.Discipline.value
@@ -273,7 +273,7 @@ namespace Api.Controllers
                             modelNumber = obj.modelNumber,
                             materialTags = obj.MaterialTagMaterials.Select(materialTagMaterial => new MaterialTagViewModel()
                             {
-                                materialTagId = materialTagMaterial.materialTagId,
+                                materialTagKey = materialTagMaterial.materialTagKey,
                                 name = materialTagMaterial.MaterialTag.name
                             })
                             .OrderBy(i => i.name)

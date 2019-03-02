@@ -24,6 +24,8 @@ namespace Api.Models
     
         public Guid id { get; set; }
 
+        public long key { get; set; }
+
         public string state { get; set; }
 
     }
@@ -37,6 +39,10 @@ namespace Api.Models
 
         public Guid manyId { get; set; }
 
+        public long tableKey { get; set; }
+
+        public long manyKey { get; set; }
+
         public string name { get; set; }
 
     }
@@ -48,6 +54,8 @@ namespace Api.Models
 
         public Guid id { get; set; }
 
+        public long key { get; set; }
+
     }
 
     public class SearchViewModel
@@ -58,16 +66,16 @@ namespace Api.Models
         public int page { get; set; } = 0;
 
         public int records { get; set; } = 0;
-
         
         public string search { get; set; } = "";
-
         
         public string sort { get; set; } = "";
 
         public Guid id { get; set; } = Guid.Empty;
 
-        public Guid projectPhaseId { get; set; } = Guid.Empty;
+        public long key { get; set; } = 0;
+
+        public long projectPhaseKey { get; set; } = 0;
         
     }
 
@@ -102,10 +110,8 @@ namespace Api.Models
     {
 
         public Guid id { get; set; }
-
         
         public string path { get; set; } = "";
-
         
         public string originalFileName { get; set; } = "";
 
@@ -120,6 +126,19 @@ namespace Api.Models
         public int contentLength { get; set; } = 0;
 
         public int type { get; set; } = 0;
+
+    }
+
+    public class EditArchiveViewModel
+    {
+
+        public AuthenticationViewModel authentication { get; set; }
+
+        public Guid id { get; set; } = Guid.Empty;
+
+        public long key { get; set; } = 0;
+
+        public bool isArchived { get; set; } = false;
 
     }
 

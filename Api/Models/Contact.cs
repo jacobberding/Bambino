@@ -11,41 +11,29 @@ namespace Api.Models
     public class ContactViewModel
     {
 
-        public Guid contactId { get; set; } = Guid.Empty;
-
+        public long contactKey { get; set; } = 0;
         
         public string name { get; set; } = "";
-
         
         public string title { get; set; } = "";
-
         
         public string companyName { get; set; } = "";
-
         
         public string phone1 { get; set; } = "";
-
         
         public string phone2 { get; set; } = "";
-
         
         public string skypeId { get; set; } = "";
-
         
         public string email { get; set; } = "";
-
         
         public string companyTemp { get; set; } = "";
-
         
         public string resume { get; set; } = "";
-
         
         public string portfolio { get; set; } = "";
-
         
         public string personalWebsite { get; set; } = "";
-
         
         public string skills { get; set; } = "";
 
@@ -66,42 +54,30 @@ namespace Api.Models
 
         public AuthenticationViewModel authentication { get; set; }
 
-        public Guid contactId { get; set; } = Guid.Empty;
+        public long contactKey { get; set; } = 0;
 
-        
         public string name { get; set; } = "";
 
-        
         public string title { get; set; } = "";
 
-        
         public string companyName { get; set; } = "";
 
-        
         public string phone1 { get; set; } = "";
 
-        
         public string phone2 { get; set; } = "";
 
-        
         public string skypeId { get; set; } = "";
 
-        
         public string email { get; set; } = "";
 
-        
         public string companyTemp { get; set; } = "";
 
-        
         public string resume { get; set; } = "";
 
-        
         public string portfolio { get; set; } = "";
 
-        
         public string personalWebsite { get; set; } = "";
 
-        
         public string skills { get; set; } = "";
 
         public bool isEdcFamily { get; set; } = false;

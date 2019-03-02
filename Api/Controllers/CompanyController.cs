@@ -16,7 +16,7 @@ namespace Api.Controllers
     {
         
         [HttpPost]
-        public async Task<HttpResponseMessage> AddEditDelete([FromBody] CompanyAddEditDeleteViewModel data)
+        public HttpResponseMessage AddEditDelete([FromBody] CompanyAddEditDeleteViewModel data)
         {
             Authentication a = AuthenticationController.GetMemberAuthenticated(data.authentication.apiId, 1, data.authentication.token);
             if (a.isAuthenticated)

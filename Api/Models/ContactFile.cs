@@ -11,17 +11,14 @@ namespace Api.Models
     public class ContactFileViewModel
     {
 
-        public Guid contactFileId { get; set; } = Guid.Empty;
+        public long contactFileKey { get; set; } = 0;
 
-        public Guid contactId { get; set; } = Guid.Empty;
+        public long contactKey { get; set; } = 0;
         public ContactViewModel contact { get; set; } = new ContactViewModel();
-
         
         public string name { get; set; } = "";
-
         
         public string path { get; set; } = "";
-
         
         public string originalFileName { get; set; } = "";
 
@@ -43,7 +40,7 @@ namespace Api.Models
 
         public AuthenticationViewModel authentication { get; set; }
 
-        public Guid contactFileId { get; set; } = Guid.Empty;
+        public long contactFileKey { get; set; } = 0;
 
         public bool isDeleted { get; set; } = false;
 

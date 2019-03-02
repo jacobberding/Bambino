@@ -16,7 +16,7 @@ namespace Api.Controllers
     public class LogController : ApiController
     {
         
-        public static void Add(Guid memberId, string activity, string controllerName, string methodName, Guid tableId, string tableName)
+        public static void Add(Guid memberId, string activity, string controllerName, string methodName, Guid tableId, string tableName, long tableKey = 0)
         {
             
             BambinoDataContext context = new BambinoDataContext();
@@ -29,6 +29,7 @@ namespace Api.Controllers
             log.methodName = methodName;
             log.tableId = tableId;
             log.tableName = tableName;
+            log.tableKey = tableKey;
 
             context.Logs.InsertOnSubmit(log);
             context.SubmitChanges();
@@ -61,7 +62,7 @@ namespace Api.Controllers
                         .Where(query)
                         .Select(obj => new LogViewModel()
                         {
-                            logId           = obj.logId,
+                            logKey           = obj.logKey,
                             memberId        = obj.memberId,
                             member          = new MemberViewModel()
                             {
@@ -80,6 +81,7 @@ namespace Api.Controllers
                             methodName      = obj.methodName,
                             tableName       = obj.tableName,
                             tableId         = obj.tableId,
+                            tableKey        = obj.tableKey,
                             createdDate     = obj.createdDate
                         })
                         .OrderByDescending(i => i.createdDate)

@@ -1,4 +1,5 @@
 ﻿using Api.Models;
+using LMB.PredicateBuilderExtension;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
@@ -28,8 +29,8 @@ namespace Api.Controllers
 
                     BambinoDataContext context = new BambinoDataContext();
 
-                    Contact contact = (data.contactId == Guid.Empty) ? new Contact() : context.Contacts
-                        .Where(i => i.contactId == data.contactId
+                    Contact contact = (data.contactKey == 0) ? new Contact() : context.Contacts
+                        .Where(i => i.contactKey == data.contactKey
                             && !i.isDeleted)
                         .FirstOrDefault();
 
@@ -52,18 +53,18 @@ namespace Api.Controllers
                     contact.isPotentialStaffing = data.isPotentialStaffing;
                     contact.isDeleted = data.isDeleted;
 
-                    if (data.contactId == Guid.Empty)
+                    if (data.contactKey == 0)
                         context.Contacts.InsertOnSubmit(contact);
 
                     context.SubmitChanges();
 
-                    var activity = (data.contactId == Guid.Empty) ? "Added" : (data.isDeleted) ? "Deleted" : "Edited";
-                    LogController.Add(a.member.memberId, String.Format("Contact {0} was {1}", contact.name, activity), "Contact", "AddEditDelete", contact.contactId, "Contacts");
+                    var activity = (data.contactKey == 0) ? "Added" : (data.isDeleted) ? "Deleted" : "Edited";
+                    LogController.Add(a.member.memberId, String.Format("Contact {0} was {1}", contact.name, activity), "Contact", "AddEditDelete", Guid.Empty, "Contacts", contact.contactKey);
 
-                    var vm = new AddEditDeleteReturnViewModel()
+                    var vm = new 
                     {
-                        id = contact.contactId,
-                        state = (data.contactId == Guid.Empty) ? "add" : (data.isDeleted) ? "delete" : "edit"
+                        contact.contactKey,
+                        state = (data.contactKey == 0) ? "add" : (data.isDeleted) ? "delete" : "edit"
                     };
                 
                     return Request.CreateResponse(HttpStatusCode.OK, vm);
@@ -144,13 +145,15 @@ namespace Api.Controllers
 
                     List<string> arrSearch = data.search.Split(',').ToList();
                     string query = "isDeleted = false";
+                    //var predicate = PredicateBuilderExtension.True<Contact>();
+                    //predicate.And(i => !i.isDeleted);
 
                     if (arrSearch.Count > 1)
                     {
 
                         List<string> q = new List<string>();
-
-                        foreach(var str in arrSearch)
+                        
+                        foreach (var str in arrSearch)
                         {
 
                             if (str == "")
@@ -158,21 +161,38 @@ namespace Api.Controllers
 
                             q.Add(String.Format("skills.Contains(\"{0}\")", str));
 
+                            //predicate.Or(i => i.skills.Contains(str));
+
                         }
 
-                        query += " AND " + String.Join(" OR ", q.ToArray());
+                        query += " AND (" + String.Join(" OR ", q.ToArray()) + ")";
 
                     }
                     else
                     {
 
-                        query += @" AND " + String.Format("name.Contains(\"{0}\")", data.search) + @"
+                        //predicate.Or(i => i.name.Contains(data.search));
+                        //predicate.Or(i => i.companyName.Contains(data.search));
+                        //predicate.Or(i => i.personalWebsite.Contains(data.search));
+                        //predicate.Or(i => i.companyTemp.Contains(data.search));
+                        //predicate.Or(i => i.title.Contains(data.search));
+                        //predicate.Or(i => i.skills.Contains(data.search));
+                        //predicate.Or(i => i.email.Contains(data.search));
+                        //query = i => i.name.Contains(data.search)
+                        //    && i.companyName.Contains(data.search)
+                        //    && i.personalWebsite.Contains(data.search)
+                        //    && i.companyTemp.Contains(data.search)
+                        //    && i.title.Contains(data.search)
+                        //    && i.skills.Contains(data.search)
+                        //    && i.email.Contains(data.search);
+
+                        query += @" AND (" + String.Format("name.Contains(\"{0}\")", data.search) + @"
                             OR " + String.Format("companyName.Contains(\"{0}\")", data.search) + @"
                             OR " + String.Format("personalWebsite.Contains(\"{0}\")", data.search) + @"
                             OR " + String.Format("companyTemp.Contains(\"{0}\")", data.search) + @"
                             OR " + String.Format("title.Contains(\"{0}\")", data.search) + @"
                             OR " + String.Format("skills.Contains(\"{0}\")", data.search) + @"
-                            OR " + String.Format("email.Contains(\"{0}\")", data.search) + @"";
+                            OR " + String.Format("email.Contains(\"{0}\")", data.search) + @")";
 
                     }
 
@@ -183,12 +203,13 @@ namespace Api.Controllers
                         .Where(query)
                         .Select(obj => new ContactViewModel
                         {
-                            contactId = obj.contactId,
+                            contactKey = obj.contactKey,
                             name = (obj.name == "") ? obj.companyName : obj.name,
                             email = obj.email,
                             skills = obj.skills,
                             title = obj.title,
-                            personalWebsite = obj.personalWebsite
+                            personalWebsite = obj.personalWebsite,
+                            isDeleted = obj.isDeleted
                         })
                         .OrderBy(data.sort)
                         .Skip(skip)
@@ -230,11 +251,11 @@ namespace Api.Controllers
                     BambinoDataContext context = new BambinoDataContext();
 
                     var vm = context.Contacts
-                        .Where(i => i.contactId == data.id
+                        .Where(i => i.contactKey == data.key
                             && !i.isDeleted)
                         .Select(obj => new ContactViewModel
                         {
-                            contactId = obj.contactId,
+                            contactKey = obj.contactKey,
                             name = obj.name,
                             email = obj.email,
                             companyName = obj.companyName,
@@ -245,8 +266,8 @@ namespace Api.Controllers
                             isPotentialStaffing = obj.isPotentialStaffing,
                             personalWebsite = obj.personalWebsite,
                             contactFiles = obj.ContactFiles.Where(i => !i.isDeleted).Select(contactFile => new ContactFileViewModel() {
-                                contactFileId = contactFile.contactFileId,
-                                contactId = contactFile.contactId,
+                                contactFileKey = contactFile.contactFileKey,
+                                contactKey = contactFile.contactKey,
                                 name = contactFile.name,
                                 path = contactFile.path,
                                 originalFileName = contactFile.originalFileName,
@@ -293,7 +314,7 @@ namespace Api.Controllers
                         .Where(i => !i.isDeleted)
                         .Select(obj => new ContactViewModel
                         {
-                            contactId = obj.contactId,
+                            contactKey = obj.contactKey,
                             name = (obj.name == "") ? obj.companyName : obj.name,
                             email = obj.email
                         })

@@ -11,17 +11,18 @@ namespace Api.Models
     public class SubTskViewModel
     {
 
-        public Guid subTskId { get; set; } = Guid.Empty;
+        public long subTskId { get; set; } = 0;
+
+        public long tskKey { get; set; } = 0;
+        public TskViewModel tsk { get; set; } = new TskViewModel();
 
         public Guid memberId { get; set; } = Guid.Empty;
         public MemberViewModel member { get; set; } = new MemberViewModel();
 
         public Guid memberIdCreated { get; set; } = Guid.Empty;
         public MemberViewModel memberCreated { get; set; } = new MemberViewModel();
-
         
         public string name { get; set; } = "";
-
         
         public string description { get; set; } = "";
 

@@ -11,14 +11,12 @@ namespace Api.Models
     public class ProjectZoneViewModel
     {
 
-        public Guid projectZoneId { get; set; } = Guid.Empty;
-        
+        public long projectZoneKey { get; set; } = 0;
+
         public Guid projectId { get; set; } = Guid.Empty;
         public ProjectViewModel project { get; set; } = new ProjectViewModel();
-
         
         public string name { get; set; } = "";
-
         
         public string description { get; set; } = "";
 
@@ -40,13 +38,11 @@ namespace Api.Models
 
         public AuthenticationViewModel authentication { get; set; }
 
-        public Guid projectZoneId { get; set; } = Guid.Empty;
+        public long projectZoneKey { get; set; } = 0;
 
         public Guid projectId { get; set; } = Guid.Empty;
-
         
         public string name { get; set; } = "";
-
         
         public string description { get; set; } = "";
 
@@ -55,16 +51,5 @@ namespace Api.Models
         public bool isDeleted { get; set; } = false;
         
     }
-
-    public class ProjectZoneEditArchiveViewModel
-    {
-
-        public AuthenticationViewModel authentication { get; set; }
-
-        public Guid projectZoneId { get; set; } = Guid.Empty;
-        
-        public bool isArchived { get; set; } = false;
-
-    }
-
+    
 }

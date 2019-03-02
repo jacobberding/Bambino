@@ -225,11 +225,41 @@ const Global = (function () {
 
     }
     const getSort = function (sort, name) {
-        if (sort.includes(name))
+        if (sort.split(` `)[0] == name)
             return `sort${sort.split(` `)[1]}`;
         else
             return ``;
-    }
+    };
+    const getCode = function (code) {
+
+        let arr = [];
+        let i = 0;
+
+        if (code.toString().includes(`-`)) {
+
+            for (let num of code.split(`-`)) {
+
+                i++;
+
+                if (isNaN(num)) {
+                    arr.push(num);
+                    continue;
+                }
+
+                if (i == code.split(`-`).length && i > 3) //Last one
+                    arr.push(parseInt(num) > 99 ? num : parseInt(num) > 9 ? `0${num}` : `00${num}`);
+                else
+                    arr.push(parseInt(num) > 9 ? num : `0${num}`);
+
+            }
+
+        } else {
+            arr.push(parseInt(code) > 9 ? code : `0${code}`);
+        }
+
+        return arr.join(`-`);
+
+    };
     
     const getHtmlOptions = function (arr, values = [], isFont = false) {
 
@@ -321,6 +351,7 @@ const Global = (function () {
         getIsValidFile: getIsValidFile,
         getThumbnailPath: getThumbnailPath,
         getSort: getSort,
+        getCode: getCode,
         getHtmlOptions: getHtmlOptions,
         getHtmlLoading: getHtmlLoading,
         getListNameByValue: getListNameByValue,

@@ -277,12 +277,12 @@ namespace Api.Controllers
                         .Select(obj => new ProjectViewModel
                         {
                             projectId = obj.projectId,
-                            projectPhaseId = obj.ProjectPhases
-                                .Select(i => new { dateStart = i.dateStart, dateEnd = i.dateEnd, projectPhaseId = i.projectPhaseId, isDeleted = i.isDeleted })
+                            projectPhaseKey = obj.ProjectPhases
+                                .Select(i => new { dateStart = i.dateStart, dateEnd = i.dateEnd, projectPhaseKey = i.projectPhaseKey, isDeleted = i.isDeleted })
                                 .Where(x => x.dateStart <= today && x.dateEnd >= today && !x.isDeleted)
-                                //.DefaultIfEmpty(new { dateStart = DateTimeOffset.UtcNow, dateEnd = DateTimeOffset.UtcNow, projectPhaseId = Guid.Empty })
+                                //.DefaultIfEmpty(new { dateStart = DateTimeOffset.UtcNow, dateEnd = DateTimeOffset.UtcNow, projectPhaseKey = Guid.Empty })
                                 .FirstOrDefault()
-                                .projectPhaseId,
+                                .projectPhaseKey,
                             code = obj.code,
                             name = obj.name,
                             addressLine1 = obj.addressLine1,
@@ -299,7 +299,7 @@ namespace Api.Controllers
                                 .Sum(x => x),
                             numOfMembers = obj.ProjectMembers.Count(),
                             projectPhases = obj.ProjectPhases.Where(i => !i.isDeleted).Select(projectPhase => new ProjectPhaseViewModel() {
-                                projectPhaseId = projectPhase.projectPhaseId,
+                                projectPhaseKey = projectPhase.projectPhaseKey,
                                 name = projectPhase.name
                             }).ToList(),
                             members = obj.ProjectMembers.Select(projectMember => new MemberViewModel() {

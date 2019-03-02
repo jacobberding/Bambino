@@ -51,6 +51,9 @@
     <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.SqlServer.dll</HintPath>
     </Reference>
+    <Reference Include="LMB.PredicateBuilderExtension, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\LMB.PredicateBuilderExtension.1.0.0\lib\net46\LMB.PredicateBuilderExtension.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -178,6 +181,7 @@
     <Compile Include="Controllers\ApiTokenController.cs" />
     <Compile Include="Controllers\AuthenticationController.cs" />
     <Compile Include="Controllers\CompanyController.cs" />
+    <Compile Include="Controllers\ContactCompanyController.cs" />
     <Compile Include="Controllers\ContactController.cs" />
     <Compile Include="Controllers\ContactFileController.cs" />
     <Compile Include="Controllers\DisciplineController.cs" />
@@ -193,6 +197,9 @@
     <Compile Include="Controllers\ACAreaCategoryController.cs" />
     <Compile Include="Controllers\ProjectMemberController.cs" />
     <Compile Include="Controllers\ProjectPhaseController.cs" />
+    <Compile Include="Controllers\ProjectAttractionController.cs" />
+    <Compile Include="Controllers\ProjectReferenceController.cs" />
+    <Compile Include="Controllers\ProjectReferenceTagController.cs" />
     <Compile Include="Controllers\ProjectZoneController.cs" />
     <Compile Include="Controllers\RoleController.cs" />
     <Compile Include="Controllers\TimeTrackerController.cs" />
@@ -204,6 +211,7 @@
     <Compile Include="Models\AESGCM.cs" />
     <Compile Include="Models\ApiToken.cs" />
     <Compile Include="Models\Authentication.cs" />
+    <Compile Include="Models\ContactCompany.cs" />
     <Compile Include="Models\ContactFile.cs" />
     <Compile Include="Models\e.cs" />
     <Compile Include="Models\Company.cs" />
@@ -221,6 +229,7 @@
     <Compile Include="Models\ProjectAttraction.cs" />
     <Compile Include="Models\ProjectElement.cs" />
     <Compile Include="Models\ProjectPhase.cs" />
+    <Compile Include="Models\ProjectReference.cs" />
     <Compile Include="Models\ProjectWritingDocument.cs" />
     <Compile Include="Models\ProjectZone.cs" />
     <Compile Include="Models\ProjectZoneArchive.cs" />

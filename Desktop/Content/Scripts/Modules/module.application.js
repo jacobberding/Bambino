@@ -16,7 +16,9 @@ const Application = (function () {
         //Load Lists
         Members.getById(Global.guidEmpty);
         MaterialTag.get();
+        Disciplines.get();
         TimeTracker.getIsActive();
+        ProjectReferenceTag.get();
 
     }
     const _openSub = function ($this) {
@@ -167,6 +169,10 @@ const Application = (function () {
 
                     <m-button data-type="secondary" class="sQ btnOpenBody mR" data-label="Primary" data-function="Contacts.getHtmlBody" data-args="">
                         Contacts
+                    </m-button>
+
+                    <m-button data-type="secondary" class="sQ btnOpenBody mR" data-label="Primary" data-function="ContactCompany.getHtmlBody" data-args="">
+                        Companies
                     </m-button>
 
                     <m-button data-type="secondary" class="sQ btnOpenBody mR" data-label="Primary" data-function="Materials.getHtmlBody" data-args="">

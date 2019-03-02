@@ -11,14 +11,12 @@ namespace Api.Models
     public class ProjectWritingDocumentViewModel
     {
 
-        public Guid projectWritingDocumentId { get; set; } = Guid.Empty;
+        public long projectWritingDocumentKey { get; set; } = 0;
 
-        public Guid projectAttractionId { get; set; } = Guid.Empty;
+        public long projectAttractionKey { get; set; } = 0;
         public ProjectAttractionViewModel projectAttraction { get; set; } = new ProjectAttractionViewModel();
-
         
         public string name { get; set; } = "";
-
         
         public string description { get; set; } = "";
 

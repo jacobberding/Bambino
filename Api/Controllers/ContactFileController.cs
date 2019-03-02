@@ -30,8 +30,8 @@ namespace Api.Controllers
 
                         ContactFile contactFile = new ContactFile();
 
-                        contactFile.contactFileId = contactFileViewModel.contactFileId;
-                        contactFile.contactId = contactFileViewModel.contactId;
+                        contactFile.contactFileKey = contactFileViewModel.contactFileKey;
+                        contactFile.contactKey = contactFileViewModel.contactKey;
                         contactFile.name = "";
                         contactFile.path = contactFileViewModel.path;
                         contactFile.originalFileName = contactFileViewModel.originalFileName;
@@ -69,7 +69,7 @@ namespace Api.Controllers
                     BambinoDataContext context = new BambinoDataContext();
                     
                     ContactFile contactFile = context.ContactFiles
-                        .Where(i => i.contactFileId == data.contactFileId
+                        .Where(i => i.contactFileKey == data.contactFileKey
                             && !i.isDeleted)
                         .FirstOrDefault();
 
@@ -82,7 +82,7 @@ namespace Api.Controllers
                     
                     var vm = new
                     {
-                        contactFile.contactFileId,
+                        contactFile.contactFileKey,
                         state = "delete"
                     };
 

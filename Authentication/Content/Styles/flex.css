@@ -704,6 +704,14 @@ m-flex {
     m-flex.w75 {
         width: 75%;
     }
+    .w70,
+    m-flex.w70 {
+        width: 70%;
+    }
+    .w66,
+    m-flex.w66 {
+        width: 66%;
+    }
     .w60,
     m-flex.w60 {
         width: 60%;
@@ -715,6 +723,10 @@ m-flex {
     .w33,
     m-flex.w33 {
         width: 33%;
+    }
+    .w30,
+    m-flex.w30 {
+        width: 30%;
     }
     .w25,
     m-flex.w25 {
@@ -1050,6 +1062,11 @@ m-card {
             m-card.primary h2 {
                 color: #FFF;
             }
+        m-card h6 {
+            font-size: .65em;
+            margin: 0;
+            color: #424242;
+        }
         m-card p {
             font-size: .65em;
             margin: 0em;

@@ -74,16 +74,16 @@ namespace Api.Controllers
 
         }
         
-        public static EmailViewModel GetEmail(Guid emailId)
+        public static EmailViewModel GetEmail(long emailKey)
         {
             
             BambinoDataContext context = new BambinoDataContext();
                  
             return context.Emails
-                .Where(i => i.emailId == emailId)
+                .Where(i => i.emailKey == emailKey)
                 .Select(i => new EmailViewModel
                 {
-                    emailId = i.emailId,
+                    emailKey = i.emailKey,
                     body = i.body,
                     subject = i.subject
                 })

@@ -11,9 +11,9 @@ namespace Api.Models
     public class ProjectZoneArchiveViewModel
     {
 
-        public long projectZoneArchiveKey { get; set; }
-        
-        public Guid projectZoneId { get; set; } = Guid.Empty;
+        public long projectZoneArchiveKey { get; set; } = 0;
+
+        public long projectZoneKey { get; set; } = 0;
         public ProjectZoneViewModel projectZone { get; set; }
 
         public DateTimeOffset dateStart { get; set; } = DateTimeOffset.UtcNow;

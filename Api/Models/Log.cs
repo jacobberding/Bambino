@@ -8,24 +8,22 @@ namespace Api.Models
     public class LogViewModel
     {
 
-        public Guid logId { get; set; } = Guid.Empty;
+        public long logKey { get; set; } = 0;
 
         public Guid memberId { get; set; } = Guid.Empty;
         public MemberViewModel member { get; set; } = new MemberViewModel();
-
         
         public string activity { get; set; } = "";
-
         
         public string controllerName { get; set; } = "";
-
         
         public string methodName { get; set; } = "";
-
         
         public string tableName { get; set; } = "";
 
         public Guid tableId { get; set; } = Guid.Empty;
+
+        public long tableKey { get; set; } = 0;
 
         public DateTimeOffset createdDate { get; set; } = DateTimeOffset.UtcNow;
         
@@ -39,7 +37,6 @@ namespace Api.Models
         public int page { get; set; } = 0;
 
         public int records { get; set; } = 0;
-
         
         public string search { get; set; } = "";
 

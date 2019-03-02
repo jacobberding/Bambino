@@ -16,25 +16,18 @@ namespace Api.Models
         public Guid token { get; set; } = Guid.Empty;
 
         public Guid tokenApi { get; set; } = Guid.Empty;
-
         
         public string stripeId { get; set; } = "";
-
         
         public string firstName { get; set; } = "";
-
         
         public string lastName { get; set; } = "";
-
         
         public string path { get; set; } = "";
-
         
         public string email { get; set; } = "";
-
         
         public string originalEmail { get; set; } = "";
-
         
         public string phone { get; set; } = "";
 
@@ -53,7 +46,6 @@ namespace Api.Models
     {
         
         public AuthenticationViewModel authentication { get; set; }
-
         
         public string token { get; set; } = "";
         
@@ -63,10 +55,8 @@ namespace Api.Models
     {
 
         public AuthenticationViewModel authentication { get; set; }
-
         
         public string path { get; set; } = "";
-
         
         public string originalFileName { get; set; } = "";
 
@@ -80,16 +70,12 @@ namespace Api.Models
         public Guid memberId { get; set; } = Guid.Empty;
 
         public Guid companyId { get; set; } = Guid.Empty;
-
         
         public string firstName { get; set; } = "";
-
         
         public string lastName { get; set; } = "";
-
         
         public string email { get; set; } = "";
-
         
         public string phone { get; set; } = "";
 
@@ -218,7 +204,6 @@ namespace Api.Models
     {
 
         public AuthenticationViewModel authentication { get; set; }
-
         
         public string email { get; set; } = "";
         
@@ -228,22 +213,16 @@ namespace Api.Models
     {
 
         public AuthenticationViewModel authentication { get; set; }
-
         
         public string email { get; set; } = "";
-
         
         public string path { get; set; } = "";
-
         
         public string firstName { get; set; } = "";
-
         
         public string lastName { get; set; } = "";
-
         
         public string token { get; set; } = "";
-
         
         public string v { get; set; } = "";
 

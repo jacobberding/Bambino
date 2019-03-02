@@ -12,7 +12,6 @@ namespace Api.Models
     {
 
         public Guid roleId { get; set; } = Guid.Empty;
-
         
         public string name { get; set; } = "";
 

@@ -11,8 +11,7 @@ namespace Api.Models
     public class MaterialTagViewModel
     {
 
-        public Guid materialTagId { get; set; } = Guid.Empty;
-
+        public long materialTagKey { get; set; } = 0;
         
         public string name { get; set; } = "";
 

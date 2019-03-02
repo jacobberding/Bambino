@@ -48,22 +48,24 @@ namespace Api.Controllers
                     context.TimeTrackerProjects.DeleteAllOnSubmit<TimeTrackerProject>(timeTracker.TimeTrackerProjects);
                     context.SubmitChanges();
 
+                    List<TimeTrackerProject> timeTrackerProjects = new List<TimeTrackerProject>();
                     foreach (var project in data.projects)
                     {
 
                         TimeTrackerProject timeTrackerProject = new TimeTrackerProject();
 
-                        timeTrackerProject.projectId = (project.projectId == Guid.Empty) ? context.Projects.Where(i => i.isDefault && i.companyId == a.member.activeCompanyId).FirstOrDefault().projectId : project.projectId;
-
                         timeTrackerProject.timeTrackerId = timeTracker.timeTrackerId;
+                        timeTrackerProject.projectId = (project.projectId == Guid.Empty) ? context.Projects.Where(i => i.isDefault && i.companyId == a.member.activeCompanyId).FirstOrDefault().projectId : project.projectId;
+                        timeTrackerProject.description = "";
                         timeTrackerProject.totalHours = project.totalHours;
-                        //add description eventually
 
-                        context.TimeTrackerProjects.InsertOnSubmit(timeTrackerProject);
-                        context.SubmitChanges();
+                        timeTrackerProjects.Add(timeTrackerProject);
 
                     }
-                    
+
+                    context.TimeTrackerProjects.InsertAllOnSubmit(timeTrackerProjects);
+                    context.SubmitChanges();
+
                     var activity = (data.isDeleted) ? "Deleted" : "Edited";
                     LogController.Add(a.member.memberId, String.Format("{0} {1} {2} a time sheet record", timeTracker.Member.firstName, timeTracker.Member.lastName, activity), "TimeTracker", "EditDelete", timeTracker.timeTrackerId, "TimeTrackers");
 

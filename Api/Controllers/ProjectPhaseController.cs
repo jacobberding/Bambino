@@ -26,8 +26,8 @@ namespace Api.Controllers
 
                     BambinoDataContext context = new BambinoDataContext();
 
-                    ProjectPhase projectPhase = (data.projectPhaseId == Guid.Empty) ? new ProjectPhase() : context.ProjectPhases
-                        .Where(i => i.projectPhaseId == data.projectPhaseId
+                    ProjectPhase projectPhase = (data.projectPhaseKey == 0) ? new ProjectPhase() : context.ProjectPhases
+                        .Where(i => i.projectPhaseKey == data.projectPhaseKey
                             && !i.isDeleted)
                         .FirstOrDefault();
 
@@ -41,15 +41,15 @@ namespace Api.Controllers
                     projectPhase.dateEnd = data.dateEnd;
                     projectPhase.isDeleted = data.isDeleted;
 
-                    if (data.projectPhaseId == Guid.Empty)
+                    if (data.projectPhaseKey == 0)
                         context.ProjectPhases.InsertOnSubmit(projectPhase);
 
                     context.SubmitChanges();
                     
-                    var vm = new AddEditDeleteReturnViewModel()
+                    var vm = new
                     {
-                        id = projectPhase.projectPhaseId,
-                        state = (data.projectPhaseId == Guid.Empty) ? "add" : (data.isDeleted) ? "delete" : "edit"
+                        projectPhase.projectPhaseKey,
+                        state = (data.projectPhaseKey == 0) ? "add" : (data.isDeleted) ? "delete" : "edit"
                     };
 
                     return Request.CreateResponse(HttpStatusCode.OK, vm);
@@ -141,8 +141,8 @@ namespace Api.Controllers
 
         //            BambinoDataContext context = new BambinoDataContext();
 
-        //            ProjectPhase projectPhase = (data.projectPhaseId == Guid.Empty) ? new ProjectPhase() : context.ProjectPhaseRepository
-        //                .Where(i => i.projectPhaseId == data.projectPhaseId
+        //            ProjectPhase projectPhase = (data.projectPhaseKey == Guid.Empty) ? new ProjectPhase() : context.ProjectPhaseRepository
+        //                .Where(i => i.projectPhaseKey == data.projectPhaseKey
         //                    && !i.isDeleted)
         //                .FirstOrDefault();
 
@@ -164,8 +164,8 @@ namespace Api.Controllers
 
         //            var vm = new AddEditDeleteReturnViewModel()
         //            {
-        //                id = projectPhase.projectPhaseId,
-        //                state = (data.projectPhaseId == Guid.Empty) ? "add" : (data.isDeleted) ? "delete" : "edit"
+        //                id = projectPhase.projectPhaseKey,
+        //                state = (data.projectPhaseKey == Guid.Empty) ? "add" : (data.isDeleted) ? "delete" : "edit"
         //            };
 
         //            return Request.CreateResponse(HttpStatusCode.OK, vm);
@@ -203,7 +203,7 @@ namespace Api.Controllers
                         .Where(query)
                         .Select(obj => new ProjectPhaseViewModel
                         {
-                            projectPhaseId = obj.projectPhaseId,
+                            projectPhaseKey = obj.projectPhaseKey,
                             projectId = obj.projectId,
                             name = obj.name,
                             description = obj.description,
@@ -252,11 +252,11 @@ namespace Api.Controllers
                     BambinoDataContext context = new BambinoDataContext();
 
                     var vm = context.ProjectPhases
-                        .Where(i => i.projectPhaseId == data.id
+                        .Where(i => i.projectPhaseKey == data.key
                             && !i.isDeleted)
                         .Select(obj => new ProjectPhaseViewModel
                         {
-                            projectPhaseId = obj.projectPhaseId,
+                            projectPhaseKey = obj.projectPhaseKey,
                             projectId = obj.projectId,
                             name = obj.name,
                             description = obj.description,

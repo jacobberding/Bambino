@@ -755,7 +755,7 @@ namespace Api.Controllers
 
                     new Thread(() =>
                     {
-                        EmailViewModel e = EmailController.GetEmail(new Guid("c7b08448-9abe-4e3e-b68a-755b968761fe"));
+                        EmailViewModel e = EmailController.GetEmail(1);
                         EmailController.Send(new MailAddress(EmailController.email),
                             member.email,
                             EmailController.email,
@@ -1043,7 +1043,7 @@ namespace Api.Controllers
 
                         new Thread(() =>
                         {
-                            EmailViewModel e = EmailController.GetEmail(new Guid("c1acbd9b-cb51-4a4f-8f76-a71789ac4863"));
+                            EmailViewModel e = EmailController.GetEmail(1);
                             EmailController.Send(new MailAddress(EmailController.email),
                                 member.email,
                                 EmailController.email,
@@ -1186,7 +1186,7 @@ namespace Api.Controllers
 
                     new Thread(() =>
                     {
-                        EmailViewModel e = EmailController.GetEmail(new Guid("c1acbd9b-cb51-4a4f-8f76-a71789ac4863"));
+                        EmailViewModel e = EmailController.GetEmail(1);
                         EmailController.Send(new MailAddress(EmailController.email),
                             member.email,
                             EmailController.email,
@@ -1250,7 +1250,7 @@ namespace Api.Controllers
 
                     new Thread(() =>
                     {
-                        EmailViewModel e = EmailController.GetEmail(new Guid("cc8b611a-2576-4ef4-91ac-19969b4cb4b2"));
+                        EmailViewModel e = EmailController.GetEmail(1);
                         EmailController.Send(new MailAddress(EmailController.email),
                             member.email,
                             EmailController.email,
@@ -1303,7 +1303,7 @@ namespace Api.Controllers
 
                     new Thread(() =>
                     {
-                        EmailViewModel e = EmailController.GetEmail(new Guid("c1acbd9b-cb51-4a4f-8f76-a71789ac4863"));
+                        EmailViewModel e = EmailController.GetEmail(1);
                         EmailController.Send(new MailAddress(EmailController.email),
                             member.email,
                             EmailController.email,

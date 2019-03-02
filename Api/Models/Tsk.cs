@@ -11,7 +11,7 @@ namespace Api.Models
     public class TskViewModel
     {
 
-        public Guid tskId { get; set; } = Guid.Empty;
+        public long tskId { get; set; } = 0;
 
         public Guid projectId { get; set; } = Guid.Empty;
         public ProjectViewModel project { get; set; } = new ProjectViewModel();
@@ -21,10 +21,8 @@ namespace Api.Models
         
         public Guid memberIdCreated { get; set; } = Guid.Empty;
         public MemberViewModel memberCreated { get; set; } = new MemberViewModel();
-
         
         public string name { get; set; } = "";
-
         
         public string description { get; set; } = "";
 

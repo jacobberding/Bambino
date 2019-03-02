@@ -42,7 +42,7 @@ namespace Api.Controllers
                 .Where(i => !i.isDeleted)
                 .Select(obj => new ListViewModel()
                 {
-                    value = obj.disciplineId.ToString(),
+                    value = obj.disciplineKey.ToString(),
                     name = obj.value
                 })
                 .OrderBy(i => i.name)

@@ -16,7 +16,7 @@ namespace Api.Models
         public Guid companyId { get; set; } = Guid.Empty;
         public CompanyViewModel company { get; set; }
 
-        public Guid? projectPhaseId { get; set; } = Guid.Empty;
+        public long? projectPhaseKey { get; set; } = 0;
         
         public string code { get; set; } = "";
         

@@ -28,7 +28,7 @@ namespace Api.Controllers
                     List<ListViewModel> vm = context.MaterialTags
                         .Select(obj => new ListViewModel()
                         {
-                            value = obj.materialTagId.ToString(),
+                            value = obj.materialTagKey.ToString(),
                             name = obj.name
                         })
                         .OrderBy(i => i.name)

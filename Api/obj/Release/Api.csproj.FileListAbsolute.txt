@@ -208,3 +208,5 @@ C:\Users\jpber\Documents\Work\EDC\Bambino\Development\Bambino\Api\obj\Release\Ap
 C:\Users\jpber\Documents\Work\EDC\Bambino\Development\Bambino\Api\obj\Release\Api.csproj.CopyComplete
 C:\Users\jpber\Documents\Work\EDC\Bambino\Development\Bambino\Api\obj\Release\Api.dll
 C:\Users\jpber\Documents\Work\EDC\Bambino\Development\Bambino\Api\obj\Release\Api.pdb
+C:\Users\jpber\Documents\Work\EDC\Bambino\Development\Bambino\Api\bin\LMB.PredicateBuilderExtension.dll
+C:\Users\jpber\Documents\Work\EDC\Bambino\Development\Bambino\Api\bin\LMB.PredicateBuilderExtension.xml

@@ -12,8 +12,8 @@ const Template = (function () {
         name: `Template`,
         arr: [],
         vm: {},
-        constructor: function (materialId, name, isDeleted) {
-            this.materialId = materialId;
+        constructor: function (materialKey, name, isDeleted) {
+            this.materialKey = materialKey;
             this.name = name;
             this.isDeleted = isDeleted;
         }
