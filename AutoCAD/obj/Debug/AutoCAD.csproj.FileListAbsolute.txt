@@ -37,3 +37,6 @@ C:\Users\jpber\Documents\Work\EDC\Bambino\Development\Bambino\AutoCAD\obj\Debug\
 C:\Users\jpber\Documents\Work\EDC\Bambino\Development\Bambino\AutoCAD\obj\Debug\AutoCAD.pdb
 C:\Users\jpber\Documents\Work\EDC\Bambino\Development\Bambino\AutoCAD\bin\Debug\EntityFramework.SqlServer.dll
 C:\Users\jpber\Documents\Work\EDC\Bambino\Development\Bambino\AutoCAD\bin\Debug\EntityFramework.SqlServer.xml
+C:\Users\jpber\Documents\Work\EDC\Bambino\Development\Bambino\AutoCAD\bin\Debug\System.Linq.dll
+C:\Users\jpber\Documents\Work\EDC\Bambino\Development\Bambino\AutoCAD\bin\Debug\RestSharp.dll
+C:\Users\jpber\Documents\Work\EDC\Bambino\Development\Bambino\AutoCAD\bin\Debug\RestSharp.xml

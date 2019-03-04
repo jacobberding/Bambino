@@ -330,48 +330,45 @@ namespace Api.Controllers
         }
 
         [HttpPost]
-        public HttpResponseMessage GetByCode([FromBody] ProjectGetByCodeViewModel data)
+        public HttpResponseMessage _GetByCode([FromBody] ProjectGetByCodeViewModel data)
         {
-            Authentication a = AuthenticationController.GetMemberAuthenticated(data.authentication.apiId, 1, data.authentication.token);
-            if (a.isAuthenticated)
-            {
+            //Authentication a = AuthenticationController.GetMemberAuthenticated(data.authentication.apiId, 1, data.authentication.token);
+            //if (a.isAuthenticated)
+            //{
 
                 try
                 {
-                    return Request.CreateResponse(HttpStatusCode.OK, _GetByCode(data.code));
+
+                    BambinoDataContext context = new BambinoDataContext();
+
+                    var arr = context.Projects
+                        .Where(i => i.code == data.code
+                            && !i.isDeleted)
+                        .Select(obj => new ProjectViewModel
+                        {
+                            projectId = obj.projectId,
+                            code = obj.code,
+                            name = obj.name,
+                            addressLine1 = obj.addressLine1,
+                            addressLine2 = obj.addressLine2,
+                            city = obj.city,
+                            state = obj.state,
+                            zip = obj.zip,
+                            country = obj.country,
+                            isDeleted = obj.isDeleted
+                        })
+                        .FirstOrDefault();
+
+                    return Request.CreateResponse(HttpStatusCode.OK, arr);
+
                 }
                 catch (Exception ex)
                 {
                     return Request.CreateResponse(HttpStatusCode.InternalServerError, ex);
                 }
 
-            }
-            return Request.CreateResponse(HttpStatusCode.InternalServerError, new { Message = "Invalid Token" });
-        }
-
-        public static ProjectViewModel _GetByCode(string code)
-        {
-
-            BambinoDataContext context = new BambinoDataContext();
-
-            return context.Projects
-                .Where(i => i.code == code
-                    && !i.isDeleted)
-                .Select(obj => new ProjectViewModel
-                {
-                    projectId = obj.projectId,
-                    code = obj.code,
-                    name = obj.name,
-                    addressLine1 = obj.addressLine1,
-                    addressLine2 = obj.addressLine2,
-                    city = obj.city,
-                    state = obj.state,
-                    zip = obj.zip,
-                    country = obj.country,
-                    isDeleted = obj.isDeleted
-                })
-                .FirstOrDefault();
-
+            //}
+            //return Request.CreateResponse(HttpStatusCode.InternalServerError, new { Message = "Invalid Token" });
         }
 
     }

@@ -68,47 +68,39 @@ namespace Api.Controllers
         }
 
         [HttpPost]
-        public HttpResponseMessage Get([FromBody] EmptyAuthenticationViewModel data)
+        public HttpResponseMessage _Get([FromBody] EmptyAuthenticationViewModel data)
         {
-            Authentication a = AuthenticationController.GetMemberAuthenticated(data.authentication.apiId, 1, data.authentication.token);
-            if (a.isAuthenticated)
-            {
+            //Authentication a = AuthenticationController.GetMemberAuthenticated(data.authentication.apiId, 1, data.authentication.token);
+            //if (a.isAuthenticated)
+            //{
 
                 try
                 {
-                    return Request.CreateResponse(HttpStatusCode.OK, _Get());
+
+                    BambinoDataContext context = new BambinoDataContext();
+
+                    var arr = context.ACAreaCategories
+                        .Where(i => !i.isDeleted)
+                        .Select(obj => new ACAreaCategoryViewModel
+                        {
+                            acAreaCategoryId = obj.acAreaCategoryId,
+                            name = obj.name
+                        })
+                        .OrderBy(i => i.name)
+                        .ToList();
+
+                    return Request.CreateResponse(HttpStatusCode.OK, arr);
+
                 }
                 catch (Exception ex)
                 {
                     return Request.CreateResponse(HttpStatusCode.InternalServerError, ex);
                 }
 
-            }
-            return Request.CreateResponse(HttpStatusCode.InternalServerError, new { Message = "Invalid Token" });
+            //}
+            //return Request.CreateResponse(HttpStatusCode.InternalServerError, new { Message = "Invalid Token" });
         }
-
-        public static List<ACAreaCategoryViewModel> _Get()
-        {
-
-            //return new List<TagAreaTypeViewModel>() {
-            //    new TagAreaTypeViewModel() { name = "GUEST" },
-            //    new TagAreaTypeViewModel() { name = "BOH" }
-            //};
-
-            BambinoDataContext context = new BambinoDataContext();
-
-            return context.ACAreaCategories
-                .Where(i => !i.isDeleted)
-                .Select(obj => new ACAreaCategoryViewModel
-                {
-                    acAreaCategoryId = obj.acAreaCategoryId,
-                    name = obj.name
-                })
-                .OrderBy(i => i.name)
-                .ToList();
-
-        }
-
+        
         [HttpPost]
         public HttpResponseMessage GetByPage([FromBody] SearchViewModel data)
         {

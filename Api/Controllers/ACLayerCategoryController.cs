@@ -20,7 +20,21 @@ namespace Api.Controllers
 
                 try
                 {
-                    return Request.CreateResponse(HttpStatusCode.OK, _Get());
+
+                    BambinoDataContext context = new BambinoDataContext();
+
+                    var arr = context.ACLayerCategories
+                        .Where(i => !i.isDeleted)
+                        .Select(obj => new ListViewModel()
+                        {
+                            value = obj.acLayerCategoryId.ToString(),
+                            name = obj.name
+                        })
+                        .OrderBy(i => i.name)
+                        .ToList();
+
+                    return Request.CreateResponse(HttpStatusCode.OK, arr);
+
                 }
                 catch (Exception ex)
                 {
@@ -31,24 +45,24 @@ namespace Api.Controllers
             return Request.CreateResponse(HttpStatusCode.InternalServerError, new { Message = "Invalid Token" });
         }
 
-        public static List<ACLayerCategoryViewModel> _Get()
+        [HttpPost]
+        public HttpResponseMessage _Get([FromBody] EmptyAuthenticationViewModel data)
         {
 
             BambinoDataContext context = new BambinoDataContext();
-            
-            return context.ACLayerCategories
+
+            var arr = context.ACLayerCategories
                 .Where(i => !i.isDeleted)
-                .Select(obj => new ACLayerCategoryViewModel()
+                .Select(obj => new ListViewModel()
                 {
-                    acLayerCategoryId = obj.acLayerCategoryId,
-                    name = obj.name,
-                    description = obj.description,
-                    value = obj.value,
-                    isDeleted = obj.isDeleted
+                    value = obj.acLayerCategoryId.ToString(),
+                    name = obj.name
                 })
                 .OrderBy(i => i.name)
                 .ToList();
 
+            return Request.CreateResponse(HttpStatusCode.OK, arr);
+            
         }
 
     }

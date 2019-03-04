@@ -7,6 +7,7 @@ const Template = (function () {
         timeout: undefined,
         records: 100,
         page: 1,
+        pageArr: [],
         sort: `name asc`,
         isShowMore: false,
         name: `Template`,

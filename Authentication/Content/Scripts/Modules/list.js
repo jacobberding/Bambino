@@ -1,4 +1,26 @@
-﻿const listScales = [
+﻿const listLineWeights = [
+    { name: 'ByLineWeightDefault', value: 'ByLineWeightDefault' },
+    { name: 'LineWeight000', value: 'LineWeight000' },
+    { name: 'LineWeight005', value: 'LineWeight005' },
+    { name: 'LineWeight013', value: 'LineWeight013' },
+    { name: 'LineWeight018', value: 'LineWeight018' },
+    { name: 'LineWeight025', value: 'LineWeight025' },
+    { name: 'LineWeight030', value: 'LineWeight030' },
+    { name: 'LineWeight035', value: 'LineWeight035' },
+    { name: 'LineWeight050', value: 'LineWeight050' },
+];
+const listLineTypes = [
+    { name: 'CENTER', value: 'CENTER' },
+    { name: 'CENTER2', value: 'CENTER2' },
+    { name: 'Continuous', value: 'Continuous' },
+    { name: 'DASHED', value: 'DASHED' },
+    { name: 'DASHED2', value: 'DASHED2' },
+    { name: 'FENCELINE1', value: 'FENCELINE1' },
+    { name: 'HIDDEN', value: 'HIDDEN' },
+    { name: 'HIDDEN2', value: 'HIDDEN2' },
+    { name: 'PHANTOM2', value: 'PHANTOM2' }
+];
+const listScales = [
     { name: 'Imperial', value: 'Imperial' },
     { name: 'Metric', value: 'Metric' },
 ];

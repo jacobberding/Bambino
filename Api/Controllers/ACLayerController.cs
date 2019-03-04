@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Dynamic;
 using System.Linq.Expressions;
 using System.Net;
 using System.Net.Http;
@@ -60,6 +61,7 @@ namespace Api.Controllers
             acLayer.name = "EDC-" + m.Substring(0,1) + "-" + value + "-" + data.code;
             acLayer.color = data.color;
             acLayer.lineWeight = data.lineWeight;
+            acLayer.lineType = data.lineType;
             acLayer.transparency = data.transparency;
             acLayer.measurement = m;
             acLayer.code = data.code;
@@ -124,7 +126,7 @@ namespace Api.Controllers
         }
 
         [HttpPost]
-        public HttpResponseMessage GetByKeyword([FromBody] ACLayerGetByKeywordViewModel data)
+        public HttpResponseMessage GetByPage([FromBody] SearchViewModel data)
         {
             Authentication a = AuthenticationController.GetMemberAuthenticated(data.authentication.apiId, 1, data.authentication.token);
             if (a.isAuthenticated)
@@ -132,7 +134,51 @@ namespace Api.Controllers
 
                 try
                 {
-                    return Request.CreateResponse(HttpStatusCode.OK, _GetByKeyword(new ACLayerGetByKeywordViewModel() { keyword = data.keyword, measurement = "Imperical" }));
+
+                    BambinoDataContext context = new BambinoDataContext();
+
+                    Expression<Func<ACLayer, bool>> query = i => (i.name.Contains(data.search)
+                            || i.measurement.Contains(data.search)
+                            || i.keywords.Contains(data.search))
+                            && !i.isDeleted;
+
+                    int currentPage = data.page - 1;
+                    int skip = currentPage * data.records;
+                    int totalRecords = context.ACLayers.Where(query).ToList().Count;
+                    var arr = context.ACLayers
+                        .Where(query)
+                        .Select(obj => new
+                        {
+                            obj.acLayerId,
+                            obj.code,
+                            obj.name,
+                            obj.color,
+                            obj.description,
+                            obj.keywords,
+                            obj.isPlottable,
+                            obj.lineWeight,
+                            obj.lineType,
+                            obj.measurement,
+                            obj.transparency,
+                            obj.isDeleted
+                        })
+                        .OrderBy(data.sort)
+                        .Skip(skip)
+                        .Take(data.records)
+                        .ToList();
+
+                    if (arr == null)
+                        throw new InvalidOperationException("Not Found");
+
+                    var vm = new
+                    {
+                        totalRecords = totalRecords,
+                        totalPages = Math.Ceiling((double)totalRecords / data.records),
+                        arr = arr.ToList()
+                    };
+
+                    return Request.CreateResponse(HttpStatusCode.OK, vm);
+
                 }
                 catch (Exception ex)
                 {
@@ -143,145 +189,253 @@ namespace Api.Controllers
             return Request.CreateResponse(HttpStatusCode.InternalServerError, new { Message = "Invalid Token" });
         }
 
-        public static List<ACLayerViewModel> _GetByKeyword(ACLayerGetByKeywordViewModel data)
+        [HttpPost]
+        public HttpResponseMessage GetById([FromBody] GetByIdViewModel data)
+        {
+            Authentication a = AuthenticationController.GetMemberAuthenticated(data.authentication.apiId, 1, data.authentication.token);
+            if (a.isAuthenticated)
+            {
+
+                try
+                {
+
+                    BambinoDataContext context = new BambinoDataContext();
+
+                    var vm = context.ACLayers
+                        .Where(i => i.acLayerId == data.id
+                            && !i.isDeleted)
+                        .Select(obj => new 
+                        {
+                            obj.acLayerId,
+                            obj.acLayerCategoryId,
+                            acLayerCategory = new
+                            {
+                                obj.ACLayerCategory.acLayerCategoryId,
+                                obj.ACLayerCategory.name,
+                                obj.ACLayerCategory.value,
+                                obj.ACLayerCategory.description
+                            },
+                            obj.code,
+                            obj.name,
+                            obj.color,
+                            obj.description,
+                            obj.keywords,
+                            obj.isPlottable,
+                            obj.lineWeight,
+                            obj.lineType,
+                            obj.measurement,
+                            obj.transparency,
+                            obj.isDeleted
+                        })
+                        .FirstOrDefault();
+
+                    if (vm == null)
+                        throw new InvalidOperationException("Not Found");
+
+                    return Request.CreateResponse(HttpStatusCode.OK, vm);
+
+                }
+                catch (Exception ex)
+                {
+                    return Request.CreateResponse(HttpStatusCode.InternalServerError, ex);
+                }
+
+            }
+            return Request.CreateResponse(HttpStatusCode.InternalServerError, new { Message = "Invalid Token" });
+        }
+
+        [HttpPost]
+        public HttpResponseMessage _GetByKeyword([FromBody] ACLayerGetByKeywordViewModel data)
+        {
+            //Authentication a = AuthenticationController.GetMemberAuthenticated(data.authentication.apiId, 1, data.authentication.token);
+            //if (a.isAuthenticated)
+            //{
+
+                try
+                {
+
+                    BambinoDataContext context = new BambinoDataContext();
+
+                    string m = (data.measurement == "English") ? "Imperical" : data.measurement;
+
+                    var arr = context.ACLayers
+                        .Where(i => i.keywords.Contains(data.keyword)
+                            && i.measurement == m
+                            && !i.isDeleted)
+                        .Select(obj => new ACLayerViewModel()
+                        {
+                            acLayerId = obj.acLayerId,
+                            acLayerCategoryId = obj.acLayerCategoryId,
+                            acLayerCategory = new ACLayerCategoryViewModel()
+                            {
+                                acLayerCategoryId = obj.ACLayerCategory.acLayerCategoryId,
+                                name = obj.ACLayerCategory.name,
+                                value = obj.ACLayerCategory.value,
+                                description = obj.ACLayerCategory.description
+                            },
+                            code = obj.code,
+                            name = obj.name,
+                            color = obj.color,
+                            description = obj.description,
+                            keywords = obj.keywords,
+                            isPlottable = obj.isPlottable,
+                            lineWeight = obj.lineWeight,
+                            lineType = obj.lineType,
+                            measurement = obj.measurement,
+                            transparency = obj.transparency,
+                            isDeleted = obj.isDeleted
+                        })
+                        .OrderBy(i => i.name)
+                        .ToList();
+
+                    return Request.CreateResponse(HttpStatusCode.OK, arr);
+
+                }
+                catch (Exception ex)
+                {
+                    return Request.CreateResponse(HttpStatusCode.InternalServerError, ex);
+                }
+
+            //}
+            //return Request.CreateResponse(HttpStatusCode.InternalServerError, new { Message = "Invalid Token" });
+        }
+
+        [HttpPost]
+        public HttpResponseMessage _GetByCategory([FromBody] ACLayerGetByCategoryViewModel data)
         {
 
-            BambinoDataContext context = new BambinoDataContext();
+            try
+            {
 
-            string m = (data.measurement == "English") ? "Imperical" : data.measurement;
+                BambinoDataContext context = new BambinoDataContext();
 
-            return context.ACLayers
-                .Where(i => i.keywords.Contains(data.keyword)
-                    && i.measurement == m
-                    && !i.isDeleted)
-                .Select(obj => new ACLayerViewModel()
-                {
-                    acLayerId = obj.acLayerId,
-                    acLayerCategoryId = obj.acLayerCategoryId,
-                    acLayerCategory = new ACLayerCategoryViewModel()
+                string m = (data.measurement == "English") ? "Imperical" : data.measurement;
+
+                Expression<Func<ACLayer, bool>> query = i => i.ACLayerCategory.name == data.category && i.measurement == m && !i.isDeleted;
+
+                if (data.category == "All")
+                    query = i => i.measurement == m && !i.isDeleted;
+
+                var arr = context.ACLayers
+                    .Where(query)
+                    .Select(obj => new ACLayerViewModel()
                     {
-                        acLayerCategoryId = obj.ACLayerCategory.acLayerCategoryId,
-                        name = obj.ACLayerCategory.name,
-                        value = obj.ACLayerCategory.value,
-                        description = obj.ACLayerCategory.description
-                    },
-                    code = obj.code,
-                    name = obj.name,
-                    color = obj.color,
-                    description = obj.description,
-                    keywords = obj.keywords,
-                    isPlottable = obj.isPlottable,
-                    lineWeight = obj.lineWeight,
-                    lineType = obj.lineType,
-                    measurement = obj.measurement,
-                    transparency = obj.transparency,
-                    isDeleted = obj.isDeleted
-                })
-                .OrderBy(i => i.name)
-                .ToList();
+                        acLayerId = obj.acLayerId,
+                        acLayerCategoryId = obj.acLayerCategoryId,
+                        acLayerCategory = new ACLayerCategoryViewModel()
+                        {
+                            acLayerCategoryId = obj.ACLayerCategory.acLayerCategoryId,
+                            name = obj.ACLayerCategory.name,
+                            value = obj.ACLayerCategory.value,
+                            description = obj.ACLayerCategory.description
+                        },
+                        code = obj.code,
+                        name = obj.name,
+                        color = obj.color,
+                        description = obj.description,
+                        keywords = obj.keywords,
+                        isPlottable = obj.isPlottable,
+                        lineWeight = obj.lineWeight,
+                        lineType = obj.lineType,
+                        measurement = obj.measurement,
+                        transparency = obj.transparency,
+                        isDeleted = obj.isDeleted
+                    })
+                    .OrderBy(i => i.name)
+                    .ToList();
+
+                return Request.CreateResponse(HttpStatusCode.OK, arr);
+
+            }
+            catch (Exception ex)
+            {
+                return Request.CreateResponse(HttpStatusCode.InternalServerError, ex);
+            }
 
         }
 
-        public static List<ACLayerViewModel> _GetByCategory(ACLayerGetByCategoryViewModel data)
+        [HttpPost]
+        public HttpResponseMessage _GetAreaTag([FromBody] ACLayerGetByCategoryViewModel data)
         {
 
-            BambinoDataContext context = new BambinoDataContext();
+            try
+            {
 
-            string m = (data.measurement == "English") ? "Imperical" : data.measurement;
+                BambinoDataContext context = new BambinoDataContext();
 
-            Expression<Func<ACLayer, bool>> query = i => i.ACLayerCategory.name == data.category && i.measurement == m && !i.isDeleted;
+                string initial = data.measurement.Substring(0, 1);
+                Expression<Func<ACLayer, bool>> query = i => (i.name == "EDC-" + initial + "-G-AREA-NOTE"
+                        || i.name == "EDC-" + initial + "-G-NOTE"
+                        || i.name == "EDC-" + initial + "-G-AREA-GROS-NPLT"
+                        || i.name == "EDC-" + initial + "-G-AREA-NET1-NPLT")
+                        && i.measurement == data.measurement
+                        && !i.isDeleted;
 
-            if (data.category == "All")
-                query = i => i.measurement == m && !i.isDeleted;
-
-            return context.ACLayers
-                .Where(query)
-                .Select(obj => new ACLayerViewModel()
-                {
-                    acLayerId = obj.acLayerId,
-                    acLayerCategoryId = obj.acLayerCategoryId,
-                    acLayerCategory = new ACLayerCategoryViewModel()
+                var arr = context.ACLayers
+                    .Where(query)
+                    .Select(obj => new ACLayerViewModel()
                     {
-                        acLayerCategoryId = obj.ACLayerCategory.acLayerCategoryId,
-                        name = obj.ACLayerCategory.name,
-                        value = obj.ACLayerCategory.value,
-                        description = obj.ACLayerCategory.description
-                    },
-                    code = obj.code,
-                    name = obj.name,
-                    color = obj.color,
-                    description = obj.description,
-                    keywords = obj.keywords,
-                    isPlottable = obj.isPlottable,
-                    lineWeight = obj.lineWeight,
-                    lineType = obj.lineType,
-                    measurement = obj.measurement,
-                    transparency = obj.transparency,
-                    isDeleted = obj.isDeleted
-                })
-                .OrderBy(i => i.name)
-                .ToList();
+                        acLayerId = obj.acLayerId,
+                        acLayerCategoryId = obj.acLayerCategoryId,
+                        acLayerCategory = new ACLayerCategoryViewModel()
+                        {
+                            acLayerCategoryId = obj.ACLayerCategory.acLayerCategoryId,
+                            name = obj.ACLayerCategory.name,
+                            value = obj.ACLayerCategory.value,
+                            description = obj.ACLayerCategory.description
+                        },
+                        code = obj.code,
+                        name = obj.name,
+                        color = obj.color,
+                        description = obj.description,
+                        keywords = obj.keywords,
+                        isPlottable = obj.isPlottable,
+                        lineWeight = obj.lineWeight,
+                        lineType = obj.lineType,
+                        measurement = obj.measurement,
+                        transparency = obj.transparency,
+                        isDeleted = obj.isDeleted
+                    })
+                    .OrderBy(i => i.name)
+                    .ToList();
+
+                return Request.CreateResponse(HttpStatusCode.OK, arr);
+
+            }
+            catch (Exception ex)
+            {
+                return Request.CreateResponse(HttpStatusCode.InternalServerError, ex);
+            }
 
         }
 
-        public static List<ACLayerViewModel> _GetAreaTag(string measurement)
+        [HttpPost]
+        public HttpResponseMessage _GetByArea(string measurement)
         {
 
-            BambinoDataContext context = new BambinoDataContext();
+            try
+            {
 
-            string initial = measurement.Substring(0, 1);
-            Expression<Func<ACLayer, bool>> query = i => (i.name == "EDC-" + initial + "-G-AREA-NOTE"
-                    || i.name == "EDC-" + initial + "-G-NOTE"
-                    || i.name == "EDC-" + initial + "-G-AREA-GROS-NPLT"
-                    || i.name == "EDC-" + initial + "-G-AREA-NET1-NPLT")
-                    && i.measurement == measurement
-                    && !i.isDeleted;
-
-            return context.ACLayers
-                .Where(query)
-                .Select(obj => new ACLayerViewModel()
-                {
-                    acLayerId = obj.acLayerId,
-                    acLayerCategoryId = obj.acLayerCategoryId,
-                    acLayerCategory = new ACLayerCategoryViewModel()
-                    {
-                        acLayerCategoryId = obj.ACLayerCategory.acLayerCategoryId,
-                        name = obj.ACLayerCategory.name,
-                        value = obj.ACLayerCategory.value,
-                        description = obj.ACLayerCategory.description
-                    },
-                    code = obj.code,
-                    name = obj.name,
-                    color = obj.color,
-                    description = obj.description,
-                    keywords = obj.keywords,
-                    isPlottable = obj.isPlottable,
-                    lineWeight = obj.lineWeight,
-                    lineType = obj.lineType,
-                    measurement = obj.measurement,
-                    transparency = obj.transparency,
-                    isDeleted = obj.isDeleted
-                })
-                .OrderBy(i => i.name)
-                .ToList();
-
-        }
-
-        public static string[] _GetByArea(string measurement)
-        {
-
-            BambinoDataContext context = new BambinoDataContext();
+                BambinoDataContext context = new BambinoDataContext();
             
-            Expression<Func<ACLayer, bool>> query = i => i.name.Contains("AREA")
-                    && i.name.Contains("NPLT")
-                    && i.measurement == measurement
-                    && !i.isDeleted;
+                Expression<Func<ACLayer, bool>> query = i => i.name.Contains("AREA")
+                        && i.name.Contains("NPLT")
+                        && i.measurement == measurement
+                        && !i.isDeleted;
 
-            return context.ACLayers
-                .Where(query)
-                .Select(obj => obj.name)
-                .OrderBy(i => i)
-                .ToArray();
+                var arr = context.ACLayers
+                    .Where(query)
+                    .Select(obj => obj.name)
+                    .OrderBy(i => i)
+                    .ToArray();
+
+                return Request.CreateResponse(HttpStatusCode.OK, arr);
+
+            }
+            catch (Exception ex)
+            {
+                return Request.CreateResponse(HttpStatusCode.InternalServerError, ex);
+            }
 
         }
 

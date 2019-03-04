@@ -15,30 +15,22 @@ namespace Api.Models
 
         public Guid acLayerCategoryId { get; set; } = Guid.Empty;
         public ACLayerCategoryViewModel acLayerCategory { get; set; } = new ACLayerCategoryViewModel();
-
         
         public string name { get; set; } = "";
-
         
         public string color { get; set; } = "";
-
         
         public string lineWeight { get; set; } = "";
-
         
         public string lineType { get; set; } = "";
 
         public int transparency { get; set; } = 0;
-
         
         public string measurement { get; set; } = "";
-
         
         public string code { get; set; } = "";
-
         
         public string keywords { get; set; } = "";
-
         
         public string description { get; set; } = "";
 

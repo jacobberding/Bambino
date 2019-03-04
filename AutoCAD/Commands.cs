@@ -11,14 +11,70 @@ using System.Text.RegularExpressions;
 using Api.Controllers;
 using Api.Models;
 using Exception = System.Exception;
+using Newtonsoft.Json;
+using System.Net;
+using System.Text;
+using System.IO;
+using System.Web.Script.Serialization;
+using RestSharp;
 
 namespace EDCCommands
 {
     public class Commands
     {
+
+        public static string HTTPRequest(string vm, string controller, string method)
+        {
+            
+            try
+            {
+                
+                var request = WebRequest.Create("https://api.bambino.software/Api/" + controller + "/" + method) as HttpWebRequest;
+                request.KeepAlive = true;
+                request.Method = "POST";
+                request.ContentType = "application/json";
+
+                byte[] byteArray = Encoding.UTF8.GetBytes(vm);
+
+                using (var writer = request.GetRequestStream())
+                {
+                    writer.Write(byteArray, 0, byteArray.Length);
+                }
+
+                using (var response = request.GetResponse() as HttpWebResponse)
+                {
+                    using (var reader = new StreamReader(response.GetResponseStream()))
+                    {
+                        return reader.ReadToEnd();
+                    }
+                }
+
+            }
+            catch (WebException ex)
+            {
+                if (ex.Response != null)
+                {
+                    if (ex.Response.ContentLength != 0)
+                    {
+                        using (var stream = ex.Response.GetResponseStream())
+                        {
+                            using (var reader = new StreamReader(stream))
+                            {
+                                string r = reader.ReadToEnd();
+                                throw new InvalidOperationException(r);
+                            }
+                        }
+                    }
+                }
+                return ex.Message;
+            }
+
+        }
+
         //ATTSync - look into this
         public static List<ACAreaCategoryViewModel> acAreaCategoryViewModels = new List<ACAreaCategoryViewModel>();
         public static List<ListViewModel> disciplineViewModels = new List<ListViewModel>();
+        public static JavaScriptSerializer serializer = new JavaScriptSerializer();
 
         //Architectural = 4
         //Decimal = 2
@@ -37,7 +93,7 @@ namespace EDCCommands
                 pso.AllowSpaces = false;
                 PromptResult pr = Active.Editor.GetString(pso);
 
-                ProjectViewModel project = ProjectController._GetByCode(pr.StringResult);
+                ProjectViewModel project = serializer.Deserialize<ProjectViewModel>(HTTPRequest(serializer.Serialize(new { code = pr.StringResult }), "Project", "_GetByCode"));
 
                 if (project == null)
                     throw new Exception(string.Format("No project found with code {0}", pr.StringResult));
@@ -122,8 +178,8 @@ namespace EDCCommands
                 pso.AllowSpaces = false;
                 PromptResult pr = Active.Editor.GetString(pso);
                 string m = (Active.Database.Measurement.ToString() == "English") ? "Imperial" : Active.Database.Measurement.ToString();
-
-                List<ACLayerViewModel> acLayers = ACLayerController._GetByKeyword(new ACLayerGetByKeywordViewModel() { keyword = pr.StringResult, measurement = m });
+                
+                List<ACLayerViewModel> acLayers = serializer.Deserialize<List<ACLayerViewModel>>(HTTPRequest(serializer.Serialize(new ACLayerGetByKeywordViewModel() { keyword = pr.StringResult, measurement = m }), "ACLayer", "_GetByKeyword"));
 
                 if (acLayers == null || acLayers.Count == 0)
                     throw new Exception(string.Format("No layers found matching {0} in measurement {1}", pr.StringResult, m));
@@ -222,7 +278,7 @@ namespace EDCCommands
                 {
 
                     string m = (Active.Database.Measurement.ToString() == "English") ? "Imperial" : Active.Database.Measurement.ToString();
-                    List<ACLayerCategoryViewModel> categories = ACLayerCategoryController._Get();
+                    List<ListViewModel> categories = serializer.Deserialize<List<ListViewModel>>(HTTPRequest("{}", "ACLayerCategory", "_Get"));
                     List<ACLayerViewModel> layers = new List<ACLayerViewModel>();
                     LayerTable lt = (LayerTable)tr.GetObject(Active.Database.LayerTableId, OpenMode.ForRead);
                     LinetypeTable ltt = (LinetypeTable)tr.GetObject(Active.Database.LinetypeTableId, OpenMode.ForRead) as LinetypeTable;
@@ -234,9 +290,9 @@ namespace EDCCommands
                         pko.Keywords.Add(obj.name);
 
                     PromptResult pr = Active.Editor.GetKeywords(pko);
-                    ACLayerCategoryViewModel category = (pr.StringResult == "All") ? new ACLayerCategoryViewModel() { name = "All" } : categories.Where(i => i.name.Contains(pr.StringResult)).FirstOrDefault();
-
-                    layers = ACLayerController._GetByCategory(new ACLayerGetByCategoryViewModel() { category = category.name, measurement = m });
+                    ListViewModel category = (pr.StringResult == "All") ? new ListViewModel() { name = "All" } : categories.Where(i => i.name.Contains(pr.StringResult)).FirstOrDefault();
+                    
+                    layers = serializer.Deserialize<List<ACLayerViewModel>>(HTTPRequest(serializer.Serialize(new ACLayerGetByCategoryViewModel() { category = category.name, measurement = m }), "ACLayer", "_GetByCategory"));
 
                     if (layers.Count == 0)
                         throw new Exception(String.Format("\nNo Layers in {0} Category for {1}", category.name, m));
@@ -312,9 +368,9 @@ namespace EDCCommands
                     pko.Keywords.Add("Yes");
                     pko.Keywords.Add("No");
                     PromptResult pr = Active.Editor.GetKeywords(pko);
-
-                    acLayers = ACLayerController._GetByCategory(new ACLayerGetByCategoryViewModel() { category = "All", measurement = m });
                     
+                    acLayers = serializer.Deserialize<List<ACLayerViewModel>>(HTTPRequest(serializer.Serialize(new ACLayerGetByCategoryViewModel() { category = "All", measurement = m }), "ACLayer", "_GetByCategory"));
+
                     foreach (ObjectId id in lt)
                     {
                         
@@ -734,7 +790,7 @@ namespace EDCCommands
 
                     bool isLayers = false;
                     string m = (Active.Database.Measurement.ToString() == "English") ? "Imperial" : Active.Database.Measurement.ToString();
-                    string[] layers = ACLayerController._GetByArea(m);
+                    string[] layers = serializer.Deserialize<string[]>(HTTPRequest(serializer.Serialize(new ACLayerGetByCategoryViewModel() { measurement = m }), "ACLayer", "_GetByArea"));
                     string layer = AddPromptKeywordOptions(Active.Document, "Select a type: ", layers, layers.FirstOrDefault());
                     IEnumerable<Polyline> polylines = ms.OfType<Polyline>(tr).Where(c => c.Layer == layer);
 
@@ -789,7 +845,7 @@ namespace EDCCommands
             string name = pr.StringResult;
 
             if (acAreaCategoryViewModels.Count == 0)
-                acAreaCategoryViewModels = ACAreaCategoryController._Get();
+                acAreaCategoryViewModels = serializer.Deserialize<List<ACAreaCategoryViewModel>>(HTTPRequest(serializer.Serialize("{}"), "ACAreaCategory", "_Get"));
 
             string type = AddPromptKeywordOptions(Active.Document, "Select a type: ", acAreaCategoryViewModels.Select(i => i.name).ToArray(), acAreaCategoryViewModels.Select(i => i.name).FirstOrDefault());
 
@@ -969,7 +1025,7 @@ namespace EDCCommands
                     tr.AddNewlyCreatedDBObject(btr, true);
 
                     LayerTable lt = (LayerTable)tr.GetObject(Active.Database.LayerTableId, OpenMode.ForRead);
-                    List<ACLayerViewModel> acLayers = ACLayerController._GetAreaTag(m);
+                    List<ACLayerViewModel> acLayers = serializer.Deserialize<List<ACLayerViewModel>>(HTTPRequest(serializer.Serialize(new ACLayerGetByCategoryViewModel() { measurement = m }), "ACLayer", "_GetAreaTag"));
 
                     foreach (var acLayer in acLayers)
                     {
@@ -1371,9 +1427,9 @@ namespace EDCCommands
                     //Get the result
                     PromptEntityResult per;
                     per = Active.Editor.GetEntity(peo);
-
+                    
                     if (disciplineViewModels.Count == 0)
-                        disciplineViewModels = DisciplineController._Get();
+                        disciplineViewModels = serializer.Deserialize<List<ListViewModel>>(HTTPRequest(serializer.Serialize("{}"), "Discipline", "_Get"));
 
                     string discipline = AddPromptKeywordOptions(Active.Document, "Select a discipline: ", disciplineViewModels.Select(i => i.name).ToArray(), disciplineViewModels.Select(i => i.name).FirstOrDefault());
                     

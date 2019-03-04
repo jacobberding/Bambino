@@ -19,6 +19,7 @@ const Application = (function () {
         Disciplines.get();
         TimeTracker.getIsActive();
         ProjectReferenceTag.get();
+        ACLayerCategory.get();
 
     }
     const _openSub = function ($this) {
@@ -182,6 +183,10 @@ const Application = (function () {
                     ${Global.jack.mIA ? `
                     <m-button data-type="secondary" class="sQ btnOpenBody mR" data-label="Primary" data-function="TimeTracker.getHtmlBody" data-args="">
                         Time Sheets
+                    </m-button>
+
+                    <m-button data-type="secondary" class="sQ btnOpenBody mR" data-label="Primary" data-function="ACLayer.getHtmlBody" data-args="">
+                        Layers
                     </m-button>` : ``}
 
                 </m-flex>
