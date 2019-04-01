@@ -56,12 +56,12 @@ namespace Api.Models
 
         public long contactKey { get; set; } = 0;
 
+        public long contactCompanyKey { get; set; } = 0;
+
         public string name { get; set; } = "";
 
         public string title { get; set; } = "";
-
-        public string companyName { get; set; } = "";
-
+        
         public string phone1 { get; set; } = "";
 
         public string phone2 { get; set; } = "";
@@ -69,13 +69,7 @@ namespace Api.Models
         public string skypeId { get; set; } = "";
 
         public string email { get; set; } = "";
-
-        public string companyTemp { get; set; } = "";
-
-        public string resume { get; set; } = "";
-
-        public string portfolio { get; set; } = "";
-
+        
         public string personalWebsite { get; set; } = "";
 
         public string skills { get; set; } = "";

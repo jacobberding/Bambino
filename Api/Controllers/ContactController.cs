@@ -36,17 +36,14 @@ namespace Api.Controllers
 
                     if (contact == null)
                         throw new InvalidOperationException("Layer Not Found");
-                
+
+                    contact.contactCompanyKey = data.contactCompanyKey;
                     contact.name = data.name;
                     contact.title = data.title;
-                    contact.companyName = data.companyName;
                     contact.phone1 = data.phone1;
                     contact.phone2 = data.phone2;
                     contact.skypeId = data.skypeId;
                     contact.email = data.email;
-                    contact.companyTemp = data.companyTemp;
-                    contact.resume = data.resume;
-                    contact.portfolio = data.portfolio;
                     contact.personalWebsite = data.personalWebsite;
                     contact.skills = data.skills;
                     contact.isEdcFamily = data.isEdcFamily;
@@ -187,7 +184,7 @@ namespace Api.Controllers
                         //    && i.email.Contains(data.search);
 
                         query += @" AND (" + String.Format("name.Contains(\"{0}\")", data.search) + @"
-                            OR " + String.Format("companyName.Contains(\"{0}\")", data.search) + @"
+                            OR " + String.Format("ContactCompany.name.Contains(\"{0}\")", data.search) + @"
                             OR " + String.Format("personalWebsite.Contains(\"{0}\")", data.search) + @"
                             OR " + String.Format("companyTemp.Contains(\"{0}\")", data.search) + @"
                             OR " + String.Format("title.Contains(\"{0}\")", data.search) + @"
@@ -201,15 +198,19 @@ namespace Api.Controllers
                     int totalRecords = context.Contacts.Where(query).Count();
                     var arr = context.Contacts
                         .Where(query)
-                        .Select(obj => new ContactViewModel
+                        .Select(obj => new 
                         {
-                            contactKey = obj.contactKey,
-                            name = (obj.name == "") ? obj.companyName : obj.name,
-                            email = obj.email,
-                            skills = obj.skills,
-                            title = obj.title,
-                            personalWebsite = obj.personalWebsite,
-                            isDeleted = obj.isDeleted
+                            obj.contactKey,
+                            obj.name,
+                            contactCompany = new
+                            {
+                                obj.ContactCompany.name
+                            },
+                            obj.email,
+                            obj.skills,
+                            obj.title,
+                            obj.personalWebsite,
+                            obj.isDeleted
                         })
                         .OrderBy(data.sort)
                         .Skip(skip)
@@ -253,33 +254,31 @@ namespace Api.Controllers
                     var vm = context.Contacts
                         .Where(i => i.contactKey == data.key
                             && !i.isDeleted)
-                        .Select(obj => new ContactViewModel
+                        .Select(obj => new
                         {
-                            contactKey = obj.contactKey,
-                            name = obj.name,
-                            email = obj.email,
-                            companyName = obj.companyName,
-                            companyTemp = obj.companyTemp,
-                            dateCreated = obj.dateCreated,
-                            isEdcFamily = obj.isEdcFamily,
-                            isDeleted = obj.isDeleted,
-                            isPotentialStaffing = obj.isPotentialStaffing,
-                            personalWebsite = obj.personalWebsite,
-                            contactFiles = obj.ContactFiles.Where(i => !i.isDeleted).Select(contactFile => new ContactFileViewModel() {
-                                contactFileKey = contactFile.contactFileKey,
-                                contactKey = contactFile.contactKey,
-                                name = contactFile.name,
-                                path = contactFile.path,
-                                originalFileName = contactFile.originalFileName,
-                                isDeleted = contactFile.isDeleted
+                            obj.contactKey,
+                            obj.contactCompanyKey,
+                            obj.name,
+                            obj.email,
+                            obj.dateCreated,
+                            obj.isEdcFamily,
+                            obj.isDeleted,
+                            obj.isPotentialStaffing,
+                            obj.personalWebsite,
+                            contactFiles = obj.ContactFiles.Where(i => !i.isDeleted).Select(contactFile => new
+                            {
+                                contactFile.contactFileKey,
+                                contactFile.contactKey,
+                                contactFile.name,
+                                contactFile.path,
+                                contactFile.originalFileName,
+                                contactFile.isDeleted
                             }).ToList(),
-                            phone1 = obj.phone1,
-                            phone2 = obj.phone2,
-                            portfolio = obj.portfolio,
-                            resume = obj.resume,
-                            skills = obj.skills,
-                            skypeId = obj.skypeId,
-                            title = obj.title
+                            obj.phone1,
+                            obj.phone2,
+                            obj.skills,
+                            obj.skypeId,
+                            obj.title
                         })
                         .FirstOrDefault();
 
@@ -315,7 +314,7 @@ namespace Api.Controllers
                         .Select(obj => new ContactViewModel
                         {
                             contactKey = obj.contactKey,
-                            name = (obj.name == "") ? obj.companyName : obj.name,
+                            name = (obj.name == "") ? obj.ContactCompany.name : obj.name,
                             email = obj.email
                         })
                         .OrderBy(i => i.name)

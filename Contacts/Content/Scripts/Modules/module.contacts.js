@@ -12,21 +12,17 @@ const Contacts = (function () {
         isShowMore: false,
         vm: {},
         name: `Contact`,
-        constructor: function (contactKey, contactCompanyKey, name, title, companyName, phone1, phone2,
-            skypeId, email, companyTemp, resume, portfolio, personalWebsite, skills,
+        constructor: function (contactKey, contactCompanyKey, name, title, phone1, phone2,
+            skypeId, email, personalWebsite, skills,
             isEdcFamily, isPotentialStaffing, isDeleted, contactFiles) {
             this.contactKey = contactKey;
             this.contactCompanyKey = contactCompanyKey;
             this.name = name;
             this.title = title;
-            this.companyName = companyName;
             this.phone1 = phone1;
             this.phone2 = phone2;
             this.skypeId = skypeId;
             this.email = email;
-            this.companyTemp = companyTemp;
-            this.resume = resume;
-            this.portfolio = portfolio;
             this.personalWebsite = personalWebsite;
             this.skills = skills;
             this.isEdcFamily = isEdcFamily;
@@ -37,17 +33,14 @@ const Contacts = (function () {
     };
 
     const _addEdit = function () {
-        
+
+        _self.vm.contactCompanyKey = $(`#dboContactCompanyKey${_self.name}`).val();
         _self.vm.name = $(`#txtName${_self.name}`).val();
         _self.vm.title = $(`#txtTitle${_self.name}`).val();
-        _self.vm.companyName = $(`#txtCompanyName${_self.name}`).val();
         _self.vm.phone1 = $(`#txtPhone1${_self.name}`).val();
         _self.vm.phone2 = $(`#txtPhone2${_self.name}`).val();
         _self.vm.skypeId = $(`#txtSkypeId${_self.name}`).val();
         _self.vm.email = $(`#txtEmail${_self.name}`).val();
-        _self.vm.companyTemp = $(`#txtCompanyTemp${_self.name}`).val();
-        _self.vm.resume = $(`#txtResume${_self.name}`).val();
-        _self.vm.portfolio = $(`#txtPortfolio${_self.name}`).val();
         _self.vm.personalWebsite = $(`#txtPersonalWebsite${_self.name}`).val();
         _self.vm.skills = $(`#txtSkills${_self.name}`).val();
         _self.vm.isEdcFamily = $(`#chkIsEDCFamily${_self.name}`).prop(`checked`);
@@ -56,7 +49,7 @@ const Contacts = (function () {
 
         _addEditDelete();
 
-    }
+    };
     const _addEditDelete = function () {
 
         try {
@@ -85,7 +78,7 @@ const Contacts = (function () {
             Validation.fail(ex);
         }
 
-    }
+    };
 
     const _delete = function () {
 
@@ -93,8 +86,8 @@ const Contacts = (function () {
 
         _addEditDelete();
 
-    }
-
+    };
+    
     const _getByPage = function (page) {
 
         const vm = {
@@ -128,7 +121,7 @@ const Contacts = (function () {
                 Validation.notification(2);
             });
 
-    }
+    };
     const _getByKey = function (key) {
 
         const vm = {
@@ -147,10 +140,10 @@ const Contacts = (function () {
                 Validation.notification(2);
             });
 
-    }
+    };
 
     const _getEmptyVM = function () {
-        return new _self.constructor(0, 0, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, false, false, false, []);
+        return new _self.constructor(0, 0, ``, ``, ``, ``, ``, ``, ``, ``, false, false, false, []);
     };
     const _getExport = function () {
         
@@ -173,7 +166,7 @@ const Contacts = (function () {
         let lineArray = [];
 
         for (let obj of data)
-            csvArray.push([obj.name,obj.email]);
+            csvArray.push([obj.name, obj.email]);
 
         csvArray.forEach(function (csvRow, index) {
 
@@ -185,8 +178,8 @@ const Contacts = (function () {
         });
 
         saveAs(new Blob([lineArray.join("\n")], { type: "text/plain;charset=utf-8" }), `Bambino Report_Contacts_${moment().format(`MMDDYYYY hhmmssa`)}.csv`);
-        
-    }
+
+    };
 
     const _search = function () {
 
@@ -195,7 +188,7 @@ const Contacts = (function () {
             _getByPage(1);
         }, Global.keyUpTimeout);
 
-    }
+    };
     const _sort = function ($this) {
 
         var dir = ($this.hasClass(`sortasc`)) ? `desc` : `asc`;
@@ -204,8 +197,8 @@ const Contacts = (function () {
         $(`.sort h2`).removeClass(`sortasc`).removeClass(`sortdesc`);
         $this.addClass(`sort${dir}`);
         _getByPage(1);
-        
-    }
+
+    };
     const _uploadData = function (files) {
 
         const file = files[0];
@@ -333,6 +326,7 @@ const Contacts = (function () {
     };
 
     const getHtmlBody = function () {
+        ContactCompany.get();
         _getByPage(1);
         return `
 
@@ -340,7 +334,7 @@ const Contacts = (function () {
 
                 <m-flex data-type="row" class="c n pL pR">
 
-                    <h1 class="w">${_self.name}</h1>
+                    <h1 class="w">Contacts</h1>
 
                     <m-flex data-type="row" class="w n">
 
@@ -392,6 +386,9 @@ const Contacts = (function () {
                     <h2 class="${Global.getSort(_self.sort, `email`)}" data-sort="email">
                         Email
                     </h2>
+                    <h2 class="${Global.getSort(_self.sort, `ContactCompany.name`)}" data-sort="ContactCompany.name">
+                        Company
+                    </h2>
                     <h2 class="${Global.getSort(_self.sort, `title`)}" data-sort="title">
                         Title
                     </h2>
@@ -428,7 +425,7 @@ const Contacts = (function () {
                     <label>Settings</label>
                 </m-flex>
 
-                <m-flex data-type="row" class="n c sm sQ secondary btnOpenModule" data-function="Module.getHtmlConfirmation" data-args="contact,btnDelete${_self.name}">
+                <m-flex data-type="row" class="n c sm sQ secondary btnOpenModule" data-function="Module.getHtmlConfirmation" data-args="Are you sure you want to DELETE this contact?,btnDelete${_self.name}">
                     <i class="icon-trash-can"><svg><use xlink:href="/Content/Images/Bambino.min.svg#icon-trash-can"></use></svg></i>
                 </m-flex>
             
@@ -461,57 +458,36 @@ const Contacts = (function () {
                         <input type="text" id="txtName${_self.name}" placeholder="Name" value="${_self.vm.name}" />
                     </m-input>
 
-                    <m-input>
+                    <m-input class="">
+                        <label for="dboContactCompanyKey${_self.name}">Company</label>
+                        <select id="dboContactCompanyKey${_self.name}">
+                            <option value="0">N/A</option>
+                            ${Global.getHtmlOptions(ContactCompany.getSelf().arr, [_self.vm.contactCompanyKey])}
+                        </select>
+                    </m-input>
+                </m-flex>
+
+                <m-flex data-type="row" class="n">
+                    <m-input class="mR">
                         <label for="txtTitle${_self.name}">Title</label>
                         <input type="text" id="txtTitle${_self.name}" placeholder="Title" value="${_self.vm.title}" />
                     </m-input>
-                </m-flex>
 
-                <m-flex data-type="row" class="n">
-                    <m-input class="mR">
-                        <label for="txtCompanyName${_self.name}">Company Name</label>
-                        <input type="text" id="txtCompanyName${_self.name}" placeholder="Company Name" value="${_self.vm.companyName}" />
-                    </m-input>
-
-                    <m-input>
-                        <label for="txtPhone1${_self.name}">Phone 1</label>
-                        <input type="text" id="txtPhone1${_self.name}" placeholder="Phone 1" value="${_self.vm.phone1}" />
-                    </m-input>
-                </m-flex>
-
-                <m-flex data-type="row" class="n">
-                    <m-input class="mR">
-                        <label for="txtPhone2${_self.name}">Phone 2</label>
-                        <input type="text" id="txtPhone2${_self.name}" placeholder="Phone 2" value="${_self.vm.phone2}" />
-                    </m-input>
-
-                    <m-input>
-                        <label for="txtSkypeId${_self.name}">Skype Id</label>
-                        <input type="text" id="txtSkypeId${_self.name}" placeholder="Skype Id" value="${_self.vm.skypeId}" />
-                    </m-input>
-                </m-flex>
-
-                <m-flex data-type="row" class="n">
-                    <m-input class="mR">
+                    <m-input class="">
                         <label for="txtEmail${_self.name}">Email</label>
                         <input type="text" id="txtEmail${_self.name}" placeholder="Email" value="${_self.vm.email}" />
                     </m-input>
-
-                    <m-input>
-                        <label for="txtCompanyTemp${_self.name}">Company (Temp)</label>
-                        <input type="text" id="txtCompanyTemp${_self.name}" placeholder="Company (Temp)" value="${_self.vm.companyTemp}" />
-                    </m-input>
                 </m-flex>
 
                 <m-flex data-type="row" class="n">
                     <m-input class="mR">
-                        <label for="txtResume${_self.name}">Resume</label>
-                        <input type="text" id="txtResume${_self.name}" placeholder="Resume" value="${_self.vm.resume}" />
+                        <label for="txtPhone1${_self.name}">Phone 1</label>
+                        <input type="text" id="txtPhone1${_self.name}" placeholder="Phone 1" value="${_self.vm.phone1}" />
                     </m-input>
 
-                    <m-input>
-                        <label for="txtPortfolio${_self.name}">Portfolio</label>
-                        <input type="text" id="txtPortfolio${_self.name}" placeholder="Portfolio" value="${_self.vm.portfolio}" />
+                    <m-input class="">
+                        <label for="txtPhone2${_self.name}">Phone 2</label>
+                        <input type="text" id="txtPhone2${_self.name}" placeholder="Phone 2" value="${_self.vm.phone2}" />
                     </m-input>
                 </m-flex>
 
@@ -521,6 +497,13 @@ const Contacts = (function () {
                         <input type="text" id="txtPersonalWebsite${_self.name}" placeholder="Personal Website" value="${_self.vm.personalWebsite}" />
                     </m-input>
 
+                    <m-input>
+                        <label for="txtSkypeId${_self.name}">Skype Id</label>
+                        <input type="text" id="txtSkypeId${_self.name}" placeholder="Skype Id" value="${_self.vm.skypeId}" />
+                    </m-input>
+                </m-flex>
+
+                <m-flex data-type="row" class="n">
                     <m-input>
                         <label for="txtSkills${_self.name}">Skills</label>
                         <input type="text" id="txtSkills${_self.name}" placeholder="Skills" value="${_self.vm.skills}" />
@@ -560,6 +543,9 @@ const Contacts = (function () {
                         ${obj.email}
                     </h2>
                     <h2 class="tE">
+                        ${obj.contactCompany.name}
+                    </h2>
+                    <h2 class="tE">
                         ${obj.title}
                     </h2>
                     ${(Global.isMobile()) ? `` : `
@@ -596,7 +582,7 @@ const Contacts = (function () {
         getHtmlBodyDetail: getHtmlBodyDetail,
         getHtmlBodyForm: getHtmlBodyForm,
         getHtmlCard: getHtmlCard
-    }
+    };
 
 })();
 const ContactFile = (function () {
@@ -780,12 +766,14 @@ const ContactCompany = (function () {
         timeout: undefined,
         records: 100,
         page: 1,
+        pageArr: [],
         sort: `name asc`,
         isShowMore: false,
         name: `ContactCompany`,
         arr: [],
         vm: {},
-        constructor: function (contactCompanyKey, name, email, phone, website, addressLine1, addressLine2, city, state, zip, isVendor, isClient, isDeleted) {
+        constructor: function (contactCompanyKey, name, email, phone, website, addressLine1, addressLine2,
+            city, state, zip, isVendor, isClient, isDeleted) {
             this.contactCompanyKey = contactCompanyKey;
             this.name = name;
             this.email = email;
@@ -830,7 +818,7 @@ const ContactCompany = (function () {
                 .done(function (data) {
                     Validation.done();
 
-                    _self.arr = [];
+                    _self.pageArr = [];
 
                     _getByPage(1);
 
@@ -857,6 +845,9 @@ const ContactCompany = (function () {
 
     const _get = function () {
 
+        if (_self.arr.length > 0)
+            return;
+
         Global.post(`${_self.name}_Get`, {})
             .done(function (data) {
                 _self.arr = data;
@@ -874,7 +865,7 @@ const ContactCompany = (function () {
             sort: _self.sort
         }
 
-        if (page == 1) _self.arr = [];
+        if (page == 1) _self.pageArr = [];
 
         $(`m-body[data-label="Primary"] .flxLoading, m-body[data-label="Primary"] #lst${_self.name}s`).remove();
         $(`m-body[data-label="Primary"] #flx${_self.name}s`).append(Global.getHtmlLoading());
@@ -888,10 +879,10 @@ const ContactCompany = (function () {
                     _self.isShowMore = false;
 
                 for (let obj of data.arr)
-                    _self.arr.push(obj);
+                    _self.pageArr.push(obj);
 
                 $(`m-body[data-label="Primary"] .flxLoading, m-body[data-label="Primary"] #lst${_self.name}s`).remove();
-                $(`m-body[data-label="Primary"] #flx${_self.name}s`).append(getHtmlBodyList(_self.arr));
+                $(`m-body[data-label="Primary"] #flx${_self.name}s`).append(getHtmlBodyList(_self.pageArr));
 
             })
             .fail(function (data) {
@@ -903,7 +894,7 @@ const ContactCompany = (function () {
 
         const vm = {
             key: key
-        }
+        };
 
         Global.post(`${_self.name}_GetById`, vm)
             .done(function (data) {
@@ -917,6 +908,9 @@ const ContactCompany = (function () {
                 Validation.notification(2);
             });
 
+    };
+    const _getEmptyVM = function () {
+        return new _self.constructor(0, ``, ``, ``, ``, ``, ``, ``, ``, ``, false, false, false);
     };
 
     const _search = function (e, $this) {
@@ -937,18 +931,18 @@ const ContactCompany = (function () {
         if ($(`#txtSearch${_self.name}`).val() == ``)
             return;
 
-        for (let obj of _self.arr.filter(function (obj) { return obj.name.toLowerCase().includes($(`#txtSearch${_self.name}`).val().toLowerCase()); }))
+        for (let obj of _self.pageArr.filter(function (obj) { return obj.name.toLowerCase().includes($(`#txtSearch${_self.name}`).val().toLowerCase()); }))
             options += `<m-option data-name="${_self.name}">${obj.name}</m-option>`;
 
         $this.parent().append(`<m-select data-name="${_self.name}">${options}</m-select>`);
 
-    }
+    };
     const _select = function ($this) {
 
         $(`#txtSearch${_self.name}`).val($this.html()).focus();
         $(`m-select[data-name="${_self.name}"]`).remove();
 
-    }
+    };
 
     //Public ------------------------------------------------
     const get = function () {
@@ -1036,7 +1030,7 @@ const ContactCompany = (function () {
 
                 <m-flex data-type="row" class="c n pL pR">
 
-                    <h1 class="w">${_self.name}</h1>
+                    <h1 class="w">Companies</h1>
 
                     <m-flex data-type="row" class="w n">
 
@@ -1107,7 +1101,7 @@ const ContactCompany = (function () {
                     <label>Settings</label>
                 </m-flex>
 
-                <m-flex data-type="row" class="n c sm sQ secondary btnOpenModule" data-function="Module.getHtmlConfirmation" data-args="company,btnDelete${_self.name}">
+                <m-flex data-type="row" class="n c sm sQ secondary btnOpenModule" data-function="Module.getHtmlConfirmation" data-args="Are you sure you want to DELETE this company?,btnDelete${_self.name}">
                     <i class="icon-trash-can"><svg><use xlink:href="/Content/Images/Bambino.min.svg#icon-trash-can"></use></svg></i>
                 </m-flex>
             
@@ -1138,84 +1132,67 @@ const ContactCompany = (function () {
                         <input type="text" id="txtName${_self.name}" placeholder="Name" value="${_self.vm.name}" />
                     </m-input>
 
-                    <m-input>
-                        <label for="txtTitle${_self.name}">Title</label>
-                        <input type="text" id="txtTitle${_self.name}" placeholder="Title" value="${_self.vm.title}" />
-                    </m-input>
-                </m-flex>
-
-                <m-flex data-type="row" class="n">
-                    <m-input class="mR">
-                        <label for="txtCompanyName${_self.name}">Company Name</label>
-                        <input type="text" id="txtCompanyName${_self.name}" placeholder="Company Name" value="${_self.vm.companyName}" />
-                    </m-input>
-
-                    <m-input>
-                        <label for="txtPhone1${_self.name}">Phone 1</label>
-                        <input type="text" id="txtPhone1${_self.name}" placeholder="Phone 1" value="${_self.vm.phone1}" />
-                    </m-input>
-                </m-flex>
-
-                <m-flex data-type="row" class="n">
-                    <m-input class="mR">
-                        <label for="txtPhone2${_self.name}">Phone 2</label>
-                        <input type="text" id="txtPhone2${_self.name}" placeholder="Phone 2" value="${_self.vm.phone2}" />
-                    </m-input>
-
-                    <m-input>
-                        <label for="txtSkypeId${_self.name}">Skype Id</label>
-                        <input type="text" id="txtSkypeId${_self.name}" placeholder="Skype Id" value="${_self.vm.skypeId}" />
-                    </m-input>
-                </m-flex>
-
-                <m-flex data-type="row" class="n">
-                    <m-input class="mR">
+                    <m-input class="">
                         <label for="txtEmail${_self.name}">Email</label>
                         <input type="text" id="txtEmail${_self.name}" placeholder="Email" value="${_self.vm.email}" />
                     </m-input>
+                </m-flex>
 
-                    <m-input>
-                        <label for="txtCompanyTemp${_self.name}">Company (Temp)</label>
-                        <input type="text" id="txtCompanyTemp${_self.name}" placeholder="Company (Temp)" value="${_self.vm.companyTemp}" />
+                <m-flex data-type="row" class="n">
+                    <m-input class="mR">
+                        <label for="txtPhone${_self.name}">Phone</label>
+                        <input type="text" id="txtPhone${_self.name}" placeholder="Phone" value="${_self.vm.phone}" />
+                    </m-input>
+
+                    <m-input class="">
+                        <label for="txtWebsite${_self.name}">Website</label>
+                        <input type="text" id="txtWebsite${_self.name}" placeholder="Website" value="${_self.vm.website}" />
                     </m-input>
                 </m-flex>
 
                 <m-flex data-type="row" class="n">
                     <m-input class="mR">
-                        <label for="txtResume${_self.name}">Resume</label>
-                        <input type="text" id="txtResume${_self.name}" placeholder="Resume" value="${_self.vm.resume}" />
+                        <label for="txtAddressLine1${_self.name}">Address Line 1</label>
+                        <input type="text" id="txtAddressLine1${_self.name}" placeholder="Address Line 1" value="${_self.vm.addressLine1}" />
                     </m-input>
 
-                    <m-input>
-                        <label for="txtPortfolio${_self.name}">Portfolio</label>
-                        <input type="text" id="txtPortfolio${_self.name}" placeholder="Portfolio" value="${_self.vm.portfolio}" />
+                    <m-input class="">
+                        <label for="txtAddressLine2${_self.name}">Address Line 2</label>
+                        <input type="text" id="txtAddressLine2${_self.name}" placeholder="Address Line 2" value="${_self.vm.addressLine2}" />
                     </m-input>
                 </m-flex>
 
                 <m-flex data-type="row" class="n">
                     <m-input class="mR">
-                        <label for="txtPersonalWebsite${_self.name}">Personal Website</label>
-                        <input type="text" id="txtPersonalWebsite${_self.name}" placeholder="Personal Website" value="${_self.vm.personalWebsite}" />
+                        <label for="txtCity${_self.name}">City</label>
+                        <input type="text" id="txtCity${_self.name}" placeholder="City" value="${_self.vm.city}" />
                     </m-input>
 
-                    <m-input>
-                        <label for="txtSkills${_self.name}">Skills</label>
-                        <input type="text" id="txtSkills${_self.name}" placeholder="Skills" value="${_self.vm.skills}" />
+                    <m-input class="mR">
+                        <label for="txtZip${_self.name}">Zip</label>
+                        <input type="text" id="txtZip${_self.name}" placeholder="Zip" value="${_self.vm.zip}" />
+                    </m-input>
+
+                    <m-input class="">
+                        <label for="dboState${_self.name}">State</label>
+                        <select id="dboState${_self.name}">
+                            ${Global.getHtmlOptions(listStates, [_self.vm.state])}
+                        </select>
                     </m-input>
                 </m-flex>
 
                 <m-flex data-type="row" class="n">
                     <m-input class="mR">
                         <m-flex data-type="row" class="n">
-                            <input type="checkbox" class="mR" id="chkIsEDCFamily${_self.name}" ${(_self.vm.isEdcFamily) ? `checked` : ``} />
-                            <label for="chkIsEDCFamily${_self.name}">Is EDC Family</label>
+                            <input type="checkbox" class="mR" id="chkIsVendor${_self.name}" ${(_self.vm.isVendor) ? `checked` : ``} />
+                            <label for="chkIsVendor${_self.name}">Is Vendor</label>
                         </m-flex>
                     </m-input>
 
                     <m-input>
                         <m-flex data-type="row" class="n">
-                            <input type="checkbox" class="mR" id="chkIsPotentialStaffing${_self.name}" ${(_self.vm.isPotentialStaffing) ? `checked` : ``} />
-                            <label for="chkIsPotentialStaffing${_self.name}">Is Potential Staffing</label>
+                            <input type="checkbox" class="mR" id="chkIsClient${_self.name}" ${(_self.vm.isClient) ? `checked` : ``} />
+                            <label for="chkIsClient${_self.name}">Is Client</label>
                         </m-flex>
                     </m-input>
                 </m-flex>
@@ -1269,7 +1246,6 @@ const ContactCompany = (function () {
         $(document).on(`tap`, `m-option[data-name="${_self.name}"]`, function () { _select($(this)); });
         $(document).on(`tap`, `.btnAdd${_self.name}`, function () { _add(); });
         $(document).on(`tap`, `.btnDelete${_self.name}`, function () { _delete($(this)); });
-        
         $(document).on(`tap`, `#lst${_self.name}s .sort h2`, function () { _sort($(this)); });
         $(document).on(`tap`, `#btnAdd${_self.name}, #btnEdit${_self.name}`, function () { _addEdit(); });
         $(document).on(`tap`, `#btnDelete${_self.name}`, function () { _delete(); });
@@ -1286,6 +1262,6 @@ const ContactCompany = (function () {
         getHtmlBodyList: getHtmlBodyList,
         getHtmlCard: getHtmlCard,
         getHtmlTag: getHtmlTag
-    }
+    };
 
 })();
