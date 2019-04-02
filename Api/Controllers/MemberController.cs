@@ -1250,7 +1250,7 @@ namespace Api.Controllers
 
                     new Thread(() =>
                     {
-                        EmailViewModel e = EmailController.GetEmail(1);
+                        EmailViewModel e = EmailController.GetEmail(2);
                         EmailController.Send(new MailAddress(EmailController.email),
                             member.email,
                             EmailController.email,

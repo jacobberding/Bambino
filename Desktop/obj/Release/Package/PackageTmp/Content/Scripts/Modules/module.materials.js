@@ -12,10 +12,10 @@ const Materials = (function () {
         isShowMore: false,
         vm: {},
         name: `Material`,
-        constructor: function (materialId, disciplineId, name, description, website, priceMin, priceMax,
+        constructor: function (materialKey, disciplineKey, name, description, website, priceMin, priceMax,
             materialPriceOptionKey, manufacturer, modelNumber, notes, isDeleted) {
-            this.materialId = materialId;
-            this.disciplineId = disciplineId;
+            this.materialKey = materialKey;
+            this.disciplineKey = disciplineKey;
             this.name = name;
             this.description = description;
             this.website = website;
@@ -31,7 +31,7 @@ const Materials = (function () {
 
     const _addEdit = function () {
 
-        _self.vm.disciplineId = $(`#dboDisciplineId${_self.name}`).val();
+        _self.vm.disciplineKey = $(`#dboDisciplineKey${_self.name}`).val();
         _self.vm.name = $(`#txtName${_self.name}`).val();
         _self.vm.description = $(`#txtDescription${_self.name}`).val();
         _self.vm.website = $(`#txtWebsite${_self.name}`).val();
@@ -136,7 +136,7 @@ const Materials = (function () {
     }
 
     const _getEmptyVM = function () {
-        return new _self.constructor(Global.guidEmpty,Global.guidEmpty,``,``,``,0,0,0,``,``,``,false);
+        return new _self.constructor(0,0,``,``,``,0,0,0,``,``,``,false);
     }
 
     const _search = function () {
@@ -361,9 +361,9 @@ const Materials = (function () {
                     </m-input>
 
                     <m-input>
-                        <label for="dboDisciplineId${_self.name}">Discipline</label>
-                        <select id="dboDisciplineId${_self.name}">
-                            ${Global.getHtmlOptions(Disciplines.getSelf().arr, [_self.vm.disciplineId])}
+                        <label for="dboDisciplineKey${_self.name}">Discipline</label>
+                        <select id="dboDisciplineKey${_self.name}">
+                            ${Global.getHtmlOptions(Disciplines.getSelf().arr, [_self.vm.disciplineKey])}
                         </select>
                     </m-input>
                 </m-flex>
@@ -440,7 +440,7 @@ const Materials = (function () {
     const getHtmlCard = function (obj) {
         return `
 
-            <m-card class="tableRow btnOpenModule mB" data-function="Materials.getHtmlModuleDetail" data-args="${obj.materialId}">
+            <m-card class="tableRow btnOpenModule mB" data-function="Materials.getHtmlModuleDetail" data-args="${obj.materialKey}">
                 <m-flex data-type="row" class="sC tE">
                     <h2 class="tE">
                         ${obj.name}
@@ -481,7 +481,6 @@ const Materials = (function () {
     }
 
 })();
-
 const MaterialTag = (function () {
 
     //Private -----------------------------------------
@@ -495,11 +494,11 @@ const MaterialTag = (function () {
     const _add = function () {
 
         const vm = {
-            materialId: Materials.getSelf().vm.materialId,
+            tableKey: Materials.getSelf().vm.materialKey,
             name: $(`#txtSearch${_self.name}`).val()
         };
 
-        Global.post(`Material_AddMaterialTag`, vm)
+        Global.post(`Material_AddTag`, vm)
             .done(function (data) {
 
                 $(`#flx${_self.name}s`).append(getHtmlTag(data));
@@ -515,14 +514,14 @@ const MaterialTag = (function () {
     const _delete = function ($this) {
 
         const vm = {
-            materialId: Materials.getSelf().vm.materialId,
-            materialTagId: $this.attr(`data-id`)
+            tableKey: Materials.getSelf().vm.materialKey,
+            manyKey: $this.attr(`data-id`)
         };
 
-        Global.post(`Material_DeleteMaterialTag`, vm)
+        Global.post(`Material_DeleteTag`, vm)
             .done(function (data) {
 
-                $(`m-card[data-id="${vm.materialTagId}"]`).remove();
+                $(`m-card[data-id="${data.materialTagKey}"]`).remove();
 
                 Validation.notification(1);
             }).fail(function (data) {
@@ -584,12 +583,12 @@ const MaterialTag = (function () {
     const getHtmlTag = function (obj) {
         return `
 
-            <m-card class="tag" data-id="${obj.materialTagId}">
+            <m-card class="tag" data-id="${obj.materialTagKey}">
                 <m-flex data-type="row" class="n">
                     <h1 class="tE">
                         ${obj.name}
                     </h1>
-                    <m-flex data-type="row" class="n c xs sQ tertiary btnDelete${_self.name}" data-id="${obj.materialTagId}">
+                    <m-flex data-type="row" class="n c xs sQ tertiary btnDelete${_self.name}" data-id="${obj.materialTagKey}">
                         <i class="icon-delete"><svg><use xlink:href="/Content/Images/Bambino.min.svg#icon-delete"></use></svg></i>
                     </m-flex>
                 </m-flex>

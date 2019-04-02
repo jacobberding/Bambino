@@ -14,8 +14,12 @@ const Application = (function () {
         _openSub($(`#initOpenSub`));
 
         //Load Lists
+        Members.getById(Global.guidEmpty);
         MaterialTag.get();
+        Disciplines.get();
         TimeTracker.getIsActive();
+        ProjectReferenceTag.get();
+        ACLayerCategory.get();
 
     }
     const _openSub = function ($this) {
@@ -64,7 +68,6 @@ const Application = (function () {
     const getHtml = function () {
         return `
 
-                    <div class="g-signin2" data-onsuccess="onSignIn" data-theme="dark"></div>
             <m-navigation class="minimized">
                 <m-flex data-type="col" class="n">
 
@@ -83,7 +86,7 @@ const Application = (function () {
                         <span class="tE">Dashboard<span>
                     </m-flex>
 
-                    <!--<m-flex data-type="row" class="n sC h btnOpenBody" data-label="Primary" data-function="Contacts.getHtmlBody" tabindex="0" role="tab" data-label="Contacts">
+                    <!--<m-flex data-type="row" class="n sC h btnOpenBody" data-label="Primary" data-function="Contact.getHtmlBody" tabindex="0" role="tab" data-label="Contact">
                         <m-flex data-type="row" class="n c sm sQ">
                             <i class="icon-male-user"><svg><use xlink:href="/Content/Images/Bambino.min.svg#icon-male-user"></use></svg></i>
                         </m-flex>
@@ -165,8 +168,12 @@ const Application = (function () {
 
                 <m-flex data-type="row" class="n s wR">
 
-                    <m-button data-type="secondary" class="sQ btnOpenBody mR" data-label="Primary" data-function="Contacts.getHtmlBody" data-args="">
+                    <m-button data-type="secondary" class="sQ btnOpenBody mR" data-label="Primary" data-function="Contact.getHtmlBody" data-args="">
                         Contacts
+                    </m-button>
+
+                    <m-button data-type="secondary" class="sQ btnOpenBody mR" data-label="Primary" data-function="ContactCompany.getHtmlBody" data-args="">
+                        Companies
                     </m-button>
 
                     <m-button data-type="secondary" class="sQ btnOpenBody mR" data-label="Primary" data-function="Materials.getHtmlBody" data-args="">
@@ -176,6 +183,10 @@ const Application = (function () {
                     ${Global.jack.mIA ? `
                     <m-button data-type="secondary" class="sQ btnOpenBody mR" data-label="Primary" data-function="TimeTracker.getHtmlBody" data-args="">
                         Time Sheets
+                    </m-button>
+
+                    <m-button data-type="secondary" class="sQ btnOpenBody mR" data-label="Primary" data-function="ACLayer.getHtmlBody" data-args="">
+                        Layers
                     </m-button>` : ``}
 
                 </m-flex>

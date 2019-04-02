@@ -40,12 +40,17 @@ namespace Api.Controllers
                     contact.contactCompanyKey = data.contactCompanyKey;
                     contact.name = data.name;
                     contact.title = data.title;
+                    contact.companyName = "";
                     contact.phone1 = data.phone1;
                     contact.phone2 = data.phone2;
                     contact.skypeId = data.skypeId;
                     contact.email = data.email;
+                    contact.companyTemp = "";
+                    contact.resume = "";
+                    contact.portfolio = "";
                     contact.personalWebsite = data.personalWebsite;
                     contact.skills = data.skills;
+                    contact.dateCreated = DateTimeOffset.UtcNow;
                     contact.isEdcFamily = data.isEdcFamily;
                     contact.isPotentialStaffing = data.isPotentialStaffing;
                     contact.isDeleted = data.isDeleted;
@@ -265,6 +270,22 @@ namespace Api.Controllers
                             obj.isDeleted,
                             obj.isPotentialStaffing,
                             obj.personalWebsite,
+                            contactCompany = new
+                            {
+                                obj.ContactCompany.contactCompanyKey,
+                                obj.ContactCompany.addressLine1,
+                                obj.ContactCompany.addressLine2,
+                                obj.ContactCompany.city,
+                                obj.ContactCompany.email,
+                                obj.ContactCompany.isClient,
+                                obj.ContactCompany.isDeleted,
+                                obj.ContactCompany.isVendor,
+                                obj.ContactCompany.name,
+                                obj.ContactCompany.phone,
+                                obj.ContactCompany.state,
+                                obj.ContactCompany.website,
+                                obj.ContactCompany.zip
+                            },
                             contactFiles = obj.ContactFiles.Where(i => !i.isDeleted).Select(contactFile => new
                             {
                                 contactFile.contactFileKey,

@@ -4,6 +4,9 @@
     .h:hover {
         cursor: pointer;
     }
+        m-card.h:hover {
+            background-color: #EEE;
+        }
 
     m-notification {
         max-width: 300px;

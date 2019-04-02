@@ -185,18 +185,24 @@ const Settings = (function () {
     const getHtmlBodyPhoto = function () {
         return `
 
-            <m-flex data-type="col">
+            <m-flex data-type="row" class="n pB">
 
-                ${Members.getHtmlIcon(Members.getSelf().vm)}
+                <m-flex data-type="col" class="n w">
+                    ${Members.getHtmlIcon(Members.getSelf().vm, `lg`)}
+                </m-flex>
 
-                <m-button data-type="secondary" id="btnUpload${_self.name}">
-                    Upload
-                </m-button>
-                <input type="file" class="none" id="upl${_self.name}" />
+                <m-flex data-type="col" class="n w">
 
-                <m-bar class="progress" id="bar${_self.name}">
-                    <span></span>
-                </m-bar>
+                    <m-button data-type="secondary" id="btnUpload${_self.name}">
+                        Upload
+                    </m-button>
+                    <input type="file" class="none" id="upl${_self.name}" />
+
+                    <m-bar class="progress" id="bar${_self.name}">
+                        <span></span>
+                    </m-bar>
+
+                </m-flex>
 
             </m-flex>
 

@@ -13,7 +13,7 @@ const Application = (function () {
         return `
 
             <m-body data-label="Primary">    
-                ${Contacts.getHtmlBody()}
+                ${Contact.getHtmlBody()}
             </m-body>
 
             `;

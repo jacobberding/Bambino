@@ -1,6 +1,6 @@
 ﻿'use strict';
 
-const Contacts = (function () {
+const Contact = (function () {
 
     //Private ------------------------------------------------
     let _self = {
@@ -133,6 +133,7 @@ const Contacts = (function () {
                 console.log(data);
 
                 _self.vm = data;
+                ContactCompany.getSelf().vm = data.contactCompany;
 
                 $(`m-module m-body`).html(getHtmlBodyDetail());
 
@@ -306,6 +307,12 @@ const Contacts = (function () {
                     <m-flex data-type="row" class="n c tab h btnOpenBody" data-label="${_self.name} Detail Body" data-function="${_self.name}.getHtmlBodyDetail">
                         <span>Information</span>
                     </m-flex>
+                    <m-flex data-type="row" class="n c tab h btnOpenBody" data-label="${_self.name} Detail Body" data-function="${_self.name}.getHtmlBodyFiles">
+                        <span>Files</span>
+                    </m-flex>
+                    <m-flex data-type="row" class="n c tab h btnOpenBody" data-label="${_self.name} Detail Body" data-function="ContactCompany.getHtmlBodyInformation">
+                        <span>Company</span>
+                    </m-flex>
                 </m-flex>
                 <m-flex data-type="row" class="n c sQ h btnCloseModule">
                     <i class="icon-delete"><svg><use xlink:href="/Content/Images/Bambino.min.svg#icon-delete"></use></svg></i>
@@ -342,7 +349,7 @@ const Contacts = (function () {
                             <input type="text" id="txtSearch${_self.name}" placeholder="Search" value="" required />
                         </m-input>
 
-                        <m-flex data-type="row" class="n c sm sQ mR primary btnOpenModule" data-function="Contacts.getHtmlModuleAdd">
+                        <m-flex data-type="row" class="n c sm sQ mR primary btnOpenModule" data-function="${_self.name}.getHtmlModuleAdd">
                             <i class="icon-plus"><svg><use xlink:href="/Content/Images/Bambino.min.svg#icon-plus"></use></svg></i>
                         </m-flex>
 
@@ -445,12 +452,28 @@ const Contacts = (function () {
 
             `;
     };
+    const getHtmlBodyFiles = function () {
+        return `
+
+            <m-flex data-type="row" class="n pL pR">
+
+                <m-flex data-type="col" class="n">
+                    <h1>${_self.name}</h1>
+                    <label>Files</label>
+                </m-flex>
+
+            </m-flex>
+
+            <m-flex data-type="col" class="">
+                ${ContactFile.getHtmlBodyForm()}
+            </m-flex>
+
+            `;
+    };
     const getHtmlBodyForm = function () {
         return `
 
             <m-flex data-type="col" class="form">
-
-                ${_self.vm.contactKey == 0 ? `` : ContactFile.getHtmlBodyForm()}
 
                 <m-flex data-type="row" class="n">
                     <m-input class="mR">
@@ -493,8 +516,16 @@ const Contacts = (function () {
 
                 <m-flex data-type="row" class="n">
                     <m-input class="mR">
+
                         <label for="txtPersonalWebsite${_self.name}">Personal Website</label>
-                        <input type="text" id="txtPersonalWebsite${_self.name}" placeholder="Personal Website" value="${_self.vm.personalWebsite}" />
+
+                        <m-flex data-type="row" class="n">
+                            <input type="text" id="txtPersonalWebsite${_self.name}" placeholder="Personal Website" value="${_self.vm.personalWebsite}" />
+                            <m-flex data-type="row" class="n c sQ h a" data-href="${_self.vm.personalWebsite}">
+                                <i class="icon-advertisement-page"><svg><use xlink:href="/Content/Images/Bambino.min.svg#icon-advertisement-page"></use></svg></i>
+                            </m-flex>
+                        </m-flex>
+
                     </m-input>
 
                     <m-input>
@@ -534,7 +565,7 @@ const Contacts = (function () {
     const getHtmlCard = function (obj) {
         return `
 
-            <m-card class="tableRow btnOpenModule mB" data-function="Contacts.getHtmlModuleDetail" data-args="${obj.contactKey}">
+            <m-card class="tableRow btnOpenModule mB" data-function="${_self.name}.getHtmlModuleDetail" data-args="${obj.contactKey}">
                 <m-flex data-type="row" class="sC tE">
                     <h2 class="tE">
                         ${obj.name}
@@ -580,6 +611,7 @@ const Contacts = (function () {
         getHtmlBody: getHtmlBody,
         getHtmlBodyList: getHtmlBodyList,
         getHtmlBodyDetail: getHtmlBodyDetail,
+        getHtmlBodyFiles: getHtmlBodyFiles,
         getHtmlBodyForm: getHtmlBodyForm,
         getHtmlCard: getHtmlCard
     };
@@ -688,7 +720,7 @@ const ContactFile = (function () {
 
         let html = ``;
 
-        for (let obj of Contacts.getSelf().vm.contactFiles)
+        for (let obj of Contact.getSelf().vm.contactFiles)
             html += getHtmlCard(obj);
 
         return `
@@ -702,7 +734,7 @@ const ContactFile = (function () {
 
             </m-flex>
 
-            <m-flex data-type="row" class="n pB w wR" id="lst${_self.name}">
+            <m-flex data-type="col" class="n pB w" id="lst${_self.name}">
 
                 ${html}
 
@@ -714,21 +746,26 @@ const ContactFile = (function () {
     const getHtmlCard = function (obj) {
         return `
 
-            <m-card class="mT" data-id="${obj.contactFileKey}">
-                <m-flex data-type="row" class="n pL">
-                    <h6>
-                        ${obj.originalFileName}
-                    </h6>
-                    <m-flex data-type="row" class="n">
-                        <m-flex data-type="row" class="n c sm mR sQ secondary" id="btnDownload${_self.name}" data-path="${obj.path}">
-                            <i class="icon-download"><svg><use xlink:href="/Content/Images/Bambino.min.svg#icon-download"></use></svg></i>
-                        </m-flex>
-                        <m-flex data-type="row" class="n c sm sQ secondary" id="btnDelete${_self.name}" data-id="${obj.contactFileKey}">
-                            <i class="icon-delete"><svg><use xlink:href="/Content/Images/Bambino.min.svg#icon-delete"></use></svg></i>
+            <m-flex data-type="row" class="n mT">
+
+                <m-card class="mR h" data-id="${obj.contactFileKey}" id="btnDownload${_self.name}" data-path="${obj.path}">
+                    <m-flex data-type="row" class="n pL">
+                        <h6>
+                            ${obj.originalFileName}
+                        </h6>
+                        <m-flex data-type="row" class="n">
+                            <m-flex data-type="row" class="n c sm sQ tertiary">
+                                <i class="icon-download"><svg><use xlink:href="/Content/Images/Bambino.min.svg#icon-download"></use></svg></i>
+                            </m-flex>
                         </m-flex>
                     </m-flex>
+                </m-card>
+
+                <m-flex data-type="row" class="n c sm sQ secondary" id="btnDelete${_self.name}" data-id="${obj.contactFileKey}">
+                    <i class="icon-trash-can"><svg><use xlink:href="/Content/Images/Bambino.min.svg#icon-trash-can"></use></svg></i>
                 </m-flex>
-            </m-card>
+
+            </m-flex>
             
             `;
     };
@@ -736,7 +773,7 @@ const ContactFile = (function () {
     const uploadSuccess = function (arr) {
 
         for (let obj of arr)
-            obj["contactKey"] = Contacts.getSelf().vm.contactKey;
+            obj["contactKey"] = Contact.getSelf().vm.contactKey;
 
         _addMany(arr);
         _uploadReset();
@@ -845,8 +882,8 @@ const ContactCompany = (function () {
 
     const _get = function () {
 
-        if (_self.arr.length > 0)
-            return;
+        //if (_self.arr.length > 0)
+        //    return;
 
         Global.post(`${_self.name}_Get`, {})
             .done(function (data) {
@@ -913,34 +950,22 @@ const ContactCompany = (function () {
         return new _self.constructor(0, ``, ``, ``, ``, ``, ``, ``, ``, ``, false, false, false);
     };
 
-    const _search = function (e, $this) {
+    const _search = function () {
 
-        if (e.which == 13) {
-
-            $(`m-select[data-name="${_self.name}"]`).remove();
-            _add();
-
-            return;
-
-        }
-
-        let options = ``;
-
-        $(`m-select[data-name="${_self.name}"]`).remove();
-
-        if ($(`#txtSearch${_self.name}`).val() == ``)
-            return;
-
-        for (let obj of _self.pageArr.filter(function (obj) { return obj.name.toLowerCase().includes($(`#txtSearch${_self.name}`).val().toLowerCase()); }))
-            options += `<m-option data-name="${_self.name}">${obj.name}</m-option>`;
-
-        $this.parent().append(`<m-select data-name="${_self.name}">${options}</m-select>`);
+        clearTimeout(_self.timeout);
+        _self.timeout = setTimeout(function () {
+            _getByPage(1);
+        }, Global.keyUpTimeout);
 
     };
-    const _select = function ($this) {
+    const _sort = function ($this) {
 
-        $(`#txtSearch${_self.name}`).val($this.html()).focus();
-        $(`m-select[data-name="${_self.name}"]`).remove();
+        var dir = ($this.hasClass(`sortasc`)) ? `desc` : `asc`;
+
+        _self.sort = `${$this.attr(`data-sort`)} ${dir}`;
+        $(`.sort h2`).removeClass(`sortasc`).removeClass(`sortdesc`);
+        $this.addClass(`sort${dir}`);
+        _getByPage(1);
 
     };
 
@@ -1121,6 +1146,93 @@ const ContactCompany = (function () {
 
             `;
     };
+    const getHtmlBodyInformation = function () {
+        return `
+
+            <m-flex data-type="row" class="n pL pR">
+
+                <m-flex data-type="col" class="n">
+                    <h1>Contact Company</h1>
+                    <label>Information</label>
+                </m-flex>
+
+                <m-flex data-type="row" class="n c sm sQ secondary btnOpenModule" data-function="${_self.name}.getHtmlModuleDetail" data-args="${_self.vm.contactCompanyKey}">
+                    <i class="icon-edit"><svg><use xlink:href="/Content/Images/Bambino.min.svg#icon-edit"></use></svg></i>
+                </m-flex>
+            
+            </m-flex>
+
+            <m-flex data-type="col" class="">
+
+                <m-flex data-type="row" class="n">
+                    <m-input class="mR">
+                        <label>Name</label>
+                        <h2>${_self.vm.name}</h2>
+                    </m-input>
+
+                    <m-input class="">
+                        <label>Email</label>
+                        <h2>${_self.vm.email}</h2>
+                    </m-input>
+                </m-flex>
+
+                <m-flex data-type="row" class="n">
+                    <m-input class="mR">
+                        <label>Phone</label>
+                        <h2>${_self.vm.phone}</h2>
+                    </m-input>
+
+                    <m-input class="">
+                        <label>Website</label>
+                        <h2>${_self.vm.website}</h2>
+                    </m-input>
+                </m-flex>
+
+                <m-flex data-type="row" class="n">
+                    <m-input class="mR">
+                        <label>Address Line 1</label>
+                        <h2>${_self.vm.addressLine1}</h2>
+                    </m-input>
+
+                    <m-input class="">
+                        <label>Address Line 2</label>
+                        <h2>${_self.vm.addressLine2}</h2>
+                    </m-input>
+                </m-flex>
+
+                <m-flex data-type="row" class="n">
+                    <m-input class="mR">
+                        <label>City</label>
+                        <h2>${_self.vm.city}</h2>
+                    </m-input>
+
+                    <m-input class="mR">
+                        <label>Zip</label>
+                        <h2>${_self.vm.zip}</h2>
+                    </m-input>
+
+                    <m-input class="">
+                        <label>State</label>
+                        <h2>${_self.vm.state}</h2>
+                    </m-input>
+                </m-flex>
+
+                <m-flex data-type="row" class="n">
+                    <m-input class="mR">
+                        <label>Vendor</label>
+                        <h2>${_self.vm.isVendor ? `Yes` : `No`}</h2>
+                    </m-input>
+
+                    <m-input class="">
+                        <label>Client</label>
+                        <h2>${_self.vm.isClient ? `Yes` : `No`}</h2>
+                    </m-input>
+                </m-flex>
+
+            </m-flex>
+
+            `;
+    };
     const getHtmlBodyForm = function () {
         return `
 
@@ -1258,6 +1370,7 @@ const ContactCompany = (function () {
         getSelf: getSelf,
         getHtmlModuleAdd: getHtmlModuleAdd,
         getHtmlModuleDetail: getHtmlModuleDetail,
+        getHtmlBodyInformation: getHtmlBodyInformation,
         getHtmlBody: getHtmlBody,
         getHtmlBodyList: getHtmlBodyList,
         getHtmlCard: getHtmlCard,
