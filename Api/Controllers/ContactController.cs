@@ -331,12 +331,36 @@ namespace Api.Controllers
                     BambinoDataContext context = new BambinoDataContext();
                     
                     var arr = context.Contacts
-                        .Where(i => !i.isDeleted)
-                        .Select(obj => new ContactViewModel
+                        .Where(i => (i.ContactCompany.name.Contains("Thinkwell")
+                            || i.ContactCompany.name.Contains("BRC")
+                            || i.ContactCompany.name.Contains("MYCOTOO")
+                            || i.ContactCompany.name.Contains("Hettema")
+                            || i.ContactCompany.name.Contains("Nassel")
+                            || i.ContactCompany.name.Contains("Rethink")
+                            || i.ContactCompany.name.Contains("Theme Space")
+                            || i.ContactCompany.name.Contains("Rhetroactive")
+                            || i.ContactCompany.name.Contains("JRA")
+                            || i.ContactCompany.name.Contains("Forrec")
+                            || i.ContactCompany.name.Contains("Luc Studios")
+                            || i.ContactCompany.name.Contains("Falcon Creative")
+                            || i.ContactCompany.name.Contains("Five Currents")
+                            || i.ContactCompany.name.Contains("Legacy Design & Entertainment")
+                            || i.ContactCompany.name.Contains("Visual Terrain")
+                            || i.ContactCompany.name.Contains("IdeAttack")
+                            || i.ContactCompany.name.Contains("Dynamic Structures")
+                            || i.ContactCompany.name.Contains("Dragone Studios")
+                            || i.ContactCompany.name.Contains("Imagine Exhibits")
+                            || i.ContactCompany.name.Contains("Ty Granaroli")
+                            || i.ContactCompany.name.Contains("Daniel's Woodland")
+                            || i.ContactCompany.name.Contains("Dynamic Attractions"))
+                            && !i.isDeleted)
+                        .Select(obj => new 
                         {
                             contactKey = obj.contactKey,
-                            name = (obj.name == "") ? obj.ContactCompany.name : obj.name,
-                            email = obj.email
+                            company = obj.ContactCompany.name,
+                            name = obj.name,
+                            email = obj.email,
+                            skills = obj.skills
                         })
                         .OrderBy(i => i.name)
                         .ToList();

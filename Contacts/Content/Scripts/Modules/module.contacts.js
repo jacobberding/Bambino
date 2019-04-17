@@ -162,12 +162,12 @@ const Contact = (function () {
         //By Person
 
         let csvArray = [
-            [`Name`, `Email`]
+            [`FirstName`,`LastName`, `PrimaryEmail`,`Skills`,`Company`]
         ];
         let lineArray = [];
 
         for (let obj of data)
-            csvArray.push([obj.name, obj.email]);
+            csvArray.push([obj.name.split(' ')[0], obj.name.split(' ')[1], obj.email, obj.skills, obj.company]);
 
         csvArray.forEach(function (csvRow, index) {
 
