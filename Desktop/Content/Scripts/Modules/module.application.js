@@ -168,13 +168,14 @@ const Application = (function () {
 
                 <m-flex data-type="row" class="n s wR">
 
+                    ${Global.jack.mIE ? `
                     <m-button data-type="secondary" class="sQ btnOpenBody mR" data-label="Primary" data-function="Contact.getHtmlBody" data-args="">
                         Contacts
                     </m-button>
 
                     <m-button data-type="secondary" class="sQ btnOpenBody mR" data-label="Primary" data-function="ContactCompany.getHtmlBody" data-args="">
                         Companies
-                    </m-button>
+                    </m-button>` : ``}
 
                     <m-button data-type="secondary" class="sQ btnOpenBody mR" data-label="Primary" data-function="Materials.getHtmlBody" data-args="">
                         Materials

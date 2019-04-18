@@ -23,7 +23,7 @@ const Members = (function () {
             this.companies = companies;
             this.roles = roles;
         }
-    }
+    };
 
     const _edit = function () {
         

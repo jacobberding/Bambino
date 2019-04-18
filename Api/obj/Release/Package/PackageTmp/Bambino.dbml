@@ -80,24 +80,6 @@
       <Association Name="Company_Project" Member="Projects" ThisKey="companyId" OtherKey="companyId" Type="Project" />
     </Type>
   </Table>
-  <Table Name="dbo.ContactCompanies" Member="ContactCompanies">
-    <Type Name="ContactCompany">
-      <Column Name="contactCompanyKey" Type="System.Int64" DbType="BigInt NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
-      <Column Name="name" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
-      <Column Name="email" Type="System.String" DbType="NVarChar(50) NOT NULL" CanBeNull="false" />
-      <Column Name="phone" Type="System.String" DbType="NVarChar(25) NOT NULL" CanBeNull="false" />
-      <Column Name="website" Type="System.String" DbType="NVarChar(1000) NOT NULL" CanBeNull="false" />
-      <Column Name="addressLine1" Type="System.String" DbType="NVarChar(250) NOT NULL" CanBeNull="false" />
-      <Column Name="addressLine2" Type="System.String" DbType="NVarChar(250) NOT NULL" CanBeNull="false" />
-      <Column Name="city" Type="System.String" DbType="NVarChar(50) NOT NULL" CanBeNull="false" />
-      <Column Name="state" Type="System.String" DbType="NVarChar(25) NOT NULL" CanBeNull="false" />
-      <Column Name="zip" Type="System.String" DbType="NVarChar(20) NOT NULL" CanBeNull="false" />
-      <Column Name="isVendor" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
-      <Column Name="isClient" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
-      <Column Name="isDeleted" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
-      <Association Name="ContactCompany_Contact" Member="Contacts" ThisKey="contactCompanyKey" OtherKey="contactCompanyKey" Type="Contact" />
-    </Type>
-  </Table>
   <Table Name="dbo.ContactFiles" Member="ContactFiles">
     <Type Name="ContactFile">
       <Column Name="contactFileKey" Type="System.Int64" DbType="BigInt NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
@@ -144,6 +126,7 @@
       <Association Name="Discipline_ProjectElement" Member="ProjectElements" ThisKey="disciplineKey" OtherKey="disciplineKey" Type="ProjectElement" />
       <Association Name="Discipline_ProjectReference" Member="ProjectReferences" ThisKey="disciplineKey" OtherKey="disciplineKey" Type="ProjectReference" />
       <Association Name="Discipline_ProjectWritingDocument" Member="ProjectWritingDocuments" ThisKey="disciplineKey" OtherKey="disciplineKey" Type="ProjectWritingDocument" />
+      <Association Name="Discipline_ContactCompanyDiscipline" Member="ContactCompanyDisciplines" ThisKey="disciplineKey" OtherKey="disciplineKey" Type="ContactCompanyDiscipline" />
     </Type>
   </Table>
   <Table Name="dbo.Emails" Member="Emails">
@@ -558,6 +541,35 @@
       <Association Name="Member_ProjectReferenceArchive" Member="Member" ThisKey="memberEndId" OtherKey="memberId" Type="Member" IsForeignKey="true" />
       <Association Name="Member_ProjectReferenceArchive1" Member="Member1" ThisKey="memberStartId" OtherKey="memberId" Type="Member" IsForeignKey="true" />
       <Association Name="ProjectReference_ProjectReferenceArchive" Member="ProjectReference" ThisKey="projectReferenceKey" OtherKey="projectReferenceKey" Type="ProjectReference" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.ContactCompanies" Member="ContactCompanies">
+    <Type Name="ContactCompany">
+      <Column Name="contactCompanyKey" Type="System.Int64" DbType="BigInt NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="name" Type="System.String" DbType="NVarChar(1000) NOT NULL" CanBeNull="false" />
+      <Column Name="email" Type="System.String" DbType="NVarChar(50) NOT NULL" CanBeNull="false" />
+      <Column Name="phone" Type="System.String" DbType="NVarChar(25) NOT NULL" CanBeNull="false" />
+      <Column Name="website" Type="System.String" DbType="NVarChar(1000) NOT NULL" CanBeNull="false" />
+      <Column Name="addressLine1" Type="System.String" DbType="NVarChar(250) NOT NULL" CanBeNull="false" />
+      <Column Name="addressLine2" Type="System.String" DbType="NVarChar(250) NOT NULL" CanBeNull="false" />
+      <Column Name="city" Type="System.String" DbType="NVarChar(50) NOT NULL" CanBeNull="false" />
+      <Column Name="state" Type="System.String" DbType="NVarChar(25) NOT NULL" CanBeNull="false" />
+      <Column Name="country" Type="System.String" DbType="NVarChar(500) NOT NULL" CanBeNull="false" />
+      <Column Name="zip" Type="System.String" DbType="NVarChar(20) NOT NULL" CanBeNull="false" />
+      <Column Name="isVendorDesign" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
+      <Column Name="isVendorIntegration" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
+      <Column Name="isClient" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
+      <Column Name="isDeleted" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
+      <Association Name="ContactCompany_Contact" Member="Contacts" ThisKey="contactCompanyKey" OtherKey="contactCompanyKey" Type="Contact" />
+      <Association Name="ContactCompany_ContactCompanyDiscipline" Member="ContactCompanyDisciplines" ThisKey="contactCompanyKey" OtherKey="contactCompanyKey" Type="ContactCompanyDiscipline" />
+    </Type>
+  </Table>
+  <Table Name="dbo.ContactCompanyDisciplines" Member="ContactCompanyDisciplines">
+    <Type Name="ContactCompanyDiscipline">
+      <Column Name="contactCompanyKey" Type="System.Int64" DbType="BigInt NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="disciplineKey" Type="System.Int64" DbType="BigInt NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Association Name="ContactCompany_ContactCompanyDiscipline" Member="ContactCompany" ThisKey="contactCompanyKey" OtherKey="contactCompanyKey" Type="ContactCompany" IsForeignKey="true" />
+      <Association Name="Discipline_ContactCompanyDiscipline" Member="Discipline" ThisKey="disciplineKey" OtherKey="disciplineKey" Type="Discipline" IsForeignKey="true" />
     </Type>
   </Table>
 </Database>

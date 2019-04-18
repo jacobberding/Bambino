@@ -27,9 +27,13 @@ namespace Api.Models
 
         public string state { get; set; } = "";
 
+        public string country { get; set; } = "";
+
         public string zip { get; set; } = "";
         
-        public bool isVendor { get; set; } = false;
+        public bool isVendorDesign { get; set; } = false;
+
+        public bool isVendorIntegration { get; set; } = false;
 
         public bool isClient { get; set; } = false;
 
@@ -62,9 +66,13 @@ namespace Api.Models
 
         public string state { get; set; } = "";
 
+        public string country { get; set; } = "";
+
         public string zip { get; set; } = "";
 
-        public bool isVendor { get; set; } = false;
+        public bool isVendorDesign { get; set; } = false;
+
+        public bool isVendorIntegration { get; set; } = false;
 
         public bool isClient { get; set; } = false;
 

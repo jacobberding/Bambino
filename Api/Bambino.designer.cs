@@ -48,9 +48,6 @@ namespace Api
     partial void InsertCompany(Company instance);
     partial void UpdateCompany(Company instance);
     partial void DeleteCompany(Company instance);
-    partial void InsertContactCompany(ContactCompany instance);
-    partial void UpdateContactCompany(ContactCompany instance);
-    partial void DeleteContactCompany(ContactCompany instance);
     partial void InsertContactFile(ContactFile instance);
     partial void UpdateContactFile(ContactFile instance);
     partial void DeleteContactFile(ContactFile instance);
@@ -147,6 +144,12 @@ namespace Api
     partial void InsertProjectReferenceArchive(ProjectReferenceArchive instance);
     partial void UpdateProjectReferenceArchive(ProjectReferenceArchive instance);
     partial void DeleteProjectReferenceArchive(ProjectReferenceArchive instance);
+    partial void InsertContactCompany(ContactCompany instance);
+    partial void UpdateContactCompany(ContactCompany instance);
+    partial void DeleteContactCompany(ContactCompany instance);
+    partial void InsertContactCompanyDiscipline(ContactCompanyDiscipline instance);
+    partial void UpdateContactCompanyDiscipline(ContactCompanyDiscipline instance);
+    partial void DeleteContactCompanyDiscipline(ContactCompanyDiscipline instance);
     #endregion
 		
 		public BambinoDataContext() : 
@@ -224,14 +227,6 @@ namespace Api
 			get
 			{
 				return this.GetTable<Company>();
-			}
-		}
-		
-		public System.Data.Linq.Table<ContactCompany> ContactCompanies
-		{
-			get
-			{
-				return this.GetTable<ContactCompany>();
 			}
 		}
 		
@@ -488,6 +483,22 @@ namespace Api
 			get
 			{
 				return this.GetTable<ProjectReferenceArchive>();
+			}
+		}
+		
+		public System.Data.Linq.Table<ContactCompany> ContactCompanies
+		{
+			get
+			{
+				return this.GetTable<ContactCompany>();
+			}
+		}
+		
+		public System.Data.Linq.Table<ContactCompanyDiscipline> ContactCompanyDisciplines
+		{
+			get
+			{
+				return this.GetTable<ContactCompanyDiscipline>();
 			}
 		}
 	}
@@ -2097,384 +2108,6 @@ namespace Api
 		}
 	}
 	
-	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.ContactCompanies")]
-	public partial class ContactCompany : INotifyPropertyChanging, INotifyPropertyChanged
-	{
-		
-		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
-		
-		private long _contactCompanyKey;
-		
-		private string _name;
-		
-		private string _email;
-		
-		private string _phone;
-		
-		private string _website;
-		
-		private string _addressLine1;
-		
-		private string _addressLine2;
-		
-		private string _city;
-		
-		private string _state;
-		
-		private string _zip;
-		
-		private bool _isVendor;
-		
-		private bool _isClient;
-		
-		private bool _isDeleted;
-		
-		private EntitySet<Contact> _Contacts;
-		
-    #region Extensibility Method Definitions
-    partial void OnLoaded();
-    partial void OnValidate(System.Data.Linq.ChangeAction action);
-    partial void OnCreated();
-    partial void OncontactCompanyKeyChanging(long value);
-    partial void OncontactCompanyKeyChanged();
-    partial void OnnameChanging(string value);
-    partial void OnnameChanged();
-    partial void OnemailChanging(string value);
-    partial void OnemailChanged();
-    partial void OnphoneChanging(string value);
-    partial void OnphoneChanged();
-    partial void OnwebsiteChanging(string value);
-    partial void OnwebsiteChanged();
-    partial void OnaddressLine1Changing(string value);
-    partial void OnaddressLine1Changed();
-    partial void OnaddressLine2Changing(string value);
-    partial void OnaddressLine2Changed();
-    partial void OncityChanging(string value);
-    partial void OncityChanged();
-    partial void OnstateChanging(string value);
-    partial void OnstateChanged();
-    partial void OnzipChanging(string value);
-    partial void OnzipChanged();
-    partial void OnisVendorChanging(bool value);
-    partial void OnisVendorChanged();
-    partial void OnisClientChanging(bool value);
-    partial void OnisClientChanged();
-    partial void OnisDeletedChanging(bool value);
-    partial void OnisDeletedChanged();
-    #endregion
-		
-		public ContactCompany()
-		{
-			this._Contacts = new EntitySet<Contact>(new Action<Contact>(this.attach_Contacts), new Action<Contact>(this.detach_Contacts));
-			OnCreated();
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_contactCompanyKey", AutoSync=AutoSync.OnInsert, DbType="BigInt NOT NULL IDENTITY", IsPrimaryKey=true, IsDbGenerated=true)]
-		public long contactCompanyKey
-		{
-			get
-			{
-				return this._contactCompanyKey;
-			}
-			set
-			{
-				if ((this._contactCompanyKey != value))
-				{
-					this.OncontactCompanyKeyChanging(value);
-					this.SendPropertyChanging();
-					this._contactCompanyKey = value;
-					this.SendPropertyChanged("contactCompanyKey");
-					this.OncontactCompanyKeyChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_name", DbType="NVarChar(100) NOT NULL", CanBeNull=false)]
-		public string name
-		{
-			get
-			{
-				return this._name;
-			}
-			set
-			{
-				if ((this._name != value))
-				{
-					this.OnnameChanging(value);
-					this.SendPropertyChanging();
-					this._name = value;
-					this.SendPropertyChanged("name");
-					this.OnnameChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_email", DbType="NVarChar(50) NOT NULL", CanBeNull=false)]
-		public string email
-		{
-			get
-			{
-				return this._email;
-			}
-			set
-			{
-				if ((this._email != value))
-				{
-					this.OnemailChanging(value);
-					this.SendPropertyChanging();
-					this._email = value;
-					this.SendPropertyChanged("email");
-					this.OnemailChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_phone", DbType="NVarChar(25) NOT NULL", CanBeNull=false)]
-		public string phone
-		{
-			get
-			{
-				return this._phone;
-			}
-			set
-			{
-				if ((this._phone != value))
-				{
-					this.OnphoneChanging(value);
-					this.SendPropertyChanging();
-					this._phone = value;
-					this.SendPropertyChanged("phone");
-					this.OnphoneChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_website", DbType="NVarChar(1000) NOT NULL", CanBeNull=false)]
-		public string website
-		{
-			get
-			{
-				return this._website;
-			}
-			set
-			{
-				if ((this._website != value))
-				{
-					this.OnwebsiteChanging(value);
-					this.SendPropertyChanging();
-					this._website = value;
-					this.SendPropertyChanged("website");
-					this.OnwebsiteChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_addressLine1", DbType="NVarChar(250) NOT NULL", CanBeNull=false)]
-		public string addressLine1
-		{
-			get
-			{
-				return this._addressLine1;
-			}
-			set
-			{
-				if ((this._addressLine1 != value))
-				{
-					this.OnaddressLine1Changing(value);
-					this.SendPropertyChanging();
-					this._addressLine1 = value;
-					this.SendPropertyChanged("addressLine1");
-					this.OnaddressLine1Changed();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_addressLine2", DbType="NVarChar(250) NOT NULL", CanBeNull=false)]
-		public string addressLine2
-		{
-			get
-			{
-				return this._addressLine2;
-			}
-			set
-			{
-				if ((this._addressLine2 != value))
-				{
-					this.OnaddressLine2Changing(value);
-					this.SendPropertyChanging();
-					this._addressLine2 = value;
-					this.SendPropertyChanged("addressLine2");
-					this.OnaddressLine2Changed();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_city", DbType="NVarChar(50) NOT NULL", CanBeNull=false)]
-		public string city
-		{
-			get
-			{
-				return this._city;
-			}
-			set
-			{
-				if ((this._city != value))
-				{
-					this.OncityChanging(value);
-					this.SendPropertyChanging();
-					this._city = value;
-					this.SendPropertyChanged("city");
-					this.OncityChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_state", DbType="NVarChar(25) NOT NULL", CanBeNull=false)]
-		public string state
-		{
-			get
-			{
-				return this._state;
-			}
-			set
-			{
-				if ((this._state != value))
-				{
-					this.OnstateChanging(value);
-					this.SendPropertyChanging();
-					this._state = value;
-					this.SendPropertyChanged("state");
-					this.OnstateChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_zip", DbType="NVarChar(20) NOT NULL", CanBeNull=false)]
-		public string zip
-		{
-			get
-			{
-				return this._zip;
-			}
-			set
-			{
-				if ((this._zip != value))
-				{
-					this.OnzipChanging(value);
-					this.SendPropertyChanging();
-					this._zip = value;
-					this.SendPropertyChanged("zip");
-					this.OnzipChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_isVendor", DbType="Bit NOT NULL")]
-		public bool isVendor
-		{
-			get
-			{
-				return this._isVendor;
-			}
-			set
-			{
-				if ((this._isVendor != value))
-				{
-					this.OnisVendorChanging(value);
-					this.SendPropertyChanging();
-					this._isVendor = value;
-					this.SendPropertyChanged("isVendor");
-					this.OnisVendorChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_isClient", DbType="Bit NOT NULL")]
-		public bool isClient
-		{
-			get
-			{
-				return this._isClient;
-			}
-			set
-			{
-				if ((this._isClient != value))
-				{
-					this.OnisClientChanging(value);
-					this.SendPropertyChanging();
-					this._isClient = value;
-					this.SendPropertyChanged("isClient");
-					this.OnisClientChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_isDeleted", DbType="Bit NOT NULL")]
-		public bool isDeleted
-		{
-			get
-			{
-				return this._isDeleted;
-			}
-			set
-			{
-				if ((this._isDeleted != value))
-				{
-					this.OnisDeletedChanging(value);
-					this.SendPropertyChanging();
-					this._isDeleted = value;
-					this.SendPropertyChanged("isDeleted");
-					this.OnisDeletedChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="ContactCompany_Contact", Storage="_Contacts", ThisKey="contactCompanyKey", OtherKey="contactCompanyKey")]
-		public EntitySet<Contact> Contacts
-		{
-			get
-			{
-				return this._Contacts;
-			}
-			set
-			{
-				this._Contacts.Assign(value);
-			}
-		}
-		
-		public event PropertyChangingEventHandler PropertyChanging;
-		
-		public event PropertyChangedEventHandler PropertyChanged;
-		
-		protected virtual void SendPropertyChanging()
-		{
-			if ((this.PropertyChanging != null))
-			{
-				this.PropertyChanging(this, emptyChangingEventArgs);
-			}
-		}
-		
-		protected virtual void SendPropertyChanged(String propertyName)
-		{
-			if ((this.PropertyChanged != null))
-			{
-				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-			}
-		}
-		
-		private void attach_Contacts(Contact entity)
-		{
-			this.SendPropertyChanging();
-			entity.ContactCompany = this;
-		}
-		
-		private void detach_Contacts(Contact entity)
-		{
-			this.SendPropertyChanging();
-			entity.ContactCompany = null;
-		}
-	}
-	
 	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.ContactFiles")]
 	public partial class ContactFile : INotifyPropertyChanging, INotifyPropertyChanged
 	{
@@ -3261,6 +2894,8 @@ namespace Api
 		
 		private EntitySet<ProjectWritingDocument> _ProjectWritingDocuments;
 		
+		private EntitySet<ContactCompanyDiscipline> _ContactCompanyDisciplines;
+		
     #region Extensibility Method Definitions
     partial void OnLoaded();
     partial void OnValidate(System.Data.Linq.ChangeAction action);
@@ -3283,6 +2918,7 @@ namespace Api
 			this._ProjectElements = new EntitySet<ProjectElement>(new Action<ProjectElement>(this.attach_ProjectElements), new Action<ProjectElement>(this.detach_ProjectElements));
 			this._ProjectReferences = new EntitySet<ProjectReference>(new Action<ProjectReference>(this.attach_ProjectReferences), new Action<ProjectReference>(this.detach_ProjectReferences));
 			this._ProjectWritingDocuments = new EntitySet<ProjectWritingDocument>(new Action<ProjectWritingDocument>(this.attach_ProjectWritingDocuments), new Action<ProjectWritingDocument>(this.detach_ProjectWritingDocuments));
+			this._ContactCompanyDisciplines = new EntitySet<ContactCompanyDiscipline>(new Action<ContactCompanyDiscipline>(this.attach_ContactCompanyDisciplines), new Action<ContactCompanyDiscipline>(this.detach_ContactCompanyDisciplines));
 			OnCreated();
 		}
 		
@@ -3438,6 +3074,19 @@ namespace Api
 			}
 		}
 		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Discipline_ContactCompanyDiscipline", Storage="_ContactCompanyDisciplines", ThisKey="disciplineKey", OtherKey="disciplineKey")]
+		public EntitySet<ContactCompanyDiscipline> ContactCompanyDisciplines
+		{
+			get
+			{
+				return this._ContactCompanyDisciplines;
+			}
+			set
+			{
+				this._ContactCompanyDisciplines.Assign(value);
+			}
+		}
+		
 		public event PropertyChangingEventHandler PropertyChanging;
 		
 		public event PropertyChangedEventHandler PropertyChanged;
@@ -3501,6 +3150,18 @@ namespace Api
 		}
 		
 		private void detach_ProjectWritingDocuments(ProjectWritingDocument entity)
+		{
+			this.SendPropertyChanging();
+			entity.Discipline = null;
+		}
+		
+		private void attach_ContactCompanyDisciplines(ContactCompanyDiscipline entity)
+		{
+			this.SendPropertyChanging();
+			entity.Discipline = this;
+		}
+		
+		private void detach_ContactCompanyDisciplines(ContactCompanyDiscipline entity)
 		{
 			this.SendPropertyChanging();
 			entity.Discipline = null;
@@ -12636,6 +12297,628 @@ namespace Api
 						this._projectReferenceKey = default(long);
 					}
 					this.SendPropertyChanged("ProjectReference");
+				}
+			}
+		}
+		
+		public event PropertyChangingEventHandler PropertyChanging;
+		
+		public event PropertyChangedEventHandler PropertyChanged;
+		
+		protected virtual void SendPropertyChanging()
+		{
+			if ((this.PropertyChanging != null))
+			{
+				this.PropertyChanging(this, emptyChangingEventArgs);
+			}
+		}
+		
+		protected virtual void SendPropertyChanged(String propertyName)
+		{
+			if ((this.PropertyChanged != null))
+			{
+				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+			}
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.ContactCompanies")]
+	public partial class ContactCompany : INotifyPropertyChanging, INotifyPropertyChanged
+	{
+		
+		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+		
+		private long _contactCompanyKey;
+		
+		private string _name;
+		
+		private string _email;
+		
+		private string _phone;
+		
+		private string _website;
+		
+		private string _addressLine1;
+		
+		private string _addressLine2;
+		
+		private string _city;
+		
+		private string _state;
+		
+		private string _country;
+		
+		private string _zip;
+		
+		private bool _isVendorDesign;
+		
+		private bool _isVendorIntegration;
+		
+		private bool _isClient;
+		
+		private bool _isDeleted;
+		
+		private EntitySet<Contact> _Contacts;
+		
+		private EntitySet<ContactCompanyDiscipline> _ContactCompanyDisciplines;
+		
+    #region Extensibility Method Definitions
+    partial void OnLoaded();
+    partial void OnValidate(System.Data.Linq.ChangeAction action);
+    partial void OnCreated();
+    partial void OncontactCompanyKeyChanging(long value);
+    partial void OncontactCompanyKeyChanged();
+    partial void OnnameChanging(string value);
+    partial void OnnameChanged();
+    partial void OnemailChanging(string value);
+    partial void OnemailChanged();
+    partial void OnphoneChanging(string value);
+    partial void OnphoneChanged();
+    partial void OnwebsiteChanging(string value);
+    partial void OnwebsiteChanged();
+    partial void OnaddressLine1Changing(string value);
+    partial void OnaddressLine1Changed();
+    partial void OnaddressLine2Changing(string value);
+    partial void OnaddressLine2Changed();
+    partial void OncityChanging(string value);
+    partial void OncityChanged();
+    partial void OnstateChanging(string value);
+    partial void OnstateChanged();
+    partial void OncountryChanging(string value);
+    partial void OncountryChanged();
+    partial void OnzipChanging(string value);
+    partial void OnzipChanged();
+    partial void OnisVendorDesignChanging(bool value);
+    partial void OnisVendorDesignChanged();
+    partial void OnisVendorIntegrationChanging(bool value);
+    partial void OnisVendorIntegrationChanged();
+    partial void OnisClientChanging(bool value);
+    partial void OnisClientChanged();
+    partial void OnisDeletedChanging(bool value);
+    partial void OnisDeletedChanged();
+    #endregion
+		
+		public ContactCompany()
+		{
+			this._Contacts = new EntitySet<Contact>(new Action<Contact>(this.attach_Contacts), new Action<Contact>(this.detach_Contacts));
+			this._ContactCompanyDisciplines = new EntitySet<ContactCompanyDiscipline>(new Action<ContactCompanyDiscipline>(this.attach_ContactCompanyDisciplines), new Action<ContactCompanyDiscipline>(this.detach_ContactCompanyDisciplines));
+			OnCreated();
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_contactCompanyKey", AutoSync=AutoSync.OnInsert, DbType="BigInt NOT NULL IDENTITY", IsPrimaryKey=true, IsDbGenerated=true)]
+		public long contactCompanyKey
+		{
+			get
+			{
+				return this._contactCompanyKey;
+			}
+			set
+			{
+				if ((this._contactCompanyKey != value))
+				{
+					this.OncontactCompanyKeyChanging(value);
+					this.SendPropertyChanging();
+					this._contactCompanyKey = value;
+					this.SendPropertyChanged("contactCompanyKey");
+					this.OncontactCompanyKeyChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_name", DbType="NVarChar(1000) NOT NULL", CanBeNull=false)]
+		public string name
+		{
+			get
+			{
+				return this._name;
+			}
+			set
+			{
+				if ((this._name != value))
+				{
+					this.OnnameChanging(value);
+					this.SendPropertyChanging();
+					this._name = value;
+					this.SendPropertyChanged("name");
+					this.OnnameChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_email", DbType="NVarChar(50) NOT NULL", CanBeNull=false)]
+		public string email
+		{
+			get
+			{
+				return this._email;
+			}
+			set
+			{
+				if ((this._email != value))
+				{
+					this.OnemailChanging(value);
+					this.SendPropertyChanging();
+					this._email = value;
+					this.SendPropertyChanged("email");
+					this.OnemailChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_phone", DbType="NVarChar(25) NOT NULL", CanBeNull=false)]
+		public string phone
+		{
+			get
+			{
+				return this._phone;
+			}
+			set
+			{
+				if ((this._phone != value))
+				{
+					this.OnphoneChanging(value);
+					this.SendPropertyChanging();
+					this._phone = value;
+					this.SendPropertyChanged("phone");
+					this.OnphoneChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_website", DbType="NVarChar(1000) NOT NULL", CanBeNull=false)]
+		public string website
+		{
+			get
+			{
+				return this._website;
+			}
+			set
+			{
+				if ((this._website != value))
+				{
+					this.OnwebsiteChanging(value);
+					this.SendPropertyChanging();
+					this._website = value;
+					this.SendPropertyChanged("website");
+					this.OnwebsiteChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_addressLine1", DbType="NVarChar(250) NOT NULL", CanBeNull=false)]
+		public string addressLine1
+		{
+			get
+			{
+				return this._addressLine1;
+			}
+			set
+			{
+				if ((this._addressLine1 != value))
+				{
+					this.OnaddressLine1Changing(value);
+					this.SendPropertyChanging();
+					this._addressLine1 = value;
+					this.SendPropertyChanged("addressLine1");
+					this.OnaddressLine1Changed();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_addressLine2", DbType="NVarChar(250) NOT NULL", CanBeNull=false)]
+		public string addressLine2
+		{
+			get
+			{
+				return this._addressLine2;
+			}
+			set
+			{
+				if ((this._addressLine2 != value))
+				{
+					this.OnaddressLine2Changing(value);
+					this.SendPropertyChanging();
+					this._addressLine2 = value;
+					this.SendPropertyChanged("addressLine2");
+					this.OnaddressLine2Changed();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_city", DbType="NVarChar(50) NOT NULL", CanBeNull=false)]
+		public string city
+		{
+			get
+			{
+				return this._city;
+			}
+			set
+			{
+				if ((this._city != value))
+				{
+					this.OncityChanging(value);
+					this.SendPropertyChanging();
+					this._city = value;
+					this.SendPropertyChanged("city");
+					this.OncityChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_state", DbType="NVarChar(25) NOT NULL", CanBeNull=false)]
+		public string state
+		{
+			get
+			{
+				return this._state;
+			}
+			set
+			{
+				if ((this._state != value))
+				{
+					this.OnstateChanging(value);
+					this.SendPropertyChanging();
+					this._state = value;
+					this.SendPropertyChanged("state");
+					this.OnstateChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_country", DbType="NVarChar(500) NOT NULL", CanBeNull=false)]
+		public string country
+		{
+			get
+			{
+				return this._country;
+			}
+			set
+			{
+				if ((this._country != value))
+				{
+					this.OncountryChanging(value);
+					this.SendPropertyChanging();
+					this._country = value;
+					this.SendPropertyChanged("country");
+					this.OncountryChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_zip", DbType="NVarChar(20) NOT NULL", CanBeNull=false)]
+		public string zip
+		{
+			get
+			{
+				return this._zip;
+			}
+			set
+			{
+				if ((this._zip != value))
+				{
+					this.OnzipChanging(value);
+					this.SendPropertyChanging();
+					this._zip = value;
+					this.SendPropertyChanged("zip");
+					this.OnzipChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_isVendorDesign", DbType="Bit NOT NULL")]
+		public bool isVendorDesign
+		{
+			get
+			{
+				return this._isVendorDesign;
+			}
+			set
+			{
+				if ((this._isVendorDesign != value))
+				{
+					this.OnisVendorDesignChanging(value);
+					this.SendPropertyChanging();
+					this._isVendorDesign = value;
+					this.SendPropertyChanged("isVendorDesign");
+					this.OnisVendorDesignChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_isVendorIntegration", DbType="Bit NOT NULL")]
+		public bool isVendorIntegration
+		{
+			get
+			{
+				return this._isVendorIntegration;
+			}
+			set
+			{
+				if ((this._isVendorIntegration != value))
+				{
+					this.OnisVendorIntegrationChanging(value);
+					this.SendPropertyChanging();
+					this._isVendorIntegration = value;
+					this.SendPropertyChanged("isVendorIntegration");
+					this.OnisVendorIntegrationChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_isClient", DbType="Bit NOT NULL")]
+		public bool isClient
+		{
+			get
+			{
+				return this._isClient;
+			}
+			set
+			{
+				if ((this._isClient != value))
+				{
+					this.OnisClientChanging(value);
+					this.SendPropertyChanging();
+					this._isClient = value;
+					this.SendPropertyChanged("isClient");
+					this.OnisClientChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_isDeleted", DbType="Bit NOT NULL")]
+		public bool isDeleted
+		{
+			get
+			{
+				return this._isDeleted;
+			}
+			set
+			{
+				if ((this._isDeleted != value))
+				{
+					this.OnisDeletedChanging(value);
+					this.SendPropertyChanging();
+					this._isDeleted = value;
+					this.SendPropertyChanged("isDeleted");
+					this.OnisDeletedChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="ContactCompany_Contact", Storage="_Contacts", ThisKey="contactCompanyKey", OtherKey="contactCompanyKey")]
+		public EntitySet<Contact> Contacts
+		{
+			get
+			{
+				return this._Contacts;
+			}
+			set
+			{
+				this._Contacts.Assign(value);
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="ContactCompany_ContactCompanyDiscipline", Storage="_ContactCompanyDisciplines", ThisKey="contactCompanyKey", OtherKey="contactCompanyKey")]
+		public EntitySet<ContactCompanyDiscipline> ContactCompanyDisciplines
+		{
+			get
+			{
+				return this._ContactCompanyDisciplines;
+			}
+			set
+			{
+				this._ContactCompanyDisciplines.Assign(value);
+			}
+		}
+		
+		public event PropertyChangingEventHandler PropertyChanging;
+		
+		public event PropertyChangedEventHandler PropertyChanged;
+		
+		protected virtual void SendPropertyChanging()
+		{
+			if ((this.PropertyChanging != null))
+			{
+				this.PropertyChanging(this, emptyChangingEventArgs);
+			}
+		}
+		
+		protected virtual void SendPropertyChanged(String propertyName)
+		{
+			if ((this.PropertyChanged != null))
+			{
+				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+			}
+		}
+		
+		private void attach_Contacts(Contact entity)
+		{
+			this.SendPropertyChanging();
+			entity.ContactCompany = this;
+		}
+		
+		private void detach_Contacts(Contact entity)
+		{
+			this.SendPropertyChanging();
+			entity.ContactCompany = null;
+		}
+		
+		private void attach_ContactCompanyDisciplines(ContactCompanyDiscipline entity)
+		{
+			this.SendPropertyChanging();
+			entity.ContactCompany = this;
+		}
+		
+		private void detach_ContactCompanyDisciplines(ContactCompanyDiscipline entity)
+		{
+			this.SendPropertyChanging();
+			entity.ContactCompany = null;
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.ContactCompanyDisciplines")]
+	public partial class ContactCompanyDiscipline : INotifyPropertyChanging, INotifyPropertyChanged
+	{
+		
+		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+		
+		private long _contactCompanyKey;
+		
+		private long _disciplineKey;
+		
+		private EntityRef<ContactCompany> _ContactCompany;
+		
+		private EntityRef<Discipline> _Discipline;
+		
+    #region Extensibility Method Definitions
+    partial void OnLoaded();
+    partial void OnValidate(System.Data.Linq.ChangeAction action);
+    partial void OnCreated();
+    partial void OncontactCompanyKeyChanging(long value);
+    partial void OncontactCompanyKeyChanged();
+    partial void OndisciplineKeyChanging(long value);
+    partial void OndisciplineKeyChanged();
+    #endregion
+		
+		public ContactCompanyDiscipline()
+		{
+			this._ContactCompany = default(EntityRef<ContactCompany>);
+			this._Discipline = default(EntityRef<Discipline>);
+			OnCreated();
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_contactCompanyKey", DbType="BigInt NOT NULL", IsPrimaryKey=true)]
+		public long contactCompanyKey
+		{
+			get
+			{
+				return this._contactCompanyKey;
+			}
+			set
+			{
+				if ((this._contactCompanyKey != value))
+				{
+					if (this._ContactCompany.HasLoadedOrAssignedValue)
+					{
+						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+					}
+					this.OncontactCompanyKeyChanging(value);
+					this.SendPropertyChanging();
+					this._contactCompanyKey = value;
+					this.SendPropertyChanged("contactCompanyKey");
+					this.OncontactCompanyKeyChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_disciplineKey", DbType="BigInt NOT NULL", IsPrimaryKey=true)]
+		public long disciplineKey
+		{
+			get
+			{
+				return this._disciplineKey;
+			}
+			set
+			{
+				if ((this._disciplineKey != value))
+				{
+					if (this._Discipline.HasLoadedOrAssignedValue)
+					{
+						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+					}
+					this.OndisciplineKeyChanging(value);
+					this.SendPropertyChanging();
+					this._disciplineKey = value;
+					this.SendPropertyChanged("disciplineKey");
+					this.OndisciplineKeyChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="ContactCompany_ContactCompanyDiscipline", Storage="_ContactCompany", ThisKey="contactCompanyKey", OtherKey="contactCompanyKey", IsForeignKey=true)]
+		public ContactCompany ContactCompany
+		{
+			get
+			{
+				return this._ContactCompany.Entity;
+			}
+			set
+			{
+				ContactCompany previousValue = this._ContactCompany.Entity;
+				if (((previousValue != value) 
+							|| (this._ContactCompany.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if ((previousValue != null))
+					{
+						this._ContactCompany.Entity = null;
+						previousValue.ContactCompanyDisciplines.Remove(this);
+					}
+					this._ContactCompany.Entity = value;
+					if ((value != null))
+					{
+						value.ContactCompanyDisciplines.Add(this);
+						this._contactCompanyKey = value.contactCompanyKey;
+					}
+					else
+					{
+						this._contactCompanyKey = default(long);
+					}
+					this.SendPropertyChanged("ContactCompany");
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Discipline_ContactCompanyDiscipline", Storage="_Discipline", ThisKey="disciplineKey", OtherKey="disciplineKey", IsForeignKey=true)]
+		public Discipline Discipline
+		{
+			get
+			{
+				return this._Discipline.Entity;
+			}
+			set
+			{
+				Discipline previousValue = this._Discipline.Entity;
+				if (((previousValue != value) 
+							|| (this._Discipline.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if ((previousValue != null))
+					{
+						this._Discipline.Entity = null;
+						previousValue.ContactCompanyDisciplines.Remove(this);
+					}
+					this._Discipline.Entity = value;
+					if ((value != null))
+					{
+						value.ContactCompanyDisciplines.Add(this);
+						this._disciplineKey = value.disciplineKey;
+					}
+					else
+					{
+						this._disciplineKey = default(long);
+					}
+					this.SendPropertyChanged("Discipline");
 				}
 			}
 		}

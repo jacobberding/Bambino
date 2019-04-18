@@ -279,10 +279,12 @@ namespace Api.Controllers
                                 obj.ContactCompany.email,
                                 obj.ContactCompany.isClient,
                                 obj.ContactCompany.isDeleted,
-                                obj.ContactCompany.isVendor,
+                                obj.ContactCompany.isVendorDesign,
+                                obj.ContactCompany.isVendorIntegration,
                                 obj.ContactCompany.name,
                                 obj.ContactCompany.phone,
                                 obj.ContactCompany.state,
+                                obj.ContactCompany.country,
                                 obj.ContactCompany.website,
                                 obj.ContactCompany.zip
                             },

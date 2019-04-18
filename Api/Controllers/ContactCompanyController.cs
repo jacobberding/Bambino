@@ -42,9 +42,11 @@ namespace Api.Controllers
                     contactCompany.addressLine2 = data.addressLine2;
                     contactCompany.city = data.city;
                     contactCompany.state = data.state;
+                    contactCompany.country = data.country;
                     contactCompany.zip = data.zip;
                     contactCompany.isClient = data.isClient;
-                    contactCompany.isVendor = data.isVendor;
+                    contactCompany.isVendorDesign = data.isVendorDesign;
+                    contactCompany.isVendorIntegration = data.isVendorIntegration;
                     contactCompany.isDeleted = data.isDeleted;
 
                     if (data.contactCompanyKey == 0)
@@ -59,6 +61,91 @@ namespace Api.Controllers
                     {
                         contactCompany.contactCompanyKey,
                         state = (data.contactCompanyKey == 0) ? "add" : (data.isDeleted) ? "delete" : "edit"
+                    };
+
+                    return Request.CreateResponse(HttpStatusCode.OK, vm);
+
+                }
+                catch (Exception ex)
+                {
+                    return Request.CreateResponse(HttpStatusCode.InternalServerError, ex);
+                }
+
+            }
+            return Request.CreateResponse(HttpStatusCode.InternalServerError, new { Message = "Invalid Token" });
+        }
+
+        [HttpPost]
+        public HttpResponseMessage AddDiscipline([FromBody] AddDeleteManyToManyViewModel data)
+        {
+            Authentication a = AuthenticationController.GetMemberAuthenticated(data.authentication.apiId, 1, data.authentication.token);
+            if (a.isAuthenticated)
+            {
+
+                try
+                {
+
+                    BambinoDataContext context = new BambinoDataContext();
+
+                    ContactCompany contactCompany = context.ContactCompanies.Where(i => i.contactCompanyKey == data.tableKey).FirstOrDefault();
+                    Discipline discipline = context.Disciplines.Where(i => i.value == data.name).FirstOrDefault();
+
+                    ContactCompanyDiscipline contactCompanyDiscipline = new ContactCompanyDiscipline();
+
+                    contactCompanyDiscipline.contactCompanyKey = contactCompany.contactCompanyKey;
+                    contactCompanyDiscipline.disciplineKey = discipline.disciplineKey;
+
+                    context.ContactCompanyDisciplines.InsertOnSubmit(contactCompanyDiscipline);
+                    context.SubmitChanges();
+
+                    LogController.Add(a.member.memberId, "Contact Company " + contactCompany.name + " Added Discipline " + discipline.name, "ContactCompany", "AddDiscipline", Guid.Empty, "ContactCompanies", contactCompany.contactCompanyKey);
+
+                    var vm = new
+                    {
+                        manyKey = discipline.disciplineKey,
+                        discipline.name,
+                        discipline.value
+                    };
+
+                    return Request.CreateResponse(HttpStatusCode.OK, vm);
+
+                }
+                catch (Exception ex)
+                {
+                    return Request.CreateResponse(HttpStatusCode.InternalServerError, ex);
+                }
+
+            }
+            return Request.CreateResponse(HttpStatusCode.InternalServerError, new { Message = "Invalid Token" });
+        }
+
+        [HttpPost]
+        public HttpResponseMessage DeleteDiscipline([FromBody] AddDeleteManyToManyViewModel data)
+        {
+            Authentication a = AuthenticationController.GetMemberAuthenticated(data.authentication.apiId, 1, data.authentication.token);
+            if (a.isAuthenticated)
+            {
+
+                try
+                {
+
+                    BambinoDataContext context = new BambinoDataContext();
+
+                    ContactCompany contactCompany = context.ContactCompanies.Where(i => i.contactCompanyKey == data.tableKey).FirstOrDefault();
+                    Discipline discipline = context.Disciplines.Where(i => i.disciplineKey == data.manyKey).FirstOrDefault();
+
+                    ContactCompanyDiscipline contactCompanyDiscipline = context.ContactCompanyDisciplines.Where(i => i.contactCompanyKey == data.tableKey && i.disciplineKey == data.manyKey).FirstOrDefault();
+
+                    context.ContactCompanyDisciplines.DeleteOnSubmit(contactCompanyDiscipline);
+                    context.SubmitChanges();
+
+                    LogController.Add(a.member.memberId, "Contact Company " + contactCompany.name + " Removed Discipline " + discipline.name, "ContactCompany", "DeleteDiscipline", Guid.Empty, "ContactCompanies", contactCompany.contactCompanyKey);
+
+                    var vm = new
+                    {
+                        discipline.disciplineKey,
+                        discipline.name,
+                        discipline.value
                     };
 
                     return Request.CreateResponse(HttpStatusCode.OK, vm);
@@ -120,6 +207,7 @@ namespace Api.Controllers
 
                     Expression<Func<ContactCompany, bool>> query = i => !i.isDeleted
                             && (i.name.Contains(data.search)
+                            || i.ContactCompanyDisciplines.Any(x => x.Discipline.name.Contains(data.search))
                             || i.email.Contains(data.search));
 
                     int currentPage = data.page - 1;
@@ -138,10 +226,18 @@ namespace Api.Controllers
                             obj.addressLine2,
                             obj.city,
                             obj.state,
+                            obj.country,
                             obj.zip,
-                            obj.isVendor,
+                            obj.isVendorDesign,
+                            obj.isVendorIntegration,
                             obj.isClient,
-                            obj.isDeleted
+                            obj.isDeleted,
+                            disciplines = obj.ContactCompanyDisciplines.Select(contactCompanyDiscipline => new
+                            {
+                                contactCompanyDiscipline.Discipline.disciplineKey,
+                                contactCompanyDiscipline.Discipline.name,
+                                contactCompanyDiscipline.Discipline.value
+                            }).ToList()
                         })
                         .OrderBy(i => i.name)
                         .Skip(skip)
@@ -196,8 +292,10 @@ namespace Api.Controllers
                             obj.addressLine2,
                             obj.city,
                             obj.state,
+                            obj.country,
                             obj.zip,
-                            obj.isVendor,
+                            obj.isVendorDesign,
+                            obj.isVendorIntegration,
                             obj.isClient,
                             obj.isDeleted,
                             contacts = obj.Contacts.Select(contact => new 
@@ -205,6 +303,12 @@ namespace Api.Controllers
                                 contact.contactKey,
                                 contact.name,
                                 contact.email
+                            }).ToList(),
+                            disciplines = obj.ContactCompanyDisciplines.Select(contactCompanyDiscipline => new
+                            {
+                                contactCompanyDiscipline.Discipline.disciplineKey,
+                                contactCompanyDiscipline.Discipline.name,
+                                contactCompanyDiscipline.Discipline.value
                             }).ToList()
                         })
                         .FirstOrDefault();

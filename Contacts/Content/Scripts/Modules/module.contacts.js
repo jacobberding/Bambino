@@ -349,22 +349,14 @@ const Contact = (function () {
                             <input type="text" id="txtSearch${_self.name}" placeholder="Search" value="" required />
                         </m-input>
 
+                        ${Global.jack.mIM ? `
                         <m-flex data-type="row" class="n c sm sQ mR primary btnOpenModule" data-function="${_self.name}.getHtmlModuleAdd">
                             <i class="icon-plus"><svg><use xlink:href="/Content/Images/Bambino.min.svg#icon-plus"></use></svg></i>
                         </m-flex>
 
                         <m-flex data-type="row" class="n c sm sQ secondary" id="btnExport${_self.name}">
                             <i class="icon-download"><svg><use xlink:href="/Content/Images/Bambino.min.svg#icon-download"></use></svg></i>
-                        </m-flex>
-
-                        <!--<m-flex data-type="row" class="n pL pR">
-
-                            <m-button data-type="primary" class="" id="btnUploadData${_self.name}">
-                                Upload
-                            </m-button>
-                            <input type="file" class="none" id="uplData${_self.name}" />
-
-                        </m-flex>-->
+                        </m-flex>` : ``}
 
                     </m-flex>
 
@@ -384,7 +376,7 @@ const Contact = (function () {
             html += getHtmlCard(obj);
 
         return `
-            <m-flex data-type="col" class="s cards selectable" id="lst${_self.name}s">
+            <m-flex data-type="col" class="s cards ${Global.jack.mIM ? `selectable` : ``}" id="lst${_self.name}s">
 
                 <m-flex data-type="row" class="tableRow n pL pR mB sC sort" style="width: 100%;">
                     <h2 class="${Global.getSort(_self.sort, `name`)}" data-sort="name">
@@ -399,13 +391,6 @@ const Contact = (function () {
                     <h2 class="${Global.getSort(_self.sort, `title`)}" data-sort="title">
                         Title
                     </h2>
-                    ${(Global.isMobile()) ? `` : `
-                    <h2 class="${Global.getSort(_self.sort, `skills`)}" data-sort="skills">
-                        Skills
-                    </h2>
-                    <h2 class="${Global.getSort(_self.sort, `personalWebsite`)}" data-sort="personalWebsite">
-                        Personal Website
-                    </h2>`}
                 </m-flex>
 
                 ${html}
@@ -563,9 +548,24 @@ const Contact = (function () {
     };
 
     const getHtmlCard = function (obj) {
+
+        let html = ``;
+
+        for (let skill of obj.skills.split(`;`))
+            html += `<m-card class="tag">
+                    <m-flex data-type="row" class="n">
+                        <h1 class="tE">
+                            ${skill}
+                        </h1>
+                        <!--<m-flex data-type="row" class="n c xs sQ tertiary btnDelete${_self.name}" data-id="${obj.companyId}">
+                            <i class="icon-delete"><svg><use xlink:href="/Content/Images/Bambino.min.svg#icon-delete"></use></svg></i>
+                        </m-flex>-->
+                    </m-flex>
+                </m-card>`;
+
         return `
 
-            <m-card class="tableRow btnOpenModule mB" data-function="${_self.name}.getHtmlModuleDetail" data-args="${obj.contactKey}">
+            <m-card class="tableRow ${Global.jack.mIM ? `btnOpenModule` : ``} mB" data-function="${_self.name}.getHtmlModuleDetail" data-args="${obj.contactKey}">
                 <m-flex data-type="row" class="sC tE">
                     <h2 class="tE">
                         ${obj.name}
@@ -579,15 +579,24 @@ const Contact = (function () {
                     <h2 class="tE">
                         ${obj.title}
                     </h2>
-                    ${(Global.isMobile()) ? `` : `
-                    <h2 class="tE">
-                        ${obj.skills}
-                    </h2>
-                    <h2 class="tE">
-                        <span class="a" data-href="${obj.personalWebsite}">${obj.personalWebsite}</span>
-                    </h2>`}
                 </m-flex>
             </m-card>
+
+            ${obj.skills == `` && obj.personalWebsite == `` ? `` : `
+            <m-flex data-type="row" class="n pB w">
+                <m-flex data-type="row" class="n">
+                    ${html}
+                </m-flex>
+                ${obj.personalWebsite == `` ? `` : `
+                <m-flex data-type="row" class="n">
+                    <h3 class="tE h">
+                        <span class="a" data-href="${obj.personalWebsite}">${obj.personalWebsite}</span>
+                    </h3>
+                    <m-flex data-type="row" class="n c xs mL sQ h a" data-href="${obj.personalWebsite}">
+                        <i class="icon-advertisement-page"><svg><use xlink:href="/Content/Images/Bambino.min.svg#icon-advertisement-page"></use></svg></i>
+                    </m-flex>
+                </m-flex>`}
+            </m-flex>`}
 
             `;
     };
@@ -810,7 +819,7 @@ const ContactCompany = (function () {
         arr: [],
         vm: {},
         constructor: function (contactCompanyKey, name, email, phone, website, addressLine1, addressLine2,
-            city, state, zip, isVendor, isClient, isDeleted) {
+            city, state, country, zip, isVendorDesign, isVendorIntegration, isClient, isDeleted) {
             this.contactCompanyKey = contactCompanyKey;
             this.name = name;
             this.email = email;
@@ -820,8 +829,10 @@ const ContactCompany = (function () {
             this.addressLine2 = addressLine2;
             this.city = city;
             this.state = state;
+            this.country = country;
             this.zip = zip;
-            this.isVendor = isVendor;
+            this.isVendorDesign = isVendorDesign;
+            this.isVendorIntegration = isVendorIntegration;
             this.isClient = isClient;
             this.isDeleted = isDeleted;
         }
@@ -837,8 +848,10 @@ const ContactCompany = (function () {
         _self.vm.addressLine2 = $(`#txtAddressLine2${_self.name}`).val();
         _self.vm.city = $(`#txtCity${_self.name}`).val();
         _self.vm.state = $(`#dboState${_self.name}`).val();
+        _self.vm.country = $(`#dboCountry${_self.name}`).val();
         _self.vm.zip = $(`#txtZip${_self.name}`).val();
-        _self.vm.isVendor = $(`#chkIsVendor${_self.name}`).prop(`checked`);
+        _self.vm.isVendorDesign = $(`#chkIsVendorDesign${_self.name}`).prop(`checked`);
+        _self.vm.isVendorIntegration = $(`#chkIsVendorIntegration${_self.name}`).prop(`checked`);
         _self.vm.isClient = $(`#chkIsClient${_self.name}`).prop(`checked`);
         _self.vm.isDeleted = false;
 
@@ -947,7 +960,7 @@ const ContactCompany = (function () {
 
     };
     const _getEmptyVM = function () {
-        return new _self.constructor(0, ``, ``, ``, ``, ``, ``, ``, ``, ``, false, false, false);
+        return new _self.constructor(0, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, false, false, false, false);
     };
 
     const _search = function () {
@@ -1063,9 +1076,10 @@ const ContactCompany = (function () {
                             <input type="text" id="txtSearch${_self.name}" placeholder="Search" value="" required />
                         </m-input>
 
+                        ${Global.jack.mIM ? `
                         <m-flex data-type="row" class="n c sm sQ mR primary btnOpenModule" data-function="ContactCompany.getHtmlModuleAdd">
                             <i class="icon-plus"><svg><use xlink:href="/Content/Images/Bambino.min.svg#icon-plus"></use></svg></i>
-                        </m-flex>
+                        </m-flex>` : ``}
 
                     </m-flex>
 
@@ -1085,7 +1099,7 @@ const ContactCompany = (function () {
             html += getHtmlCard(obj);
 
         return `
-            <m-flex data-type="col" class="s cards selectable" id="lst${_self.name}s">
+            <m-flex data-type="col" class="s cards ${Global.jack.mIM ? `selectable` : ``}" id="lst${_self.name}s">
 
                 <m-flex data-type="row" class="tableRow n pL pR mB sC sort" style="width: 100%;">
                     <h2 class="${Global.getSort(_self.sort, `name`)}" data-sort="name">
@@ -1206,21 +1220,33 @@ const ContactCompany = (function () {
                         <h2>${_self.vm.city}</h2>
                     </m-input>
 
-                    <m-input class="mR">
+                    <m-input class="">
                         <label>Zip</label>
                         <h2>${_self.vm.zip}</h2>
-                    </m-input>
-
-                    <m-input class="">
-                        <label>State</label>
-                        <h2>${_self.vm.state}</h2>
                     </m-input>
                 </m-flex>
 
                 <m-flex data-type="row" class="n">
                     <m-input class="mR">
-                        <label>Vendor</label>
-                        <h2>${_self.vm.isVendor ? `Yes` : `No`}</h2>
+                        <label>State</label>
+                        <h2>${_self.vm.state}</h2>
+                    </m-input>
+
+                    <m-input class="">
+                        <label>Country</label>
+                        <h2>${_self.vm.country}</h2>
+                    </m-input>
+                </m-flex>
+
+                <m-flex data-type="row" class="n">
+                    <m-input class="mR">
+                        <label>Vendor Design</label>
+                        <h2>${_self.vm.isVendorDesign ? `Yes` : `No`}</h2>
+                    </m-input>
+
+                    <m-input class="mR">
+                        <label>Vendor Integration</label>
+                        <h2>${_self.vm.isVendorIntegration ? `Yes` : `No`}</h2>
                     </m-input>
 
                     <m-input class="">
@@ -1234,6 +1260,12 @@ const ContactCompany = (function () {
             `;
     };
     const getHtmlBodyForm = function () {
+
+        let html = ``;
+
+        for (let discipline of _self.vm.disciplines)
+            html += Disciplines.getHtmlTag(discipline);
+
         return `
 
             <m-flex data-type="col" class="form">
@@ -1258,7 +1290,14 @@ const ContactCompany = (function () {
 
                     <m-input class="">
                         <label for="txtWebsite${_self.name}">Website</label>
-                        <input type="text" id="txtWebsite${_self.name}" placeholder="Website" value="${_self.vm.website}" />
+
+                        <m-flex data-type="row" class="n">
+                            <input type="text" id="txtWebsite${_self.name}" placeholder="Website" value="${_self.vm.website}" />
+                            <m-flex data-type="row" class="n c sQ h a" data-href="${_self.vm.website}">
+                                <i class="icon-advertisement-page"><svg><use xlink:href="/Content/Images/Bambino.min.svg#icon-advertisement-page"></use></svg></i>
+                            </m-flex>
+                        </m-flex>
+
                     </m-input>
                 </m-flex>
 
@@ -1280,24 +1319,42 @@ const ContactCompany = (function () {
                         <input type="text" id="txtCity${_self.name}" placeholder="City" value="${_self.vm.city}" />
                     </m-input>
 
-                    <m-input class="mR">
+                    <m-input class="">
                         <label for="txtZip${_self.name}">Zip</label>
                         <input type="text" id="txtZip${_self.name}" placeholder="Zip" value="${_self.vm.zip}" />
-                    </m-input>
-
-                    <m-input class="">
-                        <label for="dboState${_self.name}">State</label>
-                        <select id="dboState${_self.name}">
-                            ${Global.getHtmlOptions(listStates, [_self.vm.state])}
-                        </select>
                     </m-input>
                 </m-flex>
 
                 <m-flex data-type="row" class="n">
                     <m-input class="mR">
+                        <label for="dboState${_self.name}">State</label>
+                        <select id="dboState${_self.name}">
+                            <option value="" ${_self.vm.state == `` ? `selected` : ``}>Select</option>
+                            ${Global.getHtmlOptions(listStates, [_self.vm.state])}
+                        </select>
+                    </m-input>
+
+                    <m-input class="">
+                        <label for="dboCountry${_self.name}">Country</label>
+                        <select id="dboCountry${_self.name}">
+                            ${Global.getHtmlOptions(listCountries, [_self.vm.country])}
+                        </select>
+                    </m-input>
+                </m-flex>
+
+                <m-flex data-type="row" class="n">
+
+                    <m-input class="mR">
                         <m-flex data-type="row" class="n">
-                            <input type="checkbox" class="mR" id="chkIsVendor${_self.name}" ${(_self.vm.isVendor) ? `checked` : ``} />
-                            <label for="chkIsVendor${_self.name}">Is Vendor</label>
+                            <input type="checkbox" class="mR" id="chkIsVendorDesign${_self.name}" ${(_self.vm.isVendorDesign) ? `checked` : ``} />
+                            <label for="chkIsVendorDesign${_self.name}">Is Vendor Design</label>
+                        </m-flex>
+                    </m-input>
+
+                    <m-input class="mR">
+                        <m-flex data-type="row" class="n">
+                            <input type="checkbox" class="mR" id="chkIsVendorIntegration${_self.name}" ${(_self.vm.isVendorIntegration) ? `checked` : ``} />
+                            <label for="chkIsVendorIntegration${_self.name}">Is Vendor Integration</label>
                         </m-flex>
                     </m-input>
 
@@ -1307,6 +1364,23 @@ const ContactCompany = (function () {
                             <label for="chkIsClient${_self.name}">Is Client</label>
                         </m-flex>
                     </m-input>
+
+                </m-flex>
+
+                <m-flex data-type="row" class="n s mT">
+                    <m-input class="mR">
+                        <input type="text" id="txtSearchDisciplines" placeholder="Discipline" value="" />
+                    </m-input>
+
+                    <m-flex data-type="row" class="n c sm sQ secondary btnAddDisciplines">
+                        <i class="icon-plus"><svg><use xlink:href="/Content/Images/Bambino.min.svg#icon-plus"></use></svg></i>
+                    </m-flex>
+                </m-flex>
+
+                <label for="txtSearchDisciplines" class="mB">Disciplines</label>
+
+                <m-flex data-type="row" class="n s" id="flxDisciplinesTags">
+                    ${html}
                 </m-flex>
 
             </m-flex>
@@ -1315,9 +1389,21 @@ const ContactCompany = (function () {
     };
 
     const getHtmlCard = function (obj) {
+
+        let html = ``;
+
+        for (let discipline of obj.disciplines)
+            html += `<m-card class="tag">
+                    <m-flex data-type="row" class="n">
+                        <h1 class="tE">
+                            ${discipline.name}
+                        </h1>
+                    </m-flex>
+                </m-card>`;
+
         return `
 
-            <m-card class="tableRow btnOpenModule mB" data-function="ContactCompany.getHtmlModuleDetail" data-args="${obj.contactCompanyKey}">
+            <m-card class="tableRow ${Global.jack.mIM ? `btnOpenModule` : ``} mB" data-function="ContactCompany.getHtmlModuleDetail" data-args="${obj.contactCompanyKey}">
                 <m-flex data-type="row" class="sC tE">
                     <h2 class="tE">
                         ${obj.name}
@@ -1326,13 +1412,20 @@ const ContactCompany = (function () {
                         ${obj.email}
                     </h2>
                     <h2 class="tE">
-                        ${obj.website}
+                        <span class="a" data-href="${obj.website}">${obj.website}</span>
                     </h2>
                     <h2 class="tE">
                         ${obj.state}
                     </h2>
                 </m-flex>
             </m-card>
+
+            ${obj.disciplines.length == 0 ? `` : `
+            <m-flex data-type="row" class="n pB w">
+                <m-flex data-type="row" class="n">
+                    ${html}
+                </m-flex>
+            </m-flex>`}
 
             `;
     };
