@@ -600,6 +600,28 @@ const Contact = (function () {
 
             `;
     };
+    const getHtmlCardProject = function (obj) {
+        return `
+
+            <m-card class="tableRow mB">
+                <m-flex data-type="row" class="sC tE">
+                    <h2 class="tE">
+                        ${obj.name}
+                    </h2>
+                    <h2 class="tE">
+                        ${obj.email}
+                    </h2>
+                    <h2 class="tE">
+                        ${obj.phone1}
+                    </h2>
+                    <h2 class="tE">
+                        ${obj.title}
+                    </h2>
+                </m-flex>
+            </m-card>
+
+            `;
+    };
 
     const _init = (function () {
         //$(document).on(`tap`, `#btnUploadData${_self.name}`, function (e) { e.stopPropagation(); e.preventDefault(); $(`#uplData${_self.name}`).click(); });
@@ -622,7 +644,8 @@ const Contact = (function () {
         getHtmlBodyDetail: getHtmlBodyDetail,
         getHtmlBodyFiles: getHtmlBodyFiles,
         getHtmlBodyForm: getHtmlBodyForm,
-        getHtmlCard: getHtmlCard
+        getHtmlCard: getHtmlCard,
+        getHtmlCardProject: getHtmlCardProject
     };
 
 })();
@@ -868,7 +891,7 @@ const ContactCompany = (function () {
                 .done(function (data) {
                     Validation.done();
 
-                    _self.pageArr = [];
+                    _self.arr = [];
 
                     _getByPage(1);
 
@@ -895,8 +918,8 @@ const ContactCompany = (function () {
 
     const _get = function () {
 
-        //if (_self.arr.length > 0)
-        //    return;
+        if (_self.arr.length > 0)
+            return;
 
         Global.post(`${_self.name}_Get`, {})
             .done(function (data) {
@@ -940,7 +963,7 @@ const ContactCompany = (function () {
             });
 
     };
-    const _getByKey = function (key) {
+    const _getByKey = function (key, callback = `getHtmlBodyDetail()`) {
 
         const vm = {
             key: key
@@ -952,7 +975,7 @@ const ContactCompany = (function () {
 
                 _self.vm = data;
 
-                $(`m-module m-body`).html(getHtmlBodyDetail());
+                $(`m-module m-body`).html(eval(callback));
 
             }).fail(function (data) {
                 Validation.notification(2);
@@ -1032,8 +1055,8 @@ const ContactCompany = (function () {
         
             `;
     };
-    const getHtmlModuleDetail = function (id) {
-        _getByKey(id);
+    const getHtmlModuleDetail = function (key) {
+        _getByKey(key);
         return `
 
             <m-header data-label="${_self.name} Detail Header">
@@ -1048,6 +1071,33 @@ const ContactCompany = (function () {
             </m-header>
 
             <m-body data-label="${_self.name} Detail Body">
+
+                <m-flex data-type="col">
+
+                    <h1 class="loading">Loading</h1>
+                
+                </m-flex>
+
+            </m-body>
+        
+            `;
+    };
+    const getHtmlModuleContacts = function (key) {
+        _getByKey(key, `getHtmlBodyContacts()`);
+        return `
+
+            <m-header data-label="${_self.name} Contacts">
+                <m-flex data-type="row" class="n">
+                    <m-flex data-type="row" class="n c tab h btnOpenBody" data-label="${_self.name} Contacts" data-function="${_self.name}.getHtmlModuleContacts">
+                        <span>Contacts</span>
+                    </m-flex>
+                </m-flex>
+                <m-flex data-type="row" class="n c sQ h btnCloseModule">
+                    <i class="icon-delete"><svg><use xlink:href="/Content/Images/Bambino.min.svg#icon-delete"></use></svg></i>
+                </m-flex>
+            </m-header>
+
+            <m-body data-label="${_self.name} Contacts">
 
                 <m-flex data-type="col">
 
@@ -1156,6 +1206,52 @@ const ContactCompany = (function () {
                 <m-button data-type="primary" id="btnEdit${_self.name}">
                     Save
                 </m-button>
+            </m-flex>
+
+            `;
+    };
+    const getHtmlBodyContacts = function () {
+
+        let html = ``;
+
+        for (let obj of _self.vm.contacts)
+            html += Contact.getHtmlCardProject(obj);
+
+        return `
+
+            <m-flex data-type="row" class="n pL pR">
+
+                <m-flex data-type="col" class="n">
+                    <h1>Contacts</h1>
+                    <label>${_self.vm.name}</label>
+                </m-flex>
+
+                ${Global.jack.mIM ? `
+                <m-flex data-type="row" class="n c sm sQ secondary btnOpenModule" data-function="Module.getHtmlConfirmation" data-args="Are you sure you want to DELETE this company contact for this project?,btnDelete${_self.name},${_self.vm.contactCompanyKey}">
+                    <i class="icon-trash-can"><svg><use xlink:href="/Content/Images/Bambino.min.svg#icon-trash-can"></use></svg></i>
+                </m-flex>` : ``}
+            
+            </m-flex>
+
+            <m-flex data-type="col" class="">
+
+                <m-flex data-type="row" class="tableRow n pL pR sC w">
+                    <h2 class="">
+                        Name
+                    </h2>
+                    <h2 class="">
+                        Email
+                    </h2>
+                    <h2 class="">
+                        Phone
+                    </h2>
+                    <h2 class="">
+                        Title
+                    </h2>
+                </m-flex>
+
+                ${html}
+
             </m-flex>
 
             `;
@@ -1463,9 +1559,12 @@ const ContactCompany = (function () {
         getSelf: getSelf,
         getHtmlModuleAdd: getHtmlModuleAdd,
         getHtmlModuleDetail: getHtmlModuleDetail,
+        getHtmlModuleContacts: getHtmlModuleContacts,
         getHtmlBodyInformation: getHtmlBodyInformation,
         getHtmlBody: getHtmlBody,
         getHtmlBodyList: getHtmlBodyList,
+        getHtmlBodyDetail: getHtmlBodyDetail,
+        getHtmlBodyContacts: getHtmlBodyContacts,
         getHtmlCard: getHtmlCard,
         getHtmlTag: getHtmlTag
     };

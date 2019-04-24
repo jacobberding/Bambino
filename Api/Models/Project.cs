@@ -48,6 +48,7 @@ namespace Api.Models
         public List<TskViewModel> tsks { get; set; } = new List<TskViewModel>();
         public List<MemberViewModel> members { get; set; } = new List<MemberViewModel>();
         public List<ProjectPhaseViewModel> projectPhases { get; set; } = new List<ProjectPhaseViewModel>();
+        public List<ProjectContactCompanyViewModel> projectContactCompanies { get; set; } = new List<ProjectContactCompanyViewModel>();
 
     }
 

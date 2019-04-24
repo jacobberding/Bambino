@@ -274,7 +274,7 @@ namespace Api.Controllers
                     var vm = context.Projects
                         .Where(i => i.projectId == data.id
                             && !i.isDeleted)
-                        .Select(obj => new ProjectViewModel
+                        .Select(obj => new ProjectViewModel()
                         {
                             projectId = obj.projectId,
                             projectPhaseKey = obj.ProjectPhases
@@ -312,6 +312,19 @@ namespace Api.Controllers
                                 isActive = projectMember.Member.TimeTrackers.Any(i => i.isActive)
                             })
                             .OrderBy(i => i.email)
+                            .ToList(),
+                            projectContactCompanies = obj.ProjectContactCompanies.Select(projectContactCompany => new ProjectContactCompanyViewModel()
+                            {
+                                contactCompanyKey = projectContactCompany.contactCompanyKey,
+                                name = projectContactCompany.ContactCompany.name,
+                                value = projectContactCompany.contactCompanyKey,
+                                disciplineKey = projectContactCompany.disciplineKey,
+                                isClient = projectContactCompany.isClient,
+                                isVendorDesign = projectContactCompany.isVendorDesign,
+                                isVendorIntegration = projectContactCompany.isVendorIntegration
+                            })
+                            .OrderBy(i => i.isClient)
+                            .ThenBy(i => i.name)
                             .ToList(),
                             isDeleted = obj.isDeleted
                         })

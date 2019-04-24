@@ -337,23 +337,27 @@ const Project = (function () {
                     <m-flex data-type="row" class="n w wR s">
 
                         ${Global.jack.mIA ? `
-                        <m-button data-type="secondary" class="sQ btnOpenBody mR" data-label="Project" data-function="TimeTrackerProject.getHtmlBody" data-args="${_self.vm.projectId}">
+                        <m-button data-type="secondary" class="sQ btnOpenBody mR mB" data-label="Project" data-function="TimeTrackerProject.getHtmlBody" data-args="${_self.vm.projectId}">
                             Time Sheets
                         </m-button>` : ``}
 
-                        <m-button data-type="secondary" class="sQ btnOpenBody mR" data-label="Project" data-function="ProjectMember.getHtmlBody" data-args="">
+                        <m-button data-type="secondary" class="sQ btnOpenBody mR mB" data-label="Project" data-function="ProjectContactCompany.getHtmlBody" data-args="">
+                            Contacts
+                        </m-button>
+
+                        <m-button data-type="secondary" class="sQ btnOpenBody mR mB" data-label="Project" data-function="ProjectMember.getHtmlBody" data-args="">
                             Team
                         </m-button>
 
-                        <m-button data-type="secondary" class="sQ btnOpenBody mR" data-label="Project" data-function="ProjectZone.getHtmlBody" data-args="">
+                        <m-button data-type="secondary" class="sQ btnOpenBody mR mB" data-label="Project" data-function="ProjectZone.getHtmlBody" data-args="">
                             Zones
                         </m-button>
 
-                        <m-button data-type="secondary" class="sQ btnOpenBody mR" data-label="Project" data-function="ProjectAttraction.getHtmlBody" data-args="">
+                        <m-button data-type="secondary" class="sQ btnOpenBody mR mB" data-label="Project" data-function="ProjectAttraction.getHtmlBody" data-args="">
                             Attractions
                         </m-button>
 
-                        <m-button data-type="secondary" class="sQ btnOpenBody mR" data-label="Project" data-function="Project.getHtmlBodySettings" data-args="">
+                        <m-button data-type="secondary" class="sQ btnOpenBody mR mB" data-label="Project" data-function="Project.getHtmlBodySettings" data-args="">
                             Settings
                         </m-button>
 

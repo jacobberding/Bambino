@@ -127,6 +127,7 @@
       <Association Name="Discipline_ProjectReference" Member="ProjectReferences" ThisKey="disciplineKey" OtherKey="disciplineKey" Type="ProjectReference" />
       <Association Name="Discipline_ProjectWritingDocument" Member="ProjectWritingDocuments" ThisKey="disciplineKey" OtherKey="disciplineKey" Type="ProjectWritingDocument" />
       <Association Name="Discipline_ContactCompanyDiscipline" Member="ContactCompanyDisciplines" ThisKey="disciplineKey" OtherKey="disciplineKey" Type="ContactCompanyDiscipline" />
+      <Association Name="Discipline_ProjectContactCompany" Member="ProjectContactCompanies" ThisKey="disciplineKey" OtherKey="disciplineKey" Type="ProjectContactCompany" />
     </Type>
   </Table>
   <Table Name="dbo.Emails" Member="Emails">
@@ -397,6 +398,7 @@
       <Association Name="Project_ProjectZone" Member="ProjectZones" ThisKey="projectId" OtherKey="projectId" Type="ProjectZone" />
       <Association Name="Project_TimeTrackerProject" Member="TimeTrackerProjects" ThisKey="projectId" OtherKey="projectId" Type="TimeTrackerProject" />
       <Association Name="Project_Tsk" Member="Tsks" ThisKey="projectId" OtherKey="projectId" Type="Tsk" />
+      <Association Name="Project_ProjectContactCompany" Member="ProjectContactCompanies" ThisKey="projectId" OtherKey="projectId" Type="ProjectContactCompany" />
       <Association Name="Company_Project" Member="Company" ThisKey="companyId" OtherKey="companyId" Type="Company" IsForeignKey="true" />
     </Type>
   </Table>
@@ -562,6 +564,7 @@
       <Column Name="isDeleted" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
       <Association Name="ContactCompany_Contact" Member="Contacts" ThisKey="contactCompanyKey" OtherKey="contactCompanyKey" Type="Contact" />
       <Association Name="ContactCompany_ContactCompanyDiscipline" Member="ContactCompanyDisciplines" ThisKey="contactCompanyKey" OtherKey="contactCompanyKey" Type="ContactCompanyDiscipline" />
+      <Association Name="ContactCompany_ProjectContactCompany" Member="ProjectContactCompanies" ThisKey="contactCompanyKey" OtherKey="contactCompanyKey" Type="ProjectContactCompany" />
     </Type>
   </Table>
   <Table Name="dbo.ContactCompanyDisciplines" Member="ContactCompanyDisciplines">
@@ -570,6 +573,21 @@
       <Column Name="disciplineKey" Type="System.Int64" DbType="BigInt NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
       <Association Name="ContactCompany_ContactCompanyDiscipline" Member="ContactCompany" ThisKey="contactCompanyKey" OtherKey="contactCompanyKey" Type="ContactCompany" IsForeignKey="true" />
       <Association Name="Discipline_ContactCompanyDiscipline" Member="Discipline" ThisKey="disciplineKey" OtherKey="disciplineKey" Type="Discipline" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.ProjectContactCompanies" Member="ProjectContactCompanies">
+    <Type Name="ProjectContactCompany">
+      <Column Name="projectContactCompanyKey" Type="System.Int64" DbType="BigInt NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="projectId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" CanBeNull="false" />
+      <Column Name="contactCompanyKey" Type="System.Int64" DbType="BigInt NOT NULL" CanBeNull="false" />
+      <Column Name="disciplineKey" Type="System.Int64" DbType="BigInt NOT NULL" CanBeNull="false" />
+      <Column Name="isClient" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
+      <Column Name="isVendorDesign" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
+      <Column Name="isVendorIntegration" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
+      <Column Name="isDeleted" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
+      <Association Name="ContactCompany_ProjectContactCompany" Member="ContactCompany" ThisKey="contactCompanyKey" OtherKey="contactCompanyKey" Type="ContactCompany" IsForeignKey="true" />
+      <Association Name="Discipline_ProjectContactCompany" Member="Discipline" ThisKey="disciplineKey" OtherKey="disciplineKey" Type="Discipline" IsForeignKey="true" />
+      <Association Name="Project_ProjectContactCompany" Member="Project" ThisKey="projectId" OtherKey="projectId" Type="Project" IsForeignKey="true" />
     </Type>
   </Table>
 </Database>

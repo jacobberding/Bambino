@@ -150,6 +150,9 @@ namespace Api
     partial void InsertContactCompanyDiscipline(ContactCompanyDiscipline instance);
     partial void UpdateContactCompanyDiscipline(ContactCompanyDiscipline instance);
     partial void DeleteContactCompanyDiscipline(ContactCompanyDiscipline instance);
+    partial void InsertProjectContactCompany(ProjectContactCompany instance);
+    partial void UpdateProjectContactCompany(ProjectContactCompany instance);
+    partial void DeleteProjectContactCompany(ProjectContactCompany instance);
     #endregion
 		
 		public BambinoDataContext() : 
@@ -499,6 +502,14 @@ namespace Api
 			get
 			{
 				return this.GetTable<ContactCompanyDiscipline>();
+			}
+		}
+		
+		public System.Data.Linq.Table<ProjectContactCompany> ProjectContactCompanies
+		{
+			get
+			{
+				return this.GetTable<ProjectContactCompany>();
 			}
 		}
 	}
@@ -2896,6 +2907,8 @@ namespace Api
 		
 		private EntitySet<ContactCompanyDiscipline> _ContactCompanyDisciplines;
 		
+		private EntitySet<ProjectContactCompany> _ProjectContactCompanies;
+		
     #region Extensibility Method Definitions
     partial void OnLoaded();
     partial void OnValidate(System.Data.Linq.ChangeAction action);
@@ -2919,6 +2932,7 @@ namespace Api
 			this._ProjectReferences = new EntitySet<ProjectReference>(new Action<ProjectReference>(this.attach_ProjectReferences), new Action<ProjectReference>(this.detach_ProjectReferences));
 			this._ProjectWritingDocuments = new EntitySet<ProjectWritingDocument>(new Action<ProjectWritingDocument>(this.attach_ProjectWritingDocuments), new Action<ProjectWritingDocument>(this.detach_ProjectWritingDocuments));
 			this._ContactCompanyDisciplines = new EntitySet<ContactCompanyDiscipline>(new Action<ContactCompanyDiscipline>(this.attach_ContactCompanyDisciplines), new Action<ContactCompanyDiscipline>(this.detach_ContactCompanyDisciplines));
+			this._ProjectContactCompanies = new EntitySet<ProjectContactCompany>(new Action<ProjectContactCompany>(this.attach_ProjectContactCompanies), new Action<ProjectContactCompany>(this.detach_ProjectContactCompanies));
 			OnCreated();
 		}
 		
@@ -3087,6 +3101,19 @@ namespace Api
 			}
 		}
 		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Discipline_ProjectContactCompany", Storage="_ProjectContactCompanies", ThisKey="disciplineKey", OtherKey="disciplineKey")]
+		public EntitySet<ProjectContactCompany> ProjectContactCompanies
+		{
+			get
+			{
+				return this._ProjectContactCompanies;
+			}
+			set
+			{
+				this._ProjectContactCompanies.Assign(value);
+			}
+		}
+		
 		public event PropertyChangingEventHandler PropertyChanging;
 		
 		public event PropertyChangedEventHandler PropertyChanged;
@@ -3162,6 +3189,18 @@ namespace Api
 		}
 		
 		private void detach_ContactCompanyDisciplines(ContactCompanyDiscipline entity)
+		{
+			this.SendPropertyChanging();
+			entity.Discipline = null;
+		}
+		
+		private void attach_ProjectContactCompanies(ProjectContactCompany entity)
+		{
+			this.SendPropertyChanging();
+			entity.Discipline = this;
+		}
+		
+		private void detach_ProjectContactCompanies(ProjectContactCompany entity)
 		{
 			this.SendPropertyChanging();
 			entity.Discipline = null;
@@ -8655,6 +8694,8 @@ namespace Api
 		
 		private EntitySet<Tsk> _Tsks;
 		
+		private EntitySet<ProjectContactCompany> _ProjectContactCompanies;
+		
 		private EntityRef<Company> _Company;
 		
     #region Extensibility Method Definitions
@@ -8696,6 +8737,7 @@ namespace Api
 			this._ProjectZones = new EntitySet<ProjectZone>(new Action<ProjectZone>(this.attach_ProjectZones), new Action<ProjectZone>(this.detach_ProjectZones));
 			this._TimeTrackerProjects = new EntitySet<TimeTrackerProject>(new Action<TimeTrackerProject>(this.attach_TimeTrackerProjects), new Action<TimeTrackerProject>(this.detach_TimeTrackerProjects));
 			this._Tsks = new EntitySet<Tsk>(new Action<Tsk>(this.attach_Tsks), new Action<Tsk>(this.detach_Tsks));
+			this._ProjectContactCompanies = new EntitySet<ProjectContactCompany>(new Action<ProjectContactCompany>(this.attach_ProjectContactCompanies), new Action<ProjectContactCompany>(this.detach_ProjectContactCompanies));
 			this._Company = default(EntityRef<Company>);
 			OnCreated();
 		}
@@ -9029,6 +9071,19 @@ namespace Api
 			}
 		}
 		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Project_ProjectContactCompany", Storage="_ProjectContactCompanies", ThisKey="projectId", OtherKey="projectId")]
+		public EntitySet<ProjectContactCompany> ProjectContactCompanies
+		{
+			get
+			{
+				return this._ProjectContactCompanies;
+			}
+			set
+			{
+				this._ProjectContactCompanies.Assign(value);
+			}
+		}
+		
 		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Company_Project", Storage="_Company", ThisKey="companyId", OtherKey="companyId", IsForeignKey=true)]
 		public Company Company
 		{
@@ -9138,6 +9193,18 @@ namespace Api
 		}
 		
 		private void detach_Tsks(Tsk entity)
+		{
+			this.SendPropertyChanging();
+			entity.Project = null;
+		}
+		
+		private void attach_ProjectContactCompanies(ProjectContactCompany entity)
+		{
+			this.SendPropertyChanging();
+			entity.Project = this;
+		}
+		
+		private void detach_ProjectContactCompanies(ProjectContactCompany entity)
 		{
 			this.SendPropertyChanging();
 			entity.Project = null;
@@ -12362,6 +12429,8 @@ namespace Api
 		
 		private EntitySet<ContactCompanyDiscipline> _ContactCompanyDisciplines;
 		
+		private EntitySet<ProjectContactCompany> _ProjectContactCompanies;
+		
     #region Extensibility Method Definitions
     partial void OnLoaded();
     partial void OnValidate(System.Data.Linq.ChangeAction action);
@@ -12402,6 +12471,7 @@ namespace Api
 		{
 			this._Contacts = new EntitySet<Contact>(new Action<Contact>(this.attach_Contacts), new Action<Contact>(this.detach_Contacts));
 			this._ContactCompanyDisciplines = new EntitySet<ContactCompanyDiscipline>(new Action<ContactCompanyDiscipline>(this.attach_ContactCompanyDisciplines), new Action<ContactCompanyDiscipline>(this.detach_ContactCompanyDisciplines));
+			this._ProjectContactCompanies = new EntitySet<ProjectContactCompany>(new Action<ProjectContactCompany>(this.attach_ProjectContactCompanies), new Action<ProjectContactCompany>(this.detach_ProjectContactCompanies));
 			OnCreated();
 		}
 		
@@ -12731,6 +12801,19 @@ namespace Api
 			}
 		}
 		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="ContactCompany_ProjectContactCompany", Storage="_ProjectContactCompanies", ThisKey="contactCompanyKey", OtherKey="contactCompanyKey")]
+		public EntitySet<ProjectContactCompany> ProjectContactCompanies
+		{
+			get
+			{
+				return this._ProjectContactCompanies;
+			}
+			set
+			{
+				this._ProjectContactCompanies.Assign(value);
+			}
+		}
+		
 		public event PropertyChangingEventHandler PropertyChanging;
 		
 		public event PropertyChangedEventHandler PropertyChanged;
@@ -12770,6 +12853,18 @@ namespace Api
 		}
 		
 		private void detach_ContactCompanyDisciplines(ContactCompanyDiscipline entity)
+		{
+			this.SendPropertyChanging();
+			entity.ContactCompany = null;
+		}
+		
+		private void attach_ProjectContactCompanies(ProjectContactCompany entity)
+		{
+			this.SendPropertyChanging();
+			entity.ContactCompany = this;
+		}
+		
+		private void detach_ProjectContactCompanies(ProjectContactCompany entity)
 		{
 			this.SendPropertyChanging();
 			entity.ContactCompany = null;
@@ -12919,6 +13014,359 @@ namespace Api
 						this._disciplineKey = default(long);
 					}
 					this.SendPropertyChanged("Discipline");
+				}
+			}
+		}
+		
+		public event PropertyChangingEventHandler PropertyChanging;
+		
+		public event PropertyChangedEventHandler PropertyChanged;
+		
+		protected virtual void SendPropertyChanging()
+		{
+			if ((this.PropertyChanging != null))
+			{
+				this.PropertyChanging(this, emptyChangingEventArgs);
+			}
+		}
+		
+		protected virtual void SendPropertyChanged(String propertyName)
+		{
+			if ((this.PropertyChanged != null))
+			{
+				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+			}
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.ProjectContactCompanies")]
+	public partial class ProjectContactCompany : INotifyPropertyChanging, INotifyPropertyChanged
+	{
+		
+		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+		
+		private long _projectContactCompanyKey;
+		
+		private System.Guid _projectId;
+		
+		private long _contactCompanyKey;
+		
+		private long _disciplineKey;
+		
+		private bool _isClient;
+		
+		private bool _isVendorDesign;
+		
+		private bool _isVendorIntegration;
+		
+		private bool _isDeleted;
+		
+		private EntityRef<ContactCompany> _ContactCompany;
+		
+		private EntityRef<Discipline> _Discipline;
+		
+		private EntityRef<Project> _Project;
+		
+    #region Extensibility Method Definitions
+    partial void OnLoaded();
+    partial void OnValidate(System.Data.Linq.ChangeAction action);
+    partial void OnCreated();
+    partial void OnprojectContactCompanyKeyChanging(long value);
+    partial void OnprojectContactCompanyKeyChanged();
+    partial void OnprojectIdChanging(System.Guid value);
+    partial void OnprojectIdChanged();
+    partial void OncontactCompanyKeyChanging(long value);
+    partial void OncontactCompanyKeyChanged();
+    partial void OndisciplineKeyChanging(long value);
+    partial void OndisciplineKeyChanged();
+    partial void OnisClientChanging(bool value);
+    partial void OnisClientChanged();
+    partial void OnisVendorDesignChanging(bool value);
+    partial void OnisVendorDesignChanged();
+    partial void OnisVendorIntegrationChanging(bool value);
+    partial void OnisVendorIntegrationChanged();
+    partial void OnisDeletedChanging(bool value);
+    partial void OnisDeletedChanged();
+    #endregion
+		
+		public ProjectContactCompany()
+		{
+			this._ContactCompany = default(EntityRef<ContactCompany>);
+			this._Discipline = default(EntityRef<Discipline>);
+			this._Project = default(EntityRef<Project>);
+			OnCreated();
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_projectContactCompanyKey", AutoSync=AutoSync.OnInsert, DbType="BigInt NOT NULL IDENTITY", IsPrimaryKey=true, IsDbGenerated=true)]
+		public long projectContactCompanyKey
+		{
+			get
+			{
+				return this._projectContactCompanyKey;
+			}
+			set
+			{
+				if ((this._projectContactCompanyKey != value))
+				{
+					this.OnprojectContactCompanyKeyChanging(value);
+					this.SendPropertyChanging();
+					this._projectContactCompanyKey = value;
+					this.SendPropertyChanged("projectContactCompanyKey");
+					this.OnprojectContactCompanyKeyChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_projectId", DbType="UniqueIdentifier NOT NULL")]
+		public System.Guid projectId
+		{
+			get
+			{
+				return this._projectId;
+			}
+			set
+			{
+				if ((this._projectId != value))
+				{
+					if (this._Project.HasLoadedOrAssignedValue)
+					{
+						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+					}
+					this.OnprojectIdChanging(value);
+					this.SendPropertyChanging();
+					this._projectId = value;
+					this.SendPropertyChanged("projectId");
+					this.OnprojectIdChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_contactCompanyKey", DbType="BigInt NOT NULL")]
+		public long contactCompanyKey
+		{
+			get
+			{
+				return this._contactCompanyKey;
+			}
+			set
+			{
+				if ((this._contactCompanyKey != value))
+				{
+					if (this._ContactCompany.HasLoadedOrAssignedValue)
+					{
+						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+					}
+					this.OncontactCompanyKeyChanging(value);
+					this.SendPropertyChanging();
+					this._contactCompanyKey = value;
+					this.SendPropertyChanged("contactCompanyKey");
+					this.OncontactCompanyKeyChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_disciplineKey", DbType="BigInt NOT NULL")]
+		public long disciplineKey
+		{
+			get
+			{
+				return this._disciplineKey;
+			}
+			set
+			{
+				if ((this._disciplineKey != value))
+				{
+					if (this._Discipline.HasLoadedOrAssignedValue)
+					{
+						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+					}
+					this.OndisciplineKeyChanging(value);
+					this.SendPropertyChanging();
+					this._disciplineKey = value;
+					this.SendPropertyChanged("disciplineKey");
+					this.OndisciplineKeyChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_isClient", DbType="Bit NOT NULL")]
+		public bool isClient
+		{
+			get
+			{
+				return this._isClient;
+			}
+			set
+			{
+				if ((this._isClient != value))
+				{
+					this.OnisClientChanging(value);
+					this.SendPropertyChanging();
+					this._isClient = value;
+					this.SendPropertyChanged("isClient");
+					this.OnisClientChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_isVendorDesign", DbType="Bit NOT NULL")]
+		public bool isVendorDesign
+		{
+			get
+			{
+				return this._isVendorDesign;
+			}
+			set
+			{
+				if ((this._isVendorDesign != value))
+				{
+					this.OnisVendorDesignChanging(value);
+					this.SendPropertyChanging();
+					this._isVendorDesign = value;
+					this.SendPropertyChanged("isVendorDesign");
+					this.OnisVendorDesignChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_isVendorIntegration", DbType="Bit NOT NULL")]
+		public bool isVendorIntegration
+		{
+			get
+			{
+				return this._isVendorIntegration;
+			}
+			set
+			{
+				if ((this._isVendorIntegration != value))
+				{
+					this.OnisVendorIntegrationChanging(value);
+					this.SendPropertyChanging();
+					this._isVendorIntegration = value;
+					this.SendPropertyChanged("isVendorIntegration");
+					this.OnisVendorIntegrationChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_isDeleted", DbType="Bit NOT NULL")]
+		public bool isDeleted
+		{
+			get
+			{
+				return this._isDeleted;
+			}
+			set
+			{
+				if ((this._isDeleted != value))
+				{
+					this.OnisDeletedChanging(value);
+					this.SendPropertyChanging();
+					this._isDeleted = value;
+					this.SendPropertyChanged("isDeleted");
+					this.OnisDeletedChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="ContactCompany_ProjectContactCompany", Storage="_ContactCompany", ThisKey="contactCompanyKey", OtherKey="contactCompanyKey", IsForeignKey=true)]
+		public ContactCompany ContactCompany
+		{
+			get
+			{
+				return this._ContactCompany.Entity;
+			}
+			set
+			{
+				ContactCompany previousValue = this._ContactCompany.Entity;
+				if (((previousValue != value) 
+							|| (this._ContactCompany.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if ((previousValue != null))
+					{
+						this._ContactCompany.Entity = null;
+						previousValue.ProjectContactCompanies.Remove(this);
+					}
+					this._ContactCompany.Entity = value;
+					if ((value != null))
+					{
+						value.ProjectContactCompanies.Add(this);
+						this._contactCompanyKey = value.contactCompanyKey;
+					}
+					else
+					{
+						this._contactCompanyKey = default(long);
+					}
+					this.SendPropertyChanged("ContactCompany");
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Discipline_ProjectContactCompany", Storage="_Discipline", ThisKey="disciplineKey", OtherKey="disciplineKey", IsForeignKey=true)]
+		public Discipline Discipline
+		{
+			get
+			{
+				return this._Discipline.Entity;
+			}
+			set
+			{
+				Discipline previousValue = this._Discipline.Entity;
+				if (((previousValue != value) 
+							|| (this._Discipline.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if ((previousValue != null))
+					{
+						this._Discipline.Entity = null;
+						previousValue.ProjectContactCompanies.Remove(this);
+					}
+					this._Discipline.Entity = value;
+					if ((value != null))
+					{
+						value.ProjectContactCompanies.Add(this);
+						this._disciplineKey = value.disciplineKey;
+					}
+					else
+					{
+						this._disciplineKey = default(long);
+					}
+					this.SendPropertyChanged("Discipline");
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Project_ProjectContactCompany", Storage="_Project", ThisKey="projectId", OtherKey="projectId", IsForeignKey=true)]
+		public Project Project
+		{
+			get
+			{
+				return this._Project.Entity;
+			}
+			set
+			{
+				Project previousValue = this._Project.Entity;
+				if (((previousValue != value) 
+							|| (this._Project.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if ((previousValue != null))
+					{
+						this._Project.Entity = null;
+						previousValue.ProjectContactCompanies.Remove(this);
+					}
+					this._Project.Entity = value;
+					if ((value != null))
+					{
+						value.ProjectContactCompanies.Add(this);
+						this._projectId = value.projectId;
+					}
+					else
+					{
+						this._projectId = default(System.Guid);
+					}
+					this.SendPropertyChanged("Project");
 				}
 			}
 		}

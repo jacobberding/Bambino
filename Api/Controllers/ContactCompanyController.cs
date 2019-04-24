@@ -173,6 +173,7 @@ namespace Api.Controllers
                     BambinoDataContext context = new BambinoDataContext();
 
                     List<ListViewModel> vm = context.ContactCompanies
+                        .Where(i => !i.isDeleted)
                         .Select(obj => new ListViewModel()
                         {
                             value = obj.contactCompanyKey.ToString(),
@@ -302,7 +303,9 @@ namespace Api.Controllers
                             {
                                 contact.contactKey,
                                 contact.name,
-                                contact.email
+                                contact.email,
+                                contact.title,
+                                contact.phone1
                             }).ToList(),
                             disciplines = obj.ContactCompanyDisciplines.Select(contactCompanyDiscipline => new
                             {

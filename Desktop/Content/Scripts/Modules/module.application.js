@@ -20,8 +20,9 @@ const Application = (function () {
         TimeTracker.getIsActive();
         ProjectReferenceTag.get();
         ACLayerCategory.get();
+        ContactCompany.get();
 
-    }
+    };
     const _openSub = function ($this) {
         if ($(`m-sub[data-label="${$this.html()}"]`).is(`:visible`)) return;
         $(`m-sub[data-label="${$this.html()}"]`).velocity(`stop`).velocity('slideDown', { duration: Global.velocitySettings.durationShort });

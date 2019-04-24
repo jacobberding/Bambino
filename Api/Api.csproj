@@ -195,6 +195,7 @@
     <Compile Include="Controllers\MaterialPriceOptionController.cs" />
     <Compile Include="Controllers\MaterialTagController.cs" />
     <Compile Include="Controllers\MemberController.cs" />
+    <Compile Include="Controllers\ProjectContactCompanyController.cs" />
     <Compile Include="Controllers\ProjectController.cs" />
     <Compile Include="Controllers\ACAreaCategoryController.cs" />
     <Compile Include="Controllers\ProjectMemberController.cs" />
@@ -229,6 +230,7 @@
     <Compile Include="Models\MemberIpAddress.cs" />
     <Compile Include="Models\Project.cs" />
     <Compile Include="Models\ProjectAttraction.cs" />
+    <Compile Include="Models\ProjectContactCompany.cs" />
     <Compile Include="Models\ProjectElement.cs" />
     <Compile Include="Models\ProjectPhase.cs" />
     <Compile Include="Models\ProjectReference.cs" />
